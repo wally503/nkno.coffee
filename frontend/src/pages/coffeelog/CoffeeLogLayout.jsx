@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
 
-const LogLayout = () => {
+const CoffeeLogLayout = () => {
   return <Outlet />;
 };
 

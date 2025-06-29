@@ -1,4 +1,4 @@
-export default function AddDrinkReportFormPage() {
+export default function AddDrinkReportPage() {
     return  (
         <div>
             <b>
