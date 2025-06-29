@@ -4,4 +4,4 @@ const CoffeeLogLayout = () => {
   return <Outlet />;
 };
 
-export default LogLayout;
+export default CoffeeLogLayout;
