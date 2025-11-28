@@ -41,7 +41,7 @@ export default function FreeInputDropdownList({dropdownModel}) {
 
   return (
       <Grid container>
-        <Grid item size={{ xs: 12, sm: 10, md: 10 }} offset={{ sm: 1, md: 1 }}>
+        <Grid size={{ xs: 12, sm: 10, md: 10 }} offset={{ sm: 1, md: 1 }}>
           <Grid container spacing={2} columns={12}>
             {values.map((val, index) => (
               <Grid

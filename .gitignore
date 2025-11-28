@@ -1,2 +1,53 @@
+# -------------------------
+# ROOT FILES
+# -------------------------
 /devnotes.txt
+
+# -------------------------
+# PYTHON / DJANGO
+# -------------------------
+venv/
+**/__pycache__/
+**/*.pyc
+*.pyo
+*.pyd
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+build/
+dist/
+pip-wheel-metadata/
+*.sqlite3
+
+# Django specific
+staticfiles/
+media/
+*.log
+db.sqlite3
+
+# Env files
 backend/.env
+.env
+*.env
+
+# -------------------------
+# FRONTEND (Vite / Node)
+# -------------------------
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.DS_Store
+
+# -------------------------
+# EDITOR / OS
+# -------------------------
+.vscode/*
+#!.vscode/launch.json
+#!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*.bak
+Thumbs.db
+.DS_Store

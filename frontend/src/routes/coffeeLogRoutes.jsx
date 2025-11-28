@@ -1,6 +1,6 @@
-import AddBeansPage from '../pages/coffeelog/AddBeans.jsx';
-import AddRoasterCafePage from '../pages/coffeelog/AddRoasterCafe.jsx';
-import AddDrinkReportPage from '../pages/coffeelog/AddDrinkReport.jsx';
+import AddBeansPage from '../pages/coffeelog/beans/AddBeans.jsx';
+import AddRoasterCafePage from '../pages/coffeelog/roasters/AddRoasterCafe.jsx';
+import AddDrinkReportPage from '../pages/coffeelog/drinks/AddDrinkReport.jsx';
 
 export const coffeelogOptions = [
   {

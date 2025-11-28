@@ -10,7 +10,7 @@ import {
 
 export default function DropdownGridItem({ dropdown }) {
   return (
-    <Grid item size={dropdown.size || { xs: 12 }}>
+    <Grid size={dropdown.size || { xs: 12 }}>
         <FormControl
           fullWidth
           required={dropdown.required}
