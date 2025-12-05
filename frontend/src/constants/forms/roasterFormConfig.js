@@ -1,0 +1,76 @@
+// src/constants/forms/roasterFormConfig.js
+
+export const roasterFieldConfig = [
+  {
+    type: "text",
+    name: "name",
+    label: "Roaster / Cafe Name",
+    required: true,
+    size: { xs: 12, sm: 6, md: 6 },
+    placeholder: "Perkatory Coffee Roasters",
+  },
+  {
+    type: "dropdown",
+    name: "business_type",
+    label: "Business Type",
+    required: false,
+    size: { xs: 12, sm: 6, md: 6 },
+    optionSource: "businessTypes",
+  },
+  {
+    type: "text",
+    name: "city",
+    label: "City",
+    required: true,
+    size: { xs: 12, sm: 4, md: 4 },
+    placeholder: "New Haven",
+  },
+  {
+    type: "text",
+    name: "state",
+    label: "State / Region",
+    required: true,
+    size: { xs: 12, sm: 4, md: 4 },
+    placeholder: "Connecticut",
+  },
+  {
+    type: "dropdown",
+    name: "country",
+    label: "Country",
+    required: true,
+    size: { xs: 12, sm: 4, md: 4 },
+    optionSource: "countries", // from mockRoasterApi
+  },
+  {
+    type: "text",
+    name: "address",
+    label: "Address",
+    required: false,
+    size: { xs: 12 },
+    placeholder: "123 Brew St",
+  },
+  {
+    type: "text",
+    name: "website",
+    label: "Website",
+    required: false,
+    size: { xs: 12, sm: 6, md: 6 },
+    placeholder: "https://perkatorycoffee.com",
+  },
+  {
+    type: "text",
+    name: "social_link",
+    label: "Social Link",
+    required: false,
+    size: { xs: 12, sm: 6, md: 6 },
+    placeholder: "https://instagram.com/perkatorycoffee",
+  },
+  {
+    type: "text",
+    name: "notes",
+    label: "Notes",
+    required: false,
+    size: { xs: 12 },
+    placeholder: "Personal notes about the roaster/cafe",
+  },
+];

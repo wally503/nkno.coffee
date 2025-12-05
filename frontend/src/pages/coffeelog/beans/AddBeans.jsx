@@ -1,9 +1,8 @@
 // src/pages/coffeelog/beans/AddBeans.jsx
 import * as React from "react";
 import CoffeeLogFormShell from "../shared/CoffeeLogFormShell";
-import { beansFieldConfig } from "../../../constants/forms/beansFormConfig";
+import { beansFieldConfig, flavorNoteModel } from "../../../constants/forms/beansFormConfig";
 import { fetchBeansOptions, submitBeans } from "../../../api/mockBeansApi";
-import { dynamicDropdownModel } from "./flavorConfig"; // or inline, whatever
 
 export default function AddBeansPage() {
   const [formData, setFormData] = React.useState({});
@@ -38,7 +37,7 @@ export default function AddBeansPage() {
       fields={resolvedFields}
       formData={formData}
       onFieldChange={handleFieldChange}
-      flavorModel={dynamicDropdownModel}
+      flavorModel={flavorNoteModel}
       onFlavorNotesChange={handleFlavorNotesChange}
       onSubmit={handleSubmit}
     />

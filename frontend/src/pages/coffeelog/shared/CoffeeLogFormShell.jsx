@@ -1,8 +1,9 @@
 // src/pages/coffeelog/shared/CoffeeLogFormShell.jsx
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Divider } from "@mui/material";
 import DropdownGridItem from "../../../components/DropdownGridItem";
 import TextFieldGridItem from "../../../components/TextFieldGridItem";
 import DynamicDropdownList from "../../../components/DynamicDropdown";
+import DateFieldGridItem from "../../../components/DateFieldGridItem";
 
 export default function CoffeeLogFormShell({
   title,
@@ -38,7 +39,21 @@ export default function CoffeeLogFormShell({
                 value={formData[field.name] ?? ""}
                 onChange={onFieldChange}
               />
-            ) : (
+            ) : field.type === "date" ?
+            (
+              <DateFieldGridItem 
+                key={field.name}
+                item={field}
+                value={formData[field.name] ?? ""}
+                onChange={onFieldChange}
+              />
+            ) : field.type === "divider" ?
+            (
+              <Box sx={{ width: "100%", my: 0.3 }}>
+                <Divider sx={{ opacity: 0.2 }} />
+              </Box>
+            )
+            : (
               <DropdownGridItem
                 key={field.name}
                 dropdown={field}

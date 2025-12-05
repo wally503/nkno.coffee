@@ -9,7 +9,8 @@ import { CoffeeLogCardSelect, HomePage, LocationsPage, LogHistoryPage } from './
 import { drawerWidth } from './constants/layout';
 import { coffeelogOptions } from './routes/coffeeLogRoutes';
 import CoffeeLogLayout from './pages/coffeelog/CoffeeLogLayout';
-
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 function App() {
   const [count, setCount] = useState(0)
