@@ -1,11 +1,12 @@
 import { Grid, Card, CardActionArea, CardContent, Container, Typography, Box } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { coffeelogOptions } from '../../routes/coffeeLogRoutes';
+import { coffeelogOptionsRow1, coffeelogOptionsRow2 } from '../../routes/coffeeLogRoutes';
 
 export default function CoffeeLogSelect(){
     const [selectedId, setSelectedId] = useState(null);
     const navigate = useNavigate();
+    const coffeelogOptionRows = [coffeelogOptionsRow1, coffeelogOptionsRow2];
 
     const LogTypeCard = ({option}) => {
         return (
@@ -30,17 +31,31 @@ export default function CoffeeLogSelect(){
         )
     }
 
-    return (
-        <>
-            <Box sx={{ display: 'flex',justifyContent: 'center', alignItems: 'center', height: 'calc(100vh - 69px)', px: 4, py: 4, width: '100%'}}>
-                <Grid container spacing={3} justifyContent="center">
-                    { coffeelogOptions.map((option) => (
-                        <Grid item xs={12} sm={6} md={4} lg={3} key={option.id}>
-                            <LogTypeCard option={option} /> 
-                        </Grid>
-                    ))}
-                </Grid>
-            </Box>
-        </>
-    )
+  return (
+  <Box
+    sx={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: 'calc(100vh - 69px)',
+      px: 4,
+      py: 4,
+      width: '100%',
+    }}
+  >
+    <Grid container spacing={3} justifyContent="center">
+      {coffeelogOptionRows.map((row, rowIndex) => (
+        <Grid item xs={12} key={rowIndex}>
+          <Grid container spacing={3} justifyContent="center">
+            {row.map((option) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={option.id}>
+                <LogTypeCard option={option} />
+              </Grid>
+            ))}
+          </Grid>
+        </Grid>
+      ))}
+    </Grid>
+  </Box>
+);
 }

@@ -1,8 +1,8 @@
-import AddBeansPage from '../pages/coffeelog/beans/AddBeans.jsx';
-import AddRoasterCafePage from '../pages/coffeelog/roasters/AddRoasterCafe.jsx';
-import AddDrinkReportPage from '../pages/coffeelog/drinks/AddDrinkReport.jsx';
+import { AddBeansPage, ListBeansPage } from '../pages/coffeelog/beans/index';
+import { AddRoasterCafePage, ListRoasterCafesPage } from '../pages/coffeelog/roasters/index';
+import { AddDrinkReportPage } from '../pages/coffeelog/drinks/index';
 
-export const coffeelogOptions = [
+export const coffeelogOptionsRow1 = [
   {
     id: 'AddBeans',
     title:'Add Beans',
@@ -24,4 +24,27 @@ export const coffeelogOptions = [
     path: 'AddDrinkReport',
     element: <AddDrinkReportPage />
   }
+];
+
+export const coffeelogOptionsRow2 = [
+  {
+    id: 'ListBeans',
+    title:'List Beans',
+    description: 'Get list of existing Roasters in system',
+    path: 'ListBeans',
+    element: <ListBeansPage />
+  },
+  {
+    id: 'ListRoasters',
+    title:'List Roasters',
+    description: 'Get list of existing Roasters in system',
+    path: 'ListRoasters',
+    element: <ListRoasterCafesPage />
+  }
+];
+
+
+export const coffeelogOptions = [
+  ...coffeelogOptionsRow1,
+  ...coffeelogOptionsRow2,
 ];

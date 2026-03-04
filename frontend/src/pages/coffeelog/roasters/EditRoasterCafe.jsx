@@ -1,9 +1,8 @@
-
-export default function HomePage() {
+export default function EditRoasterCafePage() {
     return  (
         <div>
             <b>
-                Home Page!
+                Edit them roasters
             </b>
         </div>
     )
