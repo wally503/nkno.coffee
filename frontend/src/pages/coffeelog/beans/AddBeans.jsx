@@ -34,6 +34,8 @@ export default function AddBeansPage() {
   return (
     <CoffeeLogFormShell
       title="Add Beans"
+      hasBackButton={true}
+      backRoute={"/CoffeeLog"}
       fields={resolvedFields}
       formData={formData}
       onFieldChange={handleFieldChange}

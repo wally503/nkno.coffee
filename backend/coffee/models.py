@@ -55,3 +55,17 @@ class Bean(models.Model):
         return f"{self.roaster} – {self.name}"
 
 
+class CafeLog(models.Model):
+    roaster = models.ForeignKey(
+        Roaster,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    drink = models.CharField(max_length=200)
+    rating = models.IntegerField(null=True, blank=True)
+    notes = models.CharField(max_length=2000, blank=True)
+    logged_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.roaster} – {self.drink} ({self.logged_at.date()})"

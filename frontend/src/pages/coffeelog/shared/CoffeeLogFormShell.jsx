@@ -1,18 +1,24 @@
 // src/pages/coffeelog/shared/CoffeeLogFormShell.jsx
-import { Box, Grid, Divider } from "@mui/material";
+import { Box, Grid, Divider,Button } from "@mui/material";
 import DropdownGridItem from "../../../components/DropdownGridItem";
 import TextFieldGridItem from "../../../components/TextFieldGridItem";
 import DynamicDropdownList from "../../../components/DynamicDropdown";
 import DateFieldGridItem from "../../../components/DateFieldGridItem";
+import MultilineTextFieldGridItem from "../../../components/MultilineTextFieldGridItem";
+import RatingGridItem from "../../../components/RatingGridItem";
+import PageTitle from "../../../components/PageTitle";
 
 export default function CoffeeLogFormShell({
   title,
+  hasBackButton,
+  backRoute,
   fields,
   formData,
   onFieldChange,
   flavorModel,
   onFlavorNotesChange,
   onSubmit,
+  onBack,
 }) {
   return (
     <Box
@@ -27,9 +33,9 @@ export default function CoffeeLogFormShell({
         width: "100%",
       }}
     >
-      <h2>{title}</h2>
-
-      <Box sx={{ width: "100%", maxWidth: 1400 }}>
+      
+      <PageTitle title={title} hasBackButton={hasBackButton} backRoute={backRoute}  />
+      <Box sx={{ width: "90%", maxWidth: 1400 }}>
         <Grid container spacing={3} columns={12}>
           {fields.map((field) =>
             field.type === "text" ? (
@@ -50,8 +56,24 @@ export default function CoffeeLogFormShell({
             ) : field.type === "divider" ?
             (
               <Box sx={{ width: "100%", my: 0.3 }}>
-                <Divider sx={{ opacity: 0.2 }} />
+                <Divider />
               </Box>
+            ) : field.type === "long_text" ?
+            (
+              <MultilineTextFieldGridItem
+                key={field.name}
+                item={field}
+                value={formData[field.name] ?? ""}
+                onChange={onFieldChange}
+              />
+            ) : field.type === "rating" ?
+            (
+              <RatingGridItem
+                key={field.name}
+                item={field}
+                value={formData[field.name] ?? ""}
+                onChange={onFieldChange}
+              />
             )
             : (
               <DropdownGridItem
@@ -72,11 +94,19 @@ export default function CoffeeLogFormShell({
             </Grid>
           )}
         </Grid>
-
-        <button onClick={onSubmit} style={{ marginTop: "1rem" }}>
-          Save
-        </button>
       </Box>
+
+      <Box sx={{ width: "100%", maxWidth: 1400 }}>
+        <Grid container spacing={3} columns={12}>
+          <Grid size={ {xs: 2 }}>
+            <Button variant="contained" onClick={onSubmit} style={{ marginTop: "1rem" }}>
+              Save
+            </Button>
+          </Grid>
+        </Grid>
+    </Box>
+
+      
     </Box>
   );
 }

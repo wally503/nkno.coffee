@@ -19,6 +19,11 @@ export default function DateFieldGridItem({ item }) {
           textField: {
             fullWidth: true,
             required: item.isRequired,
+            sx: {
+              "& fieldset": {
+                borderColor: "rgba(180, 140, 100, 0.5)",
+              },
+            },
           },
         }}
       />

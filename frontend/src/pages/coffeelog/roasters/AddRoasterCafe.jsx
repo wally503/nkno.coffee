@@ -42,6 +42,8 @@ export default function AddRoasterCafePage() {
   return (
     <CoffeeLogFormShell
       title="Add Roaster / Cafe"
+      hasBackButton={true}
+      backRoute={"/CoffeeLog"}
       fields={resolvedFields}
       formData={formData}
       onFieldChange={handleFieldChange}

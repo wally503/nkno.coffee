@@ -1,52 +1,77 @@
-import * as React from 'react';
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
+import * as React from "react";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TablePagination from "@mui/material/TablePagination";
+import TableRow from "@mui/material/TableRow";
+import PageHeaderTitle from "../../../components/PageTitle";
+import { useNavigate } from "react-router-dom";
 
-
-
-
-
+import {
+  Grid,
+  FormControl,
+  FormHelperText,
+  Box,
+  Rating,
+  Typography,
+} from "@mui/material";
 
 const columns = [
-  { id: 'name', label: 'Bean Name', minWidth: 100 },
-  { id: 'roaster', label: 'Roaster', minWidth: 100 },
+  { id: "name", label: "Bean Name", minWidth: 100 },
+  { id: "roaster", label: "Roaster", minWidth: 100 },
   {
-    id: 'origin',
-    label: 'Roast Origin',
+    id: "origin",
+    label: "Roast Origin",
     minWidth: 70,
   },
   {
-    id: 'organic',
-    label: 'Organic',
+    id: "organic",
+    label: "Organic",
     minWidth: 70,
   },
   {
-    id: 'washed',
-    label: 'Washed',
+    id: "washed",
+    label: "Washed",
     minWidth: 70,
   },
   {
-    id: 'elevation',
-    label: 'Elevation',
+    id: "elevation",
+    label: "Elevation",
     minWidth: 100,
   },
   {
-    id: 'notes',
-    label: 'Notes',
+    id: "notes",
+    label: "Notes",
     minWidth: 180,
   },
 ];
 
-function createData(bName, roaster, bOrigin, bRoast, bOrganic, bWashed, bElevationMin, bElevationMax, bNotes ) {
+function createData(
+  bName,
+  roaster,
+  bOrigin,
+  bRoast,
+  bOrganic,
+  bWashed,
+  bElevationMin,
+  bElevationMax,
+  bNotes,
+) {
   //const density = population / size;
   const elevation = formatElevation(bElevationMin, bElevationMax);
-  return { bName, roaster, bOrigin, bRoast, bOrganic, bWashed, elevation, bNotes };
+  return {
+    bName,
+    roaster,
+    bOrigin,
+    bRoast,
+    bOrganic,
+    bWashed,
+    elevation,
+    bNotes,
+  };
 }
 
 function formatElevation(min, max) {
@@ -110,64 +135,94 @@ export default function ListBeansPage() {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+  const navigate = useNavigate();
+  
 
   return (
-    <Paper sx={{ width: '100%' }}>
-      <TableContainer sx={{ maxHeight: 440 }}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            {/* <TableRow>
-              <TableCell align="center" colSpan={2}>
-                Country
-              </TableCell>
-              <TableCell align="center" colSpan={3}>
-                Details
-              </TableCell>
-            </TableRow> */}
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ top: 0, minWidth: column.minWidth }}
-                >
-                  {column.label}
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "flex-start",
+        alignItems: "center",
+        height: "calc(100vh - 69px)",
+        px: 4,
+        py: 4,
+        width: "100%",
+      }}
+    >
+      <PageHeaderTitle title={"List Beans"} hasBackButton={true} backRoute={"/"}  />
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "95%",
+          mx: "auto",
+        }}
+      >
+        <Paper>
+          <TableContainer sx={{ maxHeight: 440 }}>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                {/* <TableRow>
+                <TableCell align="center" colSpan={2}>
+                  Country
                 </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === 'number'
-                            ? column.format(value)
-                            : value}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-    </Paper>
+                <TableCell align="center" colSpan={3}>
+                  Details
+                </TableCell>
+              </TableRow> */}
+                <TableRow>
+                  {columns.map((column) => (
+                    <TableCell
+                      key={column.id}
+                      align={column.align}
+                      style={{ top: 0, minWidth: column.minWidth }}
+                    >
+                      {column.label}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row) => {
+                    return (
+                      <TableRow
+                        hover
+                        role="checkbox"
+                        tabIndex={-1}
+                        key={row.code}
+                      >
+                        {columns.map((column) => {
+                          const value = row[column.id];
+                          return (
+                            <TableCell key={column.id} align={column.align}>
+                              {column.format && typeof value === "number"
+                                ? column.format(value)
+                                : value}
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 100]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Paper>
+      </Box>
+    </Box>
   );
 }
-
