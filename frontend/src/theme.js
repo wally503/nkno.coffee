@@ -115,7 +115,6 @@ MuiListItemIcon:{
 }
   },
   
-  
 });
 
 export default theme;

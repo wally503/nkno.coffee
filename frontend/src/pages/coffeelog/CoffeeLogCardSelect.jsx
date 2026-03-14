@@ -11,7 +11,7 @@ export default function CoffeeLogSelect(){
     const LogTypeCard = ({option}) => {
         return (
             <Card sx={{
-                    border: '1px solid #ccc',
+                    border: '1px solid rgba(180, 140, 100, 0.5)',
                     transition: '0.2s',
                     height: 320, 
                     width: 275,
