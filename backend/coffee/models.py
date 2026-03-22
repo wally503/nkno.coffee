@@ -1,10 +1,11 @@
 from django.db import models
+from .choices import CaffOrDecaf, WashingStyle, OrganicOrNot, BusinessType, RoastLevel
 
 # Create your models here.
 
 class Roaster(models.Model):
     name = models.CharField(max_length=200, unique=True)
-    business_type = models.CharField(max_length=80, blank=True)
+    business_type = models.CharField(max_length=80, blank=True, choices=BusinessType.choices)
     website = models.URLField(blank=True, null=True)
     social = models.CharField(max_length=200, blank=True)
     notes = models.CharField(max_length=2000, blank=True)
@@ -42,10 +43,11 @@ class Bean(models.Model):
         null=True,
         blank=True,
     ) 
-    roast_level = models.CharField(max_length=50, blank=True)
-    organic_or_not = models.BooleanField(default=False)
-    washing_style = models.CharField(max_length=50, blank=True)
-    caff_or_decaf = models.CharField(max_length=20, default="Caffeinated")
+    roast_level = models.CharField(max_length=50, blank=True, choices=RoastLevel.choices)
+    organic_or_not = models.CharField(max_length=20, choices=OrganicOrNot.choices)
+    washing_style = models.CharField(max_length=50, blank=True, choices=WashingStyle.choices)
+    caff_or_decaf = models.CharField(max_length=20, choices=CaffOrDecaf.choices)
+    purchase_date = models.DateField(null=True, blank=True)
     roast_date = models.DateField(null=True, blank=True)
     min_elevation = models.IntegerField(null=True, blank=True)
     max_elevation = models.IntegerField(null=True, blank=True)
@@ -58,6 +60,12 @@ class Bean(models.Model):
 class CafeLog(models.Model):
     roaster = models.ForeignKey(
         Roaster,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    bean = models.ForeignKey(
+        Bean,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
