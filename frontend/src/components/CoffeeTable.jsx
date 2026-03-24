@@ -28,7 +28,7 @@ export default function CoffeeTable({columns, rows}) {
     setPage(0);
   };
 
-  if (!columns.length || !rows.length) return null;
+  if (!columns?.length || !rows?.length) return null;
   return (
     <Box
         sx={{

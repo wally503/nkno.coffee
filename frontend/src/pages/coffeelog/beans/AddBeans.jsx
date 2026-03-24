@@ -1,15 +1,23 @@
 // src/pages/coffeelog/beans/AddBeans.jsx
 import * as React from "react";
 import CoffeeLogFormShell from "../shared/CoffeeLogFormShell";
-import { beansFieldConfig, flavorNoteModel } from "../../../constants/forms/beansFormConfig";
+import { BEANFORM_STATIC_OPTIONS, beansFieldConfig, flavorNoteModel,   } from "../../../constants/forms/beansFormConfig";
 import { fetchBeansOptions, submitBeans } from "../../../api/mockBeansApi";
+import { beansCountries, beansRoasters } from "../../../api/beansApi";
 
 export default function AddBeansPage() {
   const [formData, setFormData] = React.useState({});
   const [options, setOptions] = React.useState(null);
 
   React.useEffect(() => {
-    fetchBeansOptions().then(setOptions).catch(console.error);
+    const load = async () => {
+      const [roasters, countries] = await Promise.all([
+          beansRoasters(),
+          beansCountries()
+        ]);
+      setOptions({...BEANFORM_STATIC_OPTIONS, roasters, countries});
+    };
+    load().catch(console.error);
   }, []);
 
   const handleFieldChange = (name, value) => {

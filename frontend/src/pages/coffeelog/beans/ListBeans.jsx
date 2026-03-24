@@ -12,17 +12,16 @@ import { useNavigate } from "react-router-dom";
 
 import { Grid, FormControl, FormHelperText, Box, Rating, Typography } from "@mui/material";
 import CoffeeTable from "../../../components/CoffeeTable";
-import { fetchBeansTableColumns, fetchBeansTableRows } from "../../../api/mockBeansTableApi";
-
+// import { fetchBeansTableColumns, fetchBeansTableRows } from "../../../api/mockBeansTableApi";
+import { defaultBeansTableList } from "../../../api/beansApi";
+import { defaultBeansTableColumns } from "../../../constants/tables/beansListConfig";
 
 
 export default function ListBeansPage() {
-  const [columns, setColumns] = React.useState([]);
   const [rows, setRows] = React.useState([]);
 
   React.useEffect(() => {
-    fetchBeansTableColumns().then(setColumns);
-    fetchBeansTableRows().then(setRows);
+    defaultBeansTableList().then(setRows);
   }, []);
   
   const navigate = useNavigate();
@@ -41,7 +40,7 @@ export default function ListBeansPage() {
       }}
     >
       <PageHeaderTitle title={"List Beans"} hasBackButton={true} backRoute={"/CoffeeLog"}  />
-      <CoffeeTable columns={columns} rows={rows} />
+      <CoffeeTable columns={defaultBeansTableColumns} rows={rows} />
     </Box>
   );
 }

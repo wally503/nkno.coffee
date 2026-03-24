@@ -97,3 +97,30 @@ export const flavorNoteModel = {
     { label: "Floral", value: "floral" },
   ],
 };
+
+
+
+
+
+export const BEANFORM_STATIC_OPTIONS = {
+  roastLevels: [
+    { label: "Light", value: "light" },
+    { label: "Light-Medium", value: "light_medium" },
+    { label: "Medium", value: "medium" },
+    { label: "Medium-Dark", value: "medium_dark" },
+    { label: "Dark", value: "dark" },
+  ],
+  organicFlags: [
+    { label: "Organic", value: 'organic' },
+    { label: "Non-organic", value: 'not_organic' },
+  ],
+  processTypes: [
+    { label: "Washed", value: "washed" },
+    { label: "Natural", value: "natural" },
+  ],
+  caffeineFlags: [
+    { label: "Caffeinated", value: 'caffeinated' },
+    { label: "Decaffeinated", value: 'decaffeinated' },
+  ],
+};
+
