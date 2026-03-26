@@ -8,13 +8,14 @@ import {
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import dayjs from 'dayjs';
 
-export default function DateFieldGridItem({ item }) {
+export default function DateFieldGridItem({ item, onChange, value={value} }) {
   return (
     <Grid size={item.size || { xs: 12 }}>
       <MobileDatePicker
         label={item.label || ""}
-        value={null}
-        onChange={() => {}}
+        value={value ? dayjs(value) : null}
+        closeOnSelect
+        onChange={(val) => onChange(item.name, val ? val.format('YYYY-MM-DD') : null)}
         slotProps={{
           textField: {
             fullWidth: true,

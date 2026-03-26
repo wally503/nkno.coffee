@@ -2,8 +2,7 @@
 import * as React from "react";
 import CoffeeLogFormShell from "../shared/CoffeeLogFormShell";
 import { BEANFORM_STATIC_OPTIONS, beansFieldConfig, flavorNoteModel,   } from "../../../constants/forms/beansFormConfig";
-import { fetchBeansOptions, submitBeans } from "../../../api/mockBeansApi";
-import { beansCountries, beansRoasters } from "../../../api/beansApi";
+import { beansCountries, beansRoasters, submitBeans } from "../../../api/beansApi";
 
 export default function AddBeansPage() {
   const [formData, setFormData] = React.useState({});
@@ -29,6 +28,7 @@ export default function AddBeansPage() {
   };
 
   const handleSubmit = async () => {
+    console.log("About to submit beans.");
     const res = await submitBeans(formData);
     console.log("Add beans result:", res);
   };

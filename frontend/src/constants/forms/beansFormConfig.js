@@ -3,7 +3,7 @@
 export const beansFieldConfig = [
   {
     type: "text",
-    name: "bean_name",
+    name: "name",
     label: "Beans Name",
     required: true,
     size: { xs: 12 },
@@ -11,7 +11,7 @@ export const beansFieldConfig = [
   },
   {
     type: "dropdown",
-    name: "roaster_id",
+    name: "roaster",
     label: "Roaster",
     required: true,
     size: { xs: 12, sm: 4, md: 4 },
@@ -19,7 +19,7 @@ export const beansFieldConfig = [
   },
   {
     type: "dropdown",
-    name: "country_id",
+    name: "origin_country",
     label: "Country of Origin",
     required: true,
     size: { xs: 12, sm: 4, md: 4 },
@@ -35,7 +35,7 @@ export const beansFieldConfig = [
   },
   {
     type: "dropdown",
-    name: "is_organic",
+    name: "organic_or_not",
     label: "Organic",
     required: false,
     size: { xs: 12, sm: 4, md: 4 },
@@ -43,7 +43,7 @@ export const beansFieldConfig = [
   },
   {
     type: "dropdown",
-    name: "process",
+    name: "washing_style",
     label: "Washed/Natural",
     required: false,
     size: { xs: 12, sm: 4, md: 4 },
@@ -51,7 +51,7 @@ export const beansFieldConfig = [
   },
   {
     type: "dropdown",
-    name: "is_caffeinated",
+    name: "caff_or_decaf",
     label: "Caffeinated or Decaffeinated",
     required: true,
     size: { xs: 12, sm: 4, md: 4 },
@@ -67,7 +67,7 @@ export const beansFieldConfig = [
   },
   {
     type: "text",
-    name: "elevation_min",
+    name: "min_elevation",
     label: "Minimum Elevation (in MASL)",
     required: false,
     size: { xs: 12, sm: 4, md: 4 },
@@ -75,7 +75,7 @@ export const beansFieldConfig = [
   },
   {
     type: "text",
-    name: "elevation_max",
+    name: "max_elevation",
     label: "Maximum Elevation (in MASL)",
     required: false,
     size: { xs: 12, sm: 4, md: 4 },

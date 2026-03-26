@@ -51,7 +51,7 @@ class Bean(models.Model):
     roast_date = models.DateField(null=True, blank=True)
     min_elevation = models.IntegerField(null=True, blank=True)
     max_elevation = models.IntegerField(null=True, blank=True)
-    flavor_notes = models.ManyToManyField(FlavorNotes, blank=True, related_name="beans")
+    flavor_notes = models.ManyToManyField(FlavorNotes, null=True, blank=True, related_name="beans")
 
     def __str__(self):
         return f"{self.roaster} – {self.name}"

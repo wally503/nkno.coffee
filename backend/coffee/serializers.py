@@ -39,7 +39,7 @@ class BeanListSerializer(serializers.ModelSerializer):
         return obj.roaster.name
 
     def get_origin_country(self, obj):
-        return obj.origin_country.name
+        return obj.origin_country.name if obj.origin_country else '-'
     
     def get_washing_style(self, obj):
         return obj.get_washing_style_display() if obj.washing_style else '-'

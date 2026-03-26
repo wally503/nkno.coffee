@@ -11,13 +11,14 @@ import RemoveIcon from '@mui/icons-material/Remove';
 
 const baseOptions = ['Option A', 'Option B', 'Option C', 'Option D'];
 
-export default function FreeInputDropdownList({dropdownModel}) {
+export default function FreeInputDropdownList({dropdownModel, onChange}) {
   const [values, setValues] = useState(['']);
 
   const handleChange = (index, newValue) => {
     const updated = [...values];
     updated[index] = newValue;
     setValues(updated);
+    onChange(updated);
   };
 
   const handleAdd = () => {
