@@ -60,3 +60,8 @@ class CountriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = OriginCountry
         fields = '__all__'
+
+class FlavorNotesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FlavorNotes
+        fields = '__all__'

@@ -8,7 +8,7 @@ import {
   Box
 } from '@mui/material';
 
-export default function DropdownGridItem({ dropdown, onChange, value={value} }) {
+export default function DropdownGridItem({ dropdown, onChange, value={value}, error }) {
   return (
     <Grid size={dropdown.size || { xs: 12 }}>
         <FormControl
@@ -27,12 +27,14 @@ export default function DropdownGridItem({ dropdown, onChange, value={value} }) 
                   variant="outlined"
                   label={dropdown.label}
                   required={dropdown.required}
+                  error={!!error}
+                  helperText={error?.[0]}
                 />
               )}
               onChange={(e, selectedOption) => onChange(dropdown.name, selectedOption?.value)}
             />
           </Box>
-          {dropdown.required && (
+          {dropdown.required && (error ? null :
             <FormHelperText>Required</FormHelperText>
           )}
         </FormControl>

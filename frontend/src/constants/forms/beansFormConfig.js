@@ -21,7 +21,7 @@ export const beansFieldConfig = [
     type: "dropdown",
     name: "origin_country",
     label: "Country of Origin",
-    required: true,
+    required: false,
     size: { xs: 12, sm: 4, md: 4 },
     optionSource: "countries",
   },
@@ -29,9 +29,17 @@ export const beansFieldConfig = [
     type: "dropdown",
     name: "roast_level",
     label: "Roast Level",
-    required: true,
+    required: false,
     size: { xs: 12, sm: 4, md: 4 },
     optionSource: "roastLevels",
+  },
+  {
+    type: "dropdown",
+    name: "caff_or_decaf",
+    label: "Caffeinated or Decaffeinated",
+    required: true,
+    size: { xs: 12, sm: 4, md: 4 },
+    optionSource: "caffeineFlags",
   },
   {
     type: "dropdown",
@@ -48,14 +56,6 @@ export const beansFieldConfig = [
     required: false,
     size: { xs: 12, sm: 4, md: 4 },
     optionSource: "processTypes",
-  },
-  {
-    type: "dropdown",
-    name: "caff_or_decaf",
-    label: "Caffeinated or Decaffeinated",
-    required: true,
-    size: { xs: 12, sm: 4, md: 4 },
-    optionSource: "caffeineFlags",
   },
   {
     type: "date",
@@ -84,6 +84,15 @@ export const beansFieldConfig = [
   {
     type: "divider",
   },
+  {
+    type: "dynamic_dropdown",
+    name: "flavor_notes",
+    label: "Flavor Notes",
+    required: false,
+    optionSource: "notes"
+    // size: { xs: 12, sm: 4, md: 4 },
+    // placeholder: "",
+  },  
 ];
 
 
@@ -97,10 +106,6 @@ export const flavorNoteModel = {
     { label: "Floral", value: "floral" },
   ],
 };
-
-
-
-
 
 export const BEANFORM_STATIC_OPTIONS = {
   roastLevels: [

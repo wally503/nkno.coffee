@@ -1,20 +1,22 @@
 // src/pages/coffeelog/beans/AddBeans.jsx
 import * as React from "react";
 import CoffeeLogFormShell from "../shared/CoffeeLogFormShell";
-import { BEANFORM_STATIC_OPTIONS, beansFieldConfig, flavorNoteModel,   } from "../../../constants/forms/beansFormConfig";
-import { beansCountries, beansRoasters, submitBeans } from "../../../api/beansApi";
+import { BEANFORM_STATIC_OPTIONS, beansFieldConfig   } from "../../../constants/forms/beansFormConfig";
+import { beansCountries, beansNotes, beansRoasters, submitBeans } from "../../../api/beansApi";
 
 export default function AddBeansPage() {
   const [formData, setFormData] = React.useState({});
   const [options, setOptions] = React.useState(null);
+  const [errors, setErrors] = React.useState({});
 
   React.useEffect(() => {
     const load = async () => {
-      const [roasters, countries] = await Promise.all([
+      const [roasters, countries, notes] = await Promise.all([
           beansRoasters(),
-          beansCountries()
+          beansCountries(),
+          beansNotes()
         ]);
-      setOptions({...BEANFORM_STATIC_OPTIONS, roasters, countries});
+      setOptions({...BEANFORM_STATIC_OPTIONS, roasters, countries, notes});
     };
     load().catch(console.error);
   }, []);
@@ -23,14 +25,14 @@ export default function AddBeansPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFlavorNotesChange = (valuesArray) => {
-    setFormData((prev) => ({ ...prev, flavor_notes: valuesArray }));
-  };
-
   const handleSubmit = async () => {
-    console.log("About to submit beans.");
-    const res = await submitBeans(formData);
-    console.log("Add beans result:", res);
+    try{
+      const res = await submitBeans(formData);
+      console.log("Add beans result:", res);
+    } catch(err){
+      console.log(err);
+      setErrors(err);
+    }
   };
 
   if (!options) return <div>Loading beans options…</div>;
@@ -47,9 +49,8 @@ export default function AddBeansPage() {
       fields={resolvedFields}
       formData={formData}
       onFieldChange={handleFieldChange}
-      flavorModel={flavorNoteModel}
-      onFlavorNotesChange={handleFlavorNotesChange}
       onSubmit={handleSubmit}
+      errors={errors}
     />
   );
 }

@@ -46,7 +46,7 @@ IconContainer.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-export default function RatingGridItem({ item }) {
+export default function RatingGridItem({ item, error }) {
   return (
     <Grid size={item.size || { xs: 12 }}>
       <FormControl fullWidth component="fieldset">
@@ -59,9 +59,11 @@ export default function RatingGridItem({ item }) {
             IconContainerComponent={IconContainer}
             getLabelText={(value) => customIcons[value].label}
             highlightSelectedOnly
+            error={!!error}
+            helperText={error?.[0]}
           />
         </Box>
-        {item.required && <FormHelperText>Required</FormHelperText>}
+        {item.required && error ? null : <FormHelperText>Required</FormHelperText>}
       </FormControl>
     </Grid>
   );

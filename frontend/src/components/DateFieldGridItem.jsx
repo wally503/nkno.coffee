@@ -8,7 +8,7 @@ import {
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import dayjs from 'dayjs';
 
-export default function DateFieldGridItem({ item, onChange, value={value} }) {
+export default function DateFieldGridItem({ item, onChange, value={value}, error }) {
   return (
     <Grid size={item.size || { xs: 12 }}>
       <MobileDatePicker
@@ -27,9 +27,11 @@ export default function DateFieldGridItem({ item, onChange, value={value} }) {
             },
           },
         }}
+        error={!!error}
+        helperText={error?.[0]}
       />
 
-      {item.isRequired && (
+      {item.isRequired && ( error ? null :
         <FormHelperText>Required</FormHelperText>
       )}
     </Grid>

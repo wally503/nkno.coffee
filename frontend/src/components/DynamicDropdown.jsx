@@ -1,3 +1,4 @@
+// src/components/DynamicDropdown.jsx
 import React, { useState } from 'react';
 import {
   Grid,
@@ -9,14 +10,12 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 
-const baseOptions = ['Option A', 'Option B', 'Option C', 'Option D'];
-
-export default function FreeInputDropdownList({dropdownModel, onChange}) {
+export default function FreeInputDropdownList({item, onChange}) {
   const [values, setValues] = useState(['']);
 
   const handleChange = (index, newValue) => {
     const updated = [...values];
-    updated[index] = newValue;
+    updated[index] = newValue?.label ?? newValue;
     setValues(updated);
     onChange(updated);
   };
@@ -35,8 +34,8 @@ export default function FreeInputDropdownList({dropdownModel, onChange}) {
 
   const getAvailableOptions = (index) => {
     const selected = new Set(values.filter((_, i) => i !== index));
-    return baseOptions.filter(
-      (option) => !selected.has(option) || values[index] === option
+    return item.options.filter(
+      (option) => !selected.has(option.label) || values[index] === option.label
     );
   };
 
@@ -62,7 +61,7 @@ export default function FreeInputDropdownList({dropdownModel, onChange}) {
                       <TextField
                         {...params}
                         label="Flavor Note"
-                        placeholder={dropdownModel.mainLabel}
+                        placeholder={item.mainLabel}
                       />
                     )}
                   />

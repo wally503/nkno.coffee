@@ -41,3 +41,7 @@ class CafeLogViewSet(viewsets.ModelViewSet):
 class CountriesViewSet(viewsets.ModelViewSet):
     queryset = OriginCountry.objects.all()
     serializer_class = CountriesSerializer
+
+class FlavorNotesViewSet(viewsets.ModelViewSet):
+    queryset = FlavorNotes.objects.all()
+    serializer_class = FlavorNotesSerializer
