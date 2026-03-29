@@ -31,9 +31,7 @@ export default function DateFieldGridItem({ item, onChange, value={value}, error
         helperText={error?.[0]}
       />
 
-      {item.isRequired && ( error ? null :
-        <FormHelperText>Required</FormHelperText>
-      )}
+      {item.isRequired && ( error ? null : <FormHelperText>Required</FormHelperText>)}
     </Grid>
   );
 }

@@ -38,6 +38,7 @@ export default function CoffeeLogFormShell({
       <Box sx={{ width: "90%", maxWidth: 1400 }}>
         <Grid container spacing={3} columns={12}>
           {fields.map((field) => {
+            // console.log(field)
             switch(field.type) {
               case "text":              return buildTextField(field, formData, onFieldChange, errors)
               case "date":              return buildDateField(field, formData, onFieldChange, errors)

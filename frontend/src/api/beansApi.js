@@ -41,10 +41,10 @@ export async function beansNotes(){
     }
 }
 
-export async function fetchBeansOptions() {
-    // mock “API” — could be a real fetch later
-    return Promise.resolve(MOCK_BEANS_OPTIONS);
-}
+// export async function fetchBeansOptions() {
+//     // mock “API” — could be a real fetch later
+//     return Promise.resolve(MOCK_BEANS_OPTIONS);
+// }
 
 export async function submitBeans(formData) {
     try {

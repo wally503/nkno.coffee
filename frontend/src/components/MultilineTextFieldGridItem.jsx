@@ -15,7 +15,7 @@ export default function MultilineTextFieldGridItem({ item }) {
             placeholder={item.placeholder || ""}
           />
         </Box>
-        {item.required && error ? null : <FormHelperText>Required</FormHelperText>}
+        {item.required && (error ? null : <FormHelperText>Required</FormHelperText>)}
       </FormControl>
     </Grid>
   );

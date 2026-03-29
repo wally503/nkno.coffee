@@ -21,7 +21,7 @@ export const roasterFieldConfig = [
     type: "text",
     name: "city",
     label: "City",
-    required: true,
+    required: false ,
     size: { xs: 12, sm: 4, md: 4 },
     placeholder: "New Haven",
   },
@@ -29,7 +29,7 @@ export const roasterFieldConfig = [
     type: "text",
     name: "state",
     label: "State / Region",
-    required: true,
+    required: false,
     size: { xs: 12, sm: 4, md: 4 },
     placeholder: "Connecticut",
   },
@@ -74,3 +74,14 @@ export const roasterFieldConfig = [
     placeholder: "Personal notes about the roaster/cafe",
   },
 ];
+
+
+
+
+export const ROASTERFORM_STATIC_OPTIONS = {
+  businessTypes: [
+    { label: "Roaster", value: "roaster" },
+    { label: "Cafe", value: "cafe" },
+    { label: "Roaster/Cafe", value: "roaster_cafe" },
+  ],
+};

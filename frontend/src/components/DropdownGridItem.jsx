@@ -34,9 +34,7 @@ export default function DropdownGridItem({ dropdown, onChange, value={value}, er
               onChange={(e, selectedOption) => onChange(dropdown.name, selectedOption?.value)}
             />
           </Box>
-          {dropdown.required && (error ? null :
-            <FormHelperText>Required</FormHelperText>
-          )}
+          {dropdown.required && (error ? null : <FormHelperText>Required</FormHelperText>)}
         </FormControl>
       </Grid>
   );

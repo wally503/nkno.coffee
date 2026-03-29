@@ -16,7 +16,7 @@ export default function TextFieldGridItem({ item, onChange, value={value}, error
             helperText={error?.[0]}
           />
         </Box>
-        {item.required && error ? null : <FormHelperText>Required</FormHelperText>}
+        {item.required && (error ? null : <FormHelperText>Required</FormHelperText>)}
       </FormControl>
     </Grid>
   );

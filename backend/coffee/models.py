@@ -3,6 +3,12 @@ from .choices import CaffOrDecaf, WashingStyle, OrganicOrNot, BusinessType, Roas
 
 # Create your models here.
 
+class Countries(models.Model):
+    name = models.CharField(max_length=200, unique=True)
+
+    def __str__(self):
+        return self.name
+
 class Roaster(models.Model):
     name = models.CharField(max_length=200, unique=True)
     business_type = models.CharField(max_length=80, blank=True, choices=BusinessType.choices)
@@ -10,16 +16,14 @@ class Roaster(models.Model):
     social = models.CharField(max_length=200, blank=True)
     notes = models.CharField(max_length=2000, blank=True)
 
-    address = models.CharField(max_length=300)
-    city = models.CharField(max_length=200)
-    state_region = models.CharField(max_length=200)
-    country = models.CharField(max_length=200)
-
-    def __str__(self):
-        return self.name
-
-class OriginCountry(models.Model):
-    name = models.CharField(max_length=200, unique=True)
+    address = models.CharField(max_length=300, blank=True)
+    city = models.CharField(max_length=200, blank=True)
+    state_region = models.CharField(max_length=200, blank=True)
+    country = models.ForeignKey(
+        Countries,
+        on_delete=models.SET_NULL, 
+        null=True
+    ) 
 
     def __str__(self):
         return self.name
@@ -38,7 +42,7 @@ class Bean(models.Model):
         related_name="beans",
     ) 
     origin_country = models.ForeignKey(
-        OriginCountry,
+        Countries,
         on_delete=models.SET_NULL, 
         null=True,
         blank=True,

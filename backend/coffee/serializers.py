@@ -3,6 +3,11 @@ from rest_framework import serializers
 
 
 class RoasterSerializer(serializers.ModelSerializer):
+    country = serializers.PrimaryKeyRelatedField(
+        queryset=Countries.objects.all(),
+        required=True
+    )
+
     class Meta:
         model = Roaster
         fields = '__all__'
@@ -58,7 +63,7 @@ class CafeLogSerializer(serializers.ModelSerializer):
 
 class CountriesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = OriginCountry
+        model = Countries
         fields = '__all__'
 
 class FlavorNotesSerializer(serializers.ModelSerializer):

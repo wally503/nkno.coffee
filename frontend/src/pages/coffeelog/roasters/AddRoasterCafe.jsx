@@ -2,21 +2,23 @@
 
 import * as React from "react";
 import CoffeeLogFormShell from "../shared/CoffeeLogFormShell";
-
-import { roasterFieldConfig } from "../../../constants/forms/roasterFormConfig";
-import {
-  fetchRoasterOptions,
-  submitRoaster,
-} from "../../../api/mockRoasterApi";
+import { roasterFieldConfig, ROASTERFORM_STATIC_OPTIONS } from "../../../constants/forms/roasterFormConfig";
+import { roastersCountries, submitRoaster } from "../../../api/roasterApi";
 
 export default function AddRoasterCafePage() {
   const [formData, setFormData] = React.useState({});
   const [options, setOptions] = React.useState(null);
+  const [errors, setErrors] = React.useState({});
 
   React.useEffect(() => {
-    fetchRoasterOptions()
-      .then(setOptions)
-      .catch((err) => console.error("Failed to load roaster options", err));
+
+      const load = async () => {
+        const [countries] = await Promise.all([
+            roastersCountries()
+          ]);
+        setOptions({...ROASTERFORM_STATIC_OPTIONS, countries});
+      };
+      load().catch(console.error);
   }, []);
 
   const handleFieldChange = (name, value) => {
@@ -24,10 +26,15 @@ export default function AddRoasterCafePage() {
   };
 
   const handleSubmit = async () => {
-    const res = await submitRoaster(formData);
-    console.log("Add roaster result:", res);
-    // later: show toast, navigate, reset, etc.
+    try{
+      const res = await submitRoaster(formData);
+      console.log("Add roaster result:", res);
+    } catch(err){
+      console.log(err);
+      setErrors(err);
+    }
   };
+
 
   if (!options) {
     return <div>Loading roaster options…</div>;
@@ -48,6 +55,7 @@ export default function AddRoasterCafePage() {
       formData={formData}
       onFieldChange={handleFieldChange}
       onSubmit={handleSubmit}
+      errors={errors}
       // no flavorModel / onFlavorNotesChange here
     />
   );

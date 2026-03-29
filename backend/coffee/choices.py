@@ -17,6 +17,7 @@ class OrganicOrNot(models.TextChoices):
 class BusinessType(models.TextChoices):
     ROASTER = 'roaster', 'Roaster'
     CAFE = 'cafe', 'Cafe'
+    ROASTER_CAFE = 'roaster_cafe', 'Roaster/Cafe'
 
 class RoastLevel(models.TextChoices):
     LIGHT = 'light', 'Light'

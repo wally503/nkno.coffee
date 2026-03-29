@@ -63,7 +63,7 @@ export default function RatingGridItem({ item, error }) {
             helperText={error?.[0]}
           />
         </Box>
-        {item.required && error ? null : <FormHelperText>Required</FormHelperText>}
+        {item.required && (error ? null : <FormHelperText>Required</FormHelperText>)}
       </FormControl>
     </Grid>
   );
