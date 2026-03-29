@@ -1,6 +1,14 @@
 export const defaultBeansTableColumns = [
-  { id: "name", label: "Bean Name", minWidth: 150 },
-  { id: "roaster", label: "Roaster", minWidth: 150 },
+  { 
+    id: "name", 
+    label: "Bean Name", 
+    minWidth: 150 
+  },
+  { 
+    id: "roaster", 
+    label: "Roaster", 
+    minWidth: 150 
+  },
   {
     id: "origin_country",
     label: "Roast Origin",

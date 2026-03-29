@@ -27,7 +27,7 @@ export const roasterFieldConfig = [
   },
   {
     type: "text",
-    name: "state",
+    name: "state_region",
     label: "State / Region",
     required: false,
     size: { xs: 12, sm: 4, md: 4 },

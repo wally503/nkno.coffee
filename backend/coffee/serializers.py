@@ -12,6 +12,29 @@ class RoasterSerializer(serializers.ModelSerializer):
         model = Roaster
         fields = '__all__'
 
+
+class RoasterListSerializer(serializers.ModelSerializer):
+    country = serializers.SerializerMethodField()
+    state_region = serializers.SerializerMethodField()
+    city = serializers.SerializerMethodField()
+    business_type = serializers.SerializerMethodField()
+
+    def get_country(self, obj):
+        return obj.country.name if obj.country else '-'
+    
+    def get_state_region(self, obj):
+        return obj.state_region if obj.state_region else '-'
+
+    def get_city(self, obj):
+        return obj.city if obj.city else '-'
+
+    def get_business_type(self, obj):
+        return obj.business_type if obj.business_type else '-'
+
+    class Meta:
+        model = Roaster
+        fields = ['id', 'name', 'business_type', 'country', 'city', 'state_region']
+
 class BeanSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bean

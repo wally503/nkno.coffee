@@ -7,6 +7,13 @@ from .models import *
 class RoasterViewSet(viewsets.ModelViewSet):
     queryset = Roaster.objects.all()
     serializer_class = RoasterSerializer
+
+    def get_serializer_class(self):
+        match self.action:
+            case 'list':
+                return RoasterListSerializer
+            case _:
+                return RoasterSerializer
     
 class BeanViewSet(viewsets.ModelViewSet):
     queryset = Bean.objects.all()
