@@ -59,7 +59,7 @@ export const roasterFieldConfig = [
   },
   {
     type: "text",
-    name: "social_link",
+    name: "social",
     label: "Social Link",
     required: false,
     size: { xs: 12, sm: 6, md: 6 },

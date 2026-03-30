@@ -1,30 +1,35 @@
 // src/pages/coffeelog/roasters/AddRoasterCafe.jsx
-
 import * as React from "react";
 import CoffeeLogFormShell from "../shared/CoffeeLogFormShell";
 import { roasterFieldConfig, ROASTERFORM_STATIC_OPTIONS } from "../../../constants/forms/roasterFormConfig";
-import { roastersCountries, submitRoaster } from "../../../api/roasterApi";
+import { roastersCountries, submitRoaster,getRoasterById, updateRoaster } from "../../../api/roasterApi";
 import DialogueBox from "../../../components/DialogueBox";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-export default function AddRoasterCafePage() {
+export default function RoasterCafeFormPage() {
   const [formData, setFormData] = React.useState({});
   const [options, setOptions] = React.useState(null);
   const [errors, setErrors] = React.useState({});
   const [saveDialogue, setSaveDialogue] = React.useState(false);
 
-  React.useEffect(() => {
+  const navigate = useNavigate();
+  const { shortid } = useParams();
 
+  React.useEffect(() => {
       const load = async () => {
         const [countries] = await Promise.all([
             roastersCountries()
           ]);
         setOptions({...ROASTERFORM_STATIC_OPTIONS, countries});
+        if (shortid){
+          const { data } = await getRoasterById(shortid);
+          if(data){
+            setFormData(data)
+          }
+        }
       };
       load().catch(console.error);
   }, []);
-
-  const navigate = useNavigate();
 
   const handleFieldChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -32,7 +37,7 @@ export default function AddRoasterCafePage() {
 
   const handleSubmit = async () => {
     try{
-      const res = await submitRoaster(formData);
+      const res = shortid ? await updateRoaster(id, formData) : await submitRoaster(formData);
       setSaveDialogue(true);
       console.log("Add roaster result:", res);
     } catch(err){
@@ -55,9 +60,9 @@ export default function AddRoasterCafePage() {
   return (
     <>
       <CoffeeLogFormShell
-        title="Add Roaster / Cafe"
+        title={shortid ? "Edit Roaster / Cafe" : "Add Roaster / Cafe"}
         hasBackButton={true}
-        backRoute={"/CoffeeLog"}
+        backRoute={"/coffeeLog"}
         fields={resolvedFields}
         formData={formData}
         onFieldChange={handleFieldChange}
@@ -69,7 +74,7 @@ export default function AddRoasterCafePage() {
         title={"Saving Roaster"}
         message={"Roaster was successfully saved!"}
         open={saveDialogue}
-        onCloseParent={() => { setSaveDialogue(false); navigate('/CoffeeLog/ListRoasters') } }
+        onCloseParent={() => { setSaveDialogue(false); navigate('/coffeeLog/roasters/list') } }
       />
     </>
   );

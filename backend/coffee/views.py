@@ -7,6 +7,7 @@ from .models import *
 class RoasterViewSet(viewsets.ModelViewSet):
     queryset = Roaster.objects.all()
     serializer_class = RoasterSerializer
+    lookup_field = 'short_id'
 
     def get_serializer_class(self):
         match self.action:
@@ -18,6 +19,7 @@ class RoasterViewSet(viewsets.ModelViewSet):
 class BeanViewSet(viewsets.ModelViewSet):
     queryset = Bean.objects.all()
     serializer_class = BeanSerializer
+    lookup_field = 'short_id'
 
     def create(self, request):
         flav_notes = request.data.get('flavor_notes')
@@ -32,7 +34,7 @@ class BeanViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         bean = serializer.save()
-        return Response(serializer.data, status=201)
+        return Response(BeanListSerializer(bean).data, status=201)
 
     def get_serializer_class(self):
         match self.action:

@@ -31,7 +31,7 @@ export default function ListBeansPage() {
         width: "100%",
       }}
     >
-      <PageHeaderTitle title={"List Beans"} hasBackButton={true} backRoute={"/CoffeeLog"}  />
+      <PageHeaderTitle title={"List Beans"} hasBackButton={true} backRoute={"/coffeeLog"}  />
       <CoffeeTable columns={defaultBeansTableColumns} rows={rows} />
     </Box>
   );

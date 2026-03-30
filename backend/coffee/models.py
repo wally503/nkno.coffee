@@ -1,6 +1,6 @@
 from django.db import models
 from .choices import CaffOrDecaf, WashingStyle, OrganicOrNot, BusinessType, RoastLevel
-
+import nanoid
 # Create your models here.
 
 class Countries(models.Model):
@@ -24,6 +24,12 @@ class Roaster(models.Model):
         on_delete=models.SET_NULL, 
         null=True
     ) 
+    short_id = models.CharField(max_length=10, unique=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.short_id:
+            self.short_id = nanoid.generate(size=8)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -56,6 +62,12 @@ class Bean(models.Model):
     min_elevation = models.IntegerField(null=True, blank=True)
     max_elevation = models.IntegerField(null=True, blank=True)
     flavor_notes = models.ManyToManyField(FlavorNotes, null=True, blank=True, related_name="beans")
+    short_id = models.CharField(max_length=10, unique=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.short_id:
+            self.short_id = nanoid.generate(size=8)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.roaster} – {self.name}"

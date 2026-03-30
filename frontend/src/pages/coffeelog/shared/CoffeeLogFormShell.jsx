@@ -47,7 +47,7 @@ export default function CoffeeLogFormShell({
               case "rating":            return buildRatingField(field, formData, onFieldChange, errors)
               case "dropdown":          return buildDropdownField(field, formData, onFieldChange, errors)
               case "divider":           return buildDivider()
-              case "dynamic_dropdown":  return buildDynamicMultiselectField(field, onFieldChange, errors)
+              case "dynamic_dropdown":  return buildDynamicMultiselectField(field, formData, onFieldChange, errors)
             }
           })}
         </Grid>
@@ -124,11 +124,12 @@ function buildDropdownField(field, formData, onFieldChange, errors) {
           />
 }
 
-function buildDynamicMultiselectField(field, onFieldChange, errors){
+function buildDynamicMultiselectField(field, formData, onFieldChange, errors){
   return <Grid item size={{ xs: 12, sm: 10, md: 10 }} offset={{ sm: 1, md: 1 }}>
           <DynamicDropdownList
             item={field}
-            onChange={onFieldChange}
+            onChange={(val) => onFieldChange(field.name, val)}
+            initialValues={formData[field.name]}
             error={errors[field.name]}
           />
         </Grid>

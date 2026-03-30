@@ -36,6 +36,11 @@ class RoasterListSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'business_type', 'country', 'city', 'state_region']
 
 class BeanSerializer(serializers.ModelSerializer):
+    flavor_notes = serializers.ListField(
+        child=serializers.CharField(),
+        required=False
+    )
+    
     class Meta:
         model = Bean
         fields = '__all__'

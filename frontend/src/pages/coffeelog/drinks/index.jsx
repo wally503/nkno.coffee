@@ -1,1 +1,1 @@
-export { default as AddDrinkReportPage } from './AddDrinkReport';
+export { default as DrinkReportFormPage } from './AddDrinkReport';

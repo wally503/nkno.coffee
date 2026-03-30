@@ -41,3 +41,23 @@ export async function roastersRoasterCafe(){
         console.error(error.response.data)
     }
 }
+
+export async function getRoasterById(id){
+    try {
+        return await axiosInstance.get('roasters/' + id)
+    } catch (error) {
+        console.error(error.response.status);
+        console.error(error.response.data);
+    }
+}
+
+export async function updateRoaster(id, formData) {
+    try {
+        return await axiosInstance.put('roasters/' + id + '/', formData);
+    } catch (error){
+        if (error.response?.status === 400){
+            throw error.response.data;
+        }
+        throw error;
+    }
+}

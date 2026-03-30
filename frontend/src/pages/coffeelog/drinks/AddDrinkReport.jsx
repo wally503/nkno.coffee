@@ -4,13 +4,16 @@ import CoffeeLogFormShell from "../shared/CoffeeLogFormShell";
 import { drinkFieldConfig } from "../../../constants/forms/drinkFormConfig";
 import { submitDrink, drinksRoasters } from "../../../api/drinkApi";
 import DialogueBox from "../../../components/DialogueBox";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-export default function AddBeansPage() {
+export default function DrinkReportFormPage() {
   const [formData, setFormData] = React.useState({});
   const [options, setOptions] = React.useState(null);
   const [errors, setErrors] = React.useState({});
   const [saveDialogue, setSaveDialogue] = React.useState(false);
+
+  const navigate = useNavigate();
+  const { id } = useParams();
 
   React.useEffect(() => {
     const load = async () => {
@@ -22,7 +25,7 @@ export default function AddBeansPage() {
     load().catch(console.error);
   }, []);
 
-  const navigate = useNavigate();
+
 
   const handleFieldChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -50,7 +53,7 @@ export default function AddBeansPage() {
       <CoffeeLogFormShell
         title="Add Drink"
         hasBackButton={true}
-        backRoute={"/CoffeeLog"}
+        backRoute={"/coffeeLog"}
         fields={resolvedFields}
         formData={formData}
         onFieldChange={handleFieldChange}
@@ -61,7 +64,7 @@ export default function AddBeansPage() {
         title={"Saving Drink"}
         message={"Drink was successfully saved!"}
         open={saveDialogue}
-        onCloseParent={() => { setSaveDialogue(false); navigate('/CoffeeLog') } }
+        onCloseParent={() => { setSaveDialogue(false); navigate('/coffeeLog') } }
       />
     </>
   );

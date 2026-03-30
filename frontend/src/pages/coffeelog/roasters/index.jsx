@@ -1,3 +1,2 @@
-export { default as AddRoasterCafePage } from './AddRoasterCafe';
+export { default as RoasterCafeFormPage } from './RoasterCafeForm';
 export { default as ListRoasterCafesPage } from './ListRoasterCafes';
-export { default as EditRoasterCafePage } from './EditRoasterCafe';

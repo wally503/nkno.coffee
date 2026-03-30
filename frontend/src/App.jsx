@@ -21,14 +21,14 @@ function App() {
         <Toolbar/>
         <Routes>
           <Route path="/" element={ <HomePage />  } />
-          <Route path="/Locations" element={ <LocationsPage />  } />
-          <Route path="/CoffeeLog" element={ <CoffeeLogLayout />  }>
+          <Route path="/locations" element={ <LocationsPage />  } />
+          <Route path="/coffeeLog" element={ <CoffeeLogLayout />  }>
             <Route index element={<CoffeeLogCardSelect />} />
               {coffeelogOptions.map(({path, element}) => ( 
                 <Route key={path} path={path} element={element} />
               ))}
           </Route>
-          <Route path="/LogHistory" element={ <LogHistoryPage />  } />
+          <Route path="/logHistory" element={ <LogHistoryPage />  } />
         </Routes>
       </Box>
     </>
