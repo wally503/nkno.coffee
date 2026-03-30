@@ -44,6 +44,13 @@ class BeanViewSet(viewsets.ModelViewSet):
 class CafeLogViewSet(viewsets.ModelViewSet):
     queryset = CafeLog.objects.all()
     serializer_class = CafeLogSerializer
+
+    def get_serializer_class(self):
+        match self.action:
+            case 'create':
+                return CafeLogCreateSerializer
+            case _:
+                return CafeLogSerializer
     
 class CountriesViewSet(viewsets.ModelViewSet):
     queryset = Countries.objects.all()

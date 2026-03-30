@@ -39,7 +39,7 @@ export const roasterFieldConfig = [
     label: "Country",
     required: true,
     size: { xs: 12, sm: 4, md: 4 },
-    optionSource: "countries", // from mockRoasterApi
+    optionSource: "countries",
   },
   {
     type: "text",

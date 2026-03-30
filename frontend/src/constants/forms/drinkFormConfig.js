@@ -3,19 +3,18 @@
 export const drinkFieldConfig = [
   {
     type: "dropdown",
-    name: "roaster_id",
+    name: "roaster",
     label: "Roaster",
     required: true,
     size: { xs: 12, sm: 6, md: 6},
-    optionSource: "roasters",   // <-- key used to plug in options later
+    optionSource: "roasters", 
   },
   {
     type: "text",
-    name: "drink_name",
+    name: "drink",
     label: "Name Of Drink",
     required: true,
-    size: { xs: 12, sm: 6, md: 6 },
-    optionSource: "drinkName",
+    size: { xs: 12, sm: 6, md: 6 }
   },
   {
     type: "long_text",
@@ -23,12 +22,10 @@ export const drinkFieldConfig = [
     label: "Notes",
     required: false,
     size: { xs: 12, sm: 12, md: 12 },
-    optionSource: "drinkNotes",
   },
   {
     type: "rating",
     name: "rating",
-    label: "Rating",
-    optionSource: "organicFlags",
+    label: "Rating"
   }
 ];

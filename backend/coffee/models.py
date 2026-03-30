@@ -64,9 +64,7 @@ class Bean(models.Model):
 class CafeLog(models.Model):
     roaster = models.ForeignKey(
         Roaster,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
+        on_delete=models.CASCADE,
     )
     bean = models.ForeignKey(
         Bean,

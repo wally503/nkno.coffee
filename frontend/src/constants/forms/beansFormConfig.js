@@ -15,7 +15,7 @@ export const beansFieldConfig = [
     label: "Roaster",
     required: true,
     size: { xs: 12, sm: 4, md: 4 },
-    optionSource: "roasters",   // <-- key used to plug in options later
+    optionSource: "roasters", 
   },
   {
     type: "dropdown",

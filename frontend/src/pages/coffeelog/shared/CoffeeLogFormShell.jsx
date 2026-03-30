@@ -15,11 +15,12 @@ export default function CoffeeLogFormShell({
   fields,
   formData,
   onFieldChange,
-  flavorModel,
   onSubmit,
-  onBack,
   errors
 }) {
+
+
+
   return (
     <Box
       sx={{

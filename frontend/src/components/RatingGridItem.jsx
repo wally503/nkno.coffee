@@ -46,7 +46,7 @@ IconContainer.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-export default function RatingGridItem({ item, error }) {
+export default function RatingGridItem({ item, onChange, value={value}, error }) {
   return (
     <Grid size={item.size || { xs: 12 }}>
       <FormControl fullWidth component="fieldset">
@@ -59,6 +59,7 @@ export default function RatingGridItem({ item, error }) {
             IconContainerComponent={IconContainer}
             getLabelText={(value) => customIcons[value].label}
             highlightSelectedOnly
+            onChange={(e) => onChange(item.name, parseInt(e.target.value))}
             error={!!error}
             helperText={error?.[0]}
           />
