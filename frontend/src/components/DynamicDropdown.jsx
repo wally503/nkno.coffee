@@ -10,7 +10,7 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 
-export default function FreeInputDropdownList({item, onChange , initialValues, mode="view"}) {
+export default function FreeInputDropdownList({item, onChange , initialValues, mode}) {
   const [values, setValues] = useState(initialValues?.length ? initialValues : ['']);
 
   React.useEffect(() => {

@@ -52,12 +52,26 @@ export const coffeelogOptionsMasked = [
     element: <BeansFormPage />
   },
   {
+    id: 'ViewBeans',
+    title:'View Beans',
+    description: 'View an existing bean in system',
+    path: 'beans/view/:shortid',
+    element: <BeansFormPage />
+  },
+  {
     id: 'EditRoasters',
     title:'Edit Roaster',
     description: 'Edit an existing roaster in system',
     path: 'roasters/edit/:shortid',
     element: <RoasterCafeFormPage />
-  }
+  },
+  {
+    id: 'ViewRoasters',
+    title:'View Roaster',
+    description: 'View an existing roaster in system',
+    path: 'roasters/view/:shortid',
+    element: <RoasterCafeFormPage />
+  },
 ];
 
 

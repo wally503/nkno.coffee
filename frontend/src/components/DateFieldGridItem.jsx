@@ -4,7 +4,7 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import dayjs from 'dayjs';
 import TextFieldGridItem from './TextFieldGridItem';
 
-export default function DateFieldGridItem({ item, onChange, value, mode="view", error }) {
+export default function DateFieldGridItem({ item, onChange, value, mode, error }) {
   return (
     <>
       {mode === "view"

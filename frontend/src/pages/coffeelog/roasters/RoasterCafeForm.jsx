@@ -4,7 +4,7 @@ import CoffeeLogFormShell from "../shared/CoffeeLogFormShell";
 import { roasterFieldConfig, ROASTERFORM_STATIC_OPTIONS } from "../../../constants/forms/roasterFormConfig";
 import { roastersCountries, submitRoaster,getRoasterById, updateRoaster } from "../../../api/roasterApi";
 import DialogueBox from "../../../components/DialogueBox";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 export default function RoasterCafeFormPage() {
   const [formData, setFormData] = React.useState({});
@@ -13,7 +13,21 @@ export default function RoasterCafeFormPage() {
   const [saveDialogue, setSaveDialogue] = React.useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
   const { shortid } = useParams();
+  const getMode = (pathname, shortid) => {
+    switch(true) {
+      case pathname.includes("view"): return "view";
+      case !!shortid: return "edit";
+      default: return "add";
+    }
+  }
+  const mode = getMode(location.pathname, shortid)
+  const titles = {
+    view: "View Beans",
+    edit: "Edit Beans",
+    add: "Add Beans"
+  } 
 
   React.useEffect(() => {
       const load = async () => {
@@ -67,8 +81,9 @@ export default function RoasterCafeFormPage() {
         formData={formData}
         onFieldChange={handleFieldChange}
         onSubmit={handleSubmit}
+        onEdit={() => navigate(`/coffeeLog/roasters/edit/${shortid}`)}
         errors={errors}
-        // no flavorModel / onFlavorNotesChange here
+        mode={mode}
       />
       <DialogueBox 
         title={"Saving Roaster"}

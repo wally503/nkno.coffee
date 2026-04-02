@@ -4,7 +4,7 @@ import CoffeeLogFormShell from "../shared/CoffeeLogFormShell";
 import { BEANFORM_STATIC_OPTIONS, beansFieldConfig   } from "../../../constants/forms/beansFormConfig";
 import { beansCountries, beansNotes, beansRoasters, submitBeans, getBeanById, updateBean } from "../../../api/beansApi";
 import DialogueBox from "../../../components/DialogueBox";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 export default function BeansFormPage() {
   const [formData, setFormData] = React.useState({});
@@ -13,7 +13,23 @@ export default function BeansFormPage() {
   const [saveDialogue, setSaveDialogue] = React.useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
   const { shortid } = useParams();
+  const getMode = (pathname, shortid) => {
+    switch(true) {
+      case pathname.includes("view"): return "view";
+      case !!shortid: return "edit";
+      default: return "add";
+    }
+  }
+  const mode = getMode(location.pathname, shortid)
+  const titles = {
+    view: "View Beans",
+    edit: "Edit Beans",
+    add: "Add Beans"
+  } 
+
+
 
   React.useEffect(() => {
     const load = async () => {
@@ -64,14 +80,16 @@ export default function BeansFormPage() {
   return (
     <>
       <CoffeeLogFormShell
-        title={shortid ? "Edit Beans" : "Add Beans"}
+        title={titles[mode]}
         hasBackButton={true}
         backRoute={shortid ? "/coffeeLog/beans/list": "/coffeeLog"}
         fields={resolvedFields}
         formData={formData}
         onFieldChange={handleFieldChange}
         onSubmit={handleSubmit}
+        onEdit={() => navigate(`/coffeeLog/beans/edit/${shortid}`)}
         errors={errors}
+        mode={mode}
       />
       <DialogueBox 
         title={"Saving Beans"}

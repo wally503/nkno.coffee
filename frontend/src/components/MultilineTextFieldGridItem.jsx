@@ -1,7 +1,7 @@
 // src/components/MultilineTextFieldGridItem.jsx
 import { Grid, FormControl, TextField, FormHelperText, Box } from "@mui/material";
 
-export default function MultilineTextFieldGridItem({ item,  onChange, value={value}, error }) {
+export default function MultilineTextFieldGridItem({ item,  onChange, value, error }) {
   return (
     <Grid size={item.size || { xs: 12 }}>
       <FormControl fullWidth required={item.required} component="fieldset">

@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid, FormControl, TextField, Autocomplete, FormHelperText, Box } from '@mui/material';
 import TextFieldGridItem from './TextFieldGridItem';
 
-export default function DropdownGridItem({ dropdown, onChange, value, mode="view", error }) {
+export default function DropdownGridItem({ dropdown, onChange, value, mode, error }) {
   return (
     <>
       { mode === "view" 

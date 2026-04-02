@@ -32,7 +32,7 @@ export default function ListBeansPage() {
       }}
     >
       <PageHeaderTitle title={"List Roasters"} hasBackButton={true} backRoute={"/CoffeeLog"}  />
-      <CoffeeTable columns={defaultRoastersTableColumns} rows={rows} viewRoute={"/coffeeLog/roasters/edit"}/>
+      <CoffeeTable columns={defaultRoastersTableColumns} rows={rows} viewRoute={"/coffeeLog/roasters/view"}/>
     </Box>
   );
 }

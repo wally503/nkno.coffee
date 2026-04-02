@@ -7,6 +7,7 @@ import DateFieldGridItem from "../../../components/DateFieldGridItem";
 import MultilineTextFieldGridItem from "../../../components/MultilineTextFieldGridItem";
 import RatingGridItem from "../../../components/RatingGridItem";
 import PageTitle from "../../../components/PageTitle";
+import { useNavigate } from "react-router-dom";
 
 export default function CoffeeLogFormShell({
   title,
@@ -16,11 +17,12 @@ export default function CoffeeLogFormShell({
   formData,
   onFieldChange,
   onSubmit,
+  onEdit,
   errors,
   mode
 }) {
 
-
+  const navigate = useNavigate();
 
   return (
     <Box
@@ -57,9 +59,10 @@ export default function CoffeeLogFormShell({
       <Box sx={{ width: "100%", maxWidth: 1400 }}>
         <Grid container spacing={3} columns={12}>
           <Grid size={ {xs: 2 }}>
-            <Button variant="contained" onClick={onSubmit} style={{ marginTop: "1rem" }}>
-              Save
-            </Button>
+            {mode === "view"
+              ? <Button variant="contained" onClick={onEdit}>Edit</Button>
+              : <Button variant="contained" onClick={onSubmit}>Save</Button>
+            }
           </Grid>
         </Grid>
     </Box>

@@ -1,6 +1,6 @@
 import { Grid, FormControl, TextField, FormHelperText, Box } from "@mui/material";
 
-export default function TextFieldGridItem({ item, onChange, value, mode="view", error }) {
+export default function TextFieldGridItem({ item, onChange, value, mode, error }) {
   return (
     <Grid size={item.size || { xs: 12 }}>
       <FormControl fullWidth required={item.required} component="fieldset">
