@@ -36,6 +36,22 @@ class BeanViewSet(viewsets.ModelViewSet):
         bean = serializer.save()
         return Response(BeanListSerializer(bean).data, status=201)
 
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        flav_notes = request.data.get('flavor_notes')
+        data = request.data.copy()
+        if flav_notes:
+            data['flavor_notes'] = []
+            note_objects = []
+            for note in flav_notes:
+                note_obj, _ = FlavorNotes.objects.get_or_create(name=note)
+                note_objects.append(note_obj)
+            data['flavor_notes'] = [n.id for n in note_objects]
+        serializer = self.get_serializer(instance, data=data)
+        serializer.is_valid(raise_exception=True)
+        bean = serializer.save()
+        return Response(BeanListSerializer(bean).data, status=201)
+
     def get_serializer_class(self):
         match self.action:
             case 'list':

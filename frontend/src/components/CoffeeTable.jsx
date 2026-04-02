@@ -15,9 +15,10 @@ const baseOptions = ['Option A', 'Option B', 'Option C', 'Option D'];
 
 
 
-export default function CoffeeTable({columns, rows}) {
+export default function CoffeeTable({columns, rows, viewRoute}) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const navigate = useNavigate();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -59,12 +60,15 @@ export default function CoffeeTable({columns, rows}) {
                 {rows
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => {
+                    console.log(row)
+                    console.log(viewRoute)
                     return (
                       <TableRow
                         hover
                         role="checkbox"
                         tabIndex={-1}
                         key={row.code}
+                        onClick={() => navigate(`${viewRoute}/${row.short_id}`)}
                       >
                         {columns.map((column) => {
                           const value = row[column.id];

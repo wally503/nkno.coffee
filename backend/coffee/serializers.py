@@ -33,14 +33,14 @@ class RoasterListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Roaster
-        fields = ['id', 'name', 'business_type', 'country', 'city', 'state_region']
+        fields = ['id', 'name', 'business_type', 'country', 'city', 'state_region', 'short_id']
 
 class BeanSerializer(serializers.ModelSerializer):
-    flavor_notes = serializers.ListField(
-        child=serializers.CharField(),
-        required=False
-    )
-    
+    # flavor_notes = serializers.ListField(
+    #     child=serializers.CharField(),
+    #     required=False
+    # )
+
     class Meta:
         model = Bean
         fields = '__all__'
@@ -82,7 +82,7 @@ class BeanListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Bean
-        fields = ['id', 'name', 'roaster', 'origin_country', 'organic_or_not', 'washing_style', 'flavor_notes', 'elevation']
+        fields = ['id', 'name', 'roaster', 'origin_country', 'organic_or_not', 'washing_style', 'flavor_notes', 'elevation', 'short_id']
 
 class CafeLogSerializer(serializers.ModelSerializer):
     roaster = serializers.SerializerMethodField()

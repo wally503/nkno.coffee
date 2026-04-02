@@ -69,7 +69,7 @@ export default function BeansFormPage() {
       <CoffeeLogFormShell
         title={shortid ? "Edit Beans" : "Add Beans"}
         hasBackButton={true}
-        backRoute={"/coffeeLog"}
+        backRoute={shortid ? "/coffeeLog/beans/list": "/coffeeLog"}
         fields={resolvedFields}
         formData={formData}
         onFieldChange={handleFieldChange}
