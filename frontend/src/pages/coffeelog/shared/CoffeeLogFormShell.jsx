@@ -16,7 +16,8 @@ export default function CoffeeLogFormShell({
   formData,
   onFieldChange,
   onSubmit,
-  errors
+  errors,
+  mode
 }) {
 
 
@@ -41,13 +42,13 @@ export default function CoffeeLogFormShell({
           {fields.map((field) => {
             // console.log(field)
             switch(field.type) {
-              case "text":              return buildTextField(field, formData, onFieldChange, errors)
-              case "date":              return buildDateField(field, formData, onFieldChange, errors)
-              case "long_text":         return buildMultilineTextField(field, formData, onFieldChange, errors)
-              case "rating":            return buildRatingField(field, formData, onFieldChange, errors)
-              case "dropdown":          return buildDropdownField(field, formData, onFieldChange, errors)
+              case "text":              return buildTextField(field, formData, onFieldChange, mode, errors)
+              case "date":              return buildDateField(field, formData, onFieldChange, mode, errors)
+              case "long_text":         return buildMultilineTextField(field, formData, onFieldChange, mode, errors)
+              case "rating":            return buildRatingField(field, formData, onFieldChange, mode, errors)
+              case "dropdown":          return buildDropdownField(field, formData, onFieldChange, mode, errors)
               case "divider":           return buildDivider()
-              case "dynamic_dropdown":  return buildDynamicMultiselectField(field, formData, onFieldChange, errors)
+              case "dynamic_dropdown":  return buildDynamicMultiselectField(field, formData, onFieldChange, mode, errors)
             }
           })}
         </Grid>
@@ -68,23 +69,25 @@ export default function CoffeeLogFormShell({
   );
 }
 
-function buildTextField(field, formData, onFieldChange, errors){
+function buildTextField(field, formData, onFieldChange, mode, errors){
   return <TextFieldGridItem
             key={field.name}
             item={field}
             value={formData[field.name] ?? ""}
             onChange={onFieldChange}
             error={errors[field.name]}
+            mode={mode}
           />
 }
 
-function buildDateField(field, formData, onFieldChange, errors){
+function buildDateField(field, formData, onFieldChange, mode, errors){
   return <DateFieldGridItem 
             key={field.name}
             item={field}
             value={formData[field.name] ?? ""}
             onChange={onFieldChange}
             error={errors[field.name]}
+            mode={mode}
           />
 }
 
@@ -94,43 +97,47 @@ function buildDivider(){
           </Box>
 }
 
-function buildMultilineTextField(field, formData, onFieldChange, errors){
+function buildMultilineTextField(field, formData, onFieldChange, mode, errors){
   return  <MultilineTextFieldGridItem
             key={field.name}
             item={field}
             value={formData[field.name] ?? ""}
             onChange={onFieldChange}
             error={errors[field.name]}
+            mode={mode}
           />
 }
 
-function buildRatingField(field, formData, onFieldChange, errors){
+function buildRatingField(field, formData, onFieldChange, mode, errors){
   return  <RatingGridItem
             key={field.name}
             item={field}
             value={formData[field.name] ?? ""}
             onChange={onFieldChange}
             error={errors[field.name]}
+            mode={mode}
           />
 }
 
-function buildDropdownField(field, formData, onFieldChange, errors) {
+function buildDropdownField(field, formData, onFieldChange, mode, errors) {
   return  <DropdownGridItem
             key={field.name}
             dropdown={field}
             value={formData[field.name] ?? ""}
             onChange={onFieldChange}
             error={errors[field.name]}
+            mode={mode}
           />
 }
 
-function buildDynamicMultiselectField(field, formData, onFieldChange, errors){
+function buildDynamicMultiselectField(field, formData, onFieldChange, mode, errors){
   return <Grid item size={{ xs: 12, sm: 10, md: 10 }} offset={{ sm: 1, md: 1 }}>
           <DynamicDropdownList
             item={field}
             onChange={(val) => onFieldChange(field.name, val)}
             initialValues={formData[field.name]}
             error={errors[field.name]}
+            mode={mode}
           />
         </Grid>
 }

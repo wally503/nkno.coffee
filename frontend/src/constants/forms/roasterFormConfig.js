@@ -19,6 +19,14 @@ export const roasterFieldConfig = [
   },
   {
     type: "text",
+    name: "address",
+    label: "Address",
+    required: false,
+    size: { xs: 12 },
+    placeholder: "123 Brew St",
+  },
+  {
+    type: "text",
     name: "city",
     label: "City",
     required: false ,
@@ -40,14 +48,6 @@ export const roasterFieldConfig = [
     required: true,
     size: { xs: 12, sm: 4, md: 4 },
     optionSource: "countries",
-  },
-  {
-    type: "text",
-    name: "address",
-    label: "Address",
-    required: false,
-    size: { xs: 12 },
-    placeholder: "123 Brew St",
   },
   {
     type: "text",

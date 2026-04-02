@@ -40,15 +40,12 @@ export default function BeansFormPage() {
   }, []);
 
   const handleFieldChange = (name, value) => {
-    console.log(name, value)
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async () => {
     try {
       const payload = { ...formData };  
-
-      console.log(payload)
       const res = shortid ? await updateBean(shortid, payload) : await submitBeans(payload);
       setSaveDialogue(true);
       console.log("Add beans result:", res);
