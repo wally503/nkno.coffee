@@ -10,10 +10,6 @@ import TableRow from "@mui/material/TableRow";
 import PageHeaderTitle from "./PageTitle";
 import { useNavigate } from "react-router-dom";
 import { Grid, FormControl, FormHelperText, Box, Rating, Typography } from "@mui/material";
-import { fetchBeansTableColumns, fetchBeansTableRows } from "../api/mockBeansTableApi";
-const baseOptions = ['Option A', 'Option B', 'Option C', 'Option D'];
-
-
 
 export default function CoffeeTable({columns, rows, viewRoute}) {
   const [page, setPage] = React.useState(0);
@@ -29,7 +25,7 @@ export default function CoffeeTable({columns, rows, viewRoute}) {
     setPage(0);
   };
 
-  if (!columns?.length || !rows?.length) return null;
+  if (!columns?.length) return null;
   return (
     <Box
         sx={{
@@ -60,14 +56,12 @@ export default function CoffeeTable({columns, rows, viewRoute}) {
                 {rows
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => {
-                    console.log(row)
-                    console.log(viewRoute)
                     return (
                       <TableRow
                         hover
                         role="checkbox"
                         tabIndex={-1}
-                        key={row.code}
+                        key={row.id}
                         onClick={() => navigate(`${viewRoute}/${row.short_id}`)}
                       >
                         {columns.map((column) => {

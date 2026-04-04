@@ -11,6 +11,16 @@ import axiosInstance from './axiosInstance'
 //     }
 // }
 
+export async function drinksByRoaster(shortid){
+    try{
+        const { data } = await axiosInstance.get(`cafelog/?roaster=${shortid}`);
+        return data
+    } catch (error) {
+        console.error(error.response.status)
+        console.error(error.response.data)
+    }
+}
+
 export async function submitDrink(formData) {
     try {
         return await axiosInstance.post('cafelog/', formData);

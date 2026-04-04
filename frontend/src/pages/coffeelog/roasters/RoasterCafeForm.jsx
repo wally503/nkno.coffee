@@ -1,16 +1,21 @@
 // src/pages/coffeelog/roasters/AddRoasterCafe.jsx
 import * as React from "react";
 import CoffeeLogFormShell from "../shared/CoffeeLogFormShell";
-import { roasterFieldConfig, ROASTERFORM_STATIC_OPTIONS } from "../../../constants/forms/roasterFormConfig";
-import { roastersCountries, submitRoaster,getRoasterById, updateRoaster } from "../../../api/roasterApi";
+import { roasterFieldConfig, ROASTERFORM_STATIC_OPTIONS, roasterFormBeansTableFieldsConfig } from "../../../constants/forms/roasterFormConfig";
+import { roastersCountries, submitRoaster, getRoasterById, updateRoaster } from "../../../api/roasterApi";
 import DialogueBox from "../../../components/DialogueBox";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { beansByRoaster } from "../../../api/beansApi";
+import { drinksByRoaster } from "../../../api/drinkApi";
+import CoffeeTable from "../../../components/CoffeeTable";
 
 export default function RoasterCafeFormPage() {
   const [formData, setFormData] = React.useState({});
   const [options, setOptions] = React.useState(null);
   const [errors, setErrors] = React.useState({});
   const [saveDialogue, setSaveDialogue] = React.useState(false);
+  const [relatedBeans, setRelatedBeans] = React.useState([]);
+  const [relatedCafeLog, setRelatedCafeLog] = React.useState([]);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -24,9 +29,9 @@ export default function RoasterCafeFormPage() {
   }
   const mode = getMode(location.pathname, shortid)
   const titles = {
-    view: "View Beans",
-    edit: "Edit Beans",
-    add: "Add Beans"
+    view: "View Roasters",
+    edit: "Edit Roaster",
+    add: "Add Roaster"
   } 
 
   React.useEffect(() => {
@@ -39,6 +44,15 @@ export default function RoasterCafeFormPage() {
           const { data } = await getRoasterById(shortid);
           if(data){
             setFormData(data)
+          }
+          if(mode === "view"){
+            const [beans, cafeLog] = await Promise.all([
+              beansByRoaster(shortid),
+              drinksByRoaster(shortid)
+            ]);
+            console.log(beans);
+            setRelatedBeans(beans);
+            setRelatedCafeLog(cafeLog);
           }
         }
       };
@@ -71,12 +85,14 @@ export default function RoasterCafeFormPage() {
       : field
   );
 
+
+  console.log('last drop: ' + relatedBeans);
   return (
     <>
       <CoffeeLogFormShell
-        title={shortid ? "Edit Roaster / Cafe" : "Add Roaster / Cafe"}
+        title={titles[mode]}
         hasBackButton={true}
-        backRoute={"/coffeeLog"}
+        backRoute={shortid ? "/coffeeLog/roasters/list": "/coffeeLog"}
         fields={resolvedFields}
         formData={formData}
         onFieldChange={handleFieldChange}
@@ -91,6 +107,9 @@ export default function RoasterCafeFormPage() {
         open={saveDialogue}
         onCloseParent={() => { setSaveDialogue(false); navigate('/coffeeLog/roasters/list') } }
       />
+      { mode === "view" && 
+        <CoffeeTable columns={roasterFormBeansTableFieldsConfig} rows={relatedBeans} viewRoute={"/coffeeLog/beans/view"}/>
+      }
     </>
   );
 }

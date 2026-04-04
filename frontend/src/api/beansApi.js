@@ -11,6 +11,16 @@ export async function defaultBeansTableList(){
     }
 }
 
+export async function beansByRoaster(shortid){
+    try{
+        const { data } = await axiosInstance.get(`beans/?roaster=${shortid}`);
+        return data
+    } catch (error) {
+        console.error(error.response.status)
+        console.error(error.response.data)
+    }
+}
+
 export async function beansRoasters(){
     try{
         const { data } = await axiosInstance.get('roasters/')

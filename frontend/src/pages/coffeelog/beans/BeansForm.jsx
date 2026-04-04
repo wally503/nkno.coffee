@@ -46,7 +46,7 @@ export default function BeansFormPage() {
           const noteLabels = data.flavor_notes.map(id => 
           notes.find(n => n.value === id)?.label
             ).filter(Boolean);
-          console.log(noteLabels)
+          //console.log(noteLabels)
           setFormData(prev => ({ ...prev, flavor_notes: noteLabels }));
         }
       }
@@ -93,7 +93,7 @@ export default function BeansFormPage() {
       />
       <DialogueBox 
         title={"Saving Beans"}
-        message={"Beans was successfully saved!"}
+        message={"Beans were successfully saved!"}
         open={saveDialogue}
         onCloseParent={() => { setSaveDialogue(false); navigate('/coffeeLog/beans/list') } }
       />

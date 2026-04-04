@@ -52,6 +52,13 @@ class BeanViewSet(viewsets.ModelViewSet):
         bean = serializer.save()
         return Response(BeanListSerializer(bean).data, status=201)
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        roaster = self.request.query_params.get('roaster')
+        if roaster:
+            queryset = queryset.filter(roaster__short_id=roaster)
+        return queryset
+
     def get_serializer_class(self):
         match self.action:
             case 'list':
@@ -62,6 +69,13 @@ class BeanViewSet(viewsets.ModelViewSet):
 class CafeLogViewSet(viewsets.ModelViewSet):
     queryset = CafeLog.objects.all()
     serializer_class = CafeLogSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        roaster = self.request.query_params.get('roaster')
+        if roaster:
+            queryset = queryset.filter(roaster__short_id=roaster)
+        return queryset
 
     def get_serializer_class(self):
         match self.action:
