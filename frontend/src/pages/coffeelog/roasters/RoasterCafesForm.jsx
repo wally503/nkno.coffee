@@ -111,7 +111,7 @@ export default function RoasterCafeFormPage() {
       { mode === "view" && 
         <>
           <CoffeeTable columns={roasterFormBeansTableFieldsConfig} rows={relatedBeans} viewRoute={"/coffeeLog/beans/view"}/>
-          <CoffeeTable columns={roasterFormDrinkTableFieldsConfig} rows={relatedDrinks} viewRoute={"/coffeeLog/drink/view"}/>
+          <CoffeeTable columns={roasterFormDrinkTableFieldsConfig} rows={relatedDrinks} viewRoute={"/coffeeLog/drinks/view"}/>
         </>
       }
     </>
