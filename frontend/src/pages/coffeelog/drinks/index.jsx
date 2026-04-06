@@ -1,1 +1,2 @@
-export { default as DrinkReportFormPage } from './AddDrinkReport';
+export { default as ListDrinksPage } from './ListDrinks';
+export { default as DrinksFormPage } from './DrinksForm';

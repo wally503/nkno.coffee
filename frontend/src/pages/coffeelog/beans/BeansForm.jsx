@@ -57,6 +57,7 @@ export default function BeansFormPage() {
 
   const handleFieldChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: undefined }));
   };
 
   const handleSubmit = async () => {

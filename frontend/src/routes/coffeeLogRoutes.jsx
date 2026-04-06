@@ -1,6 +1,6 @@
 import { BeansFormPage, ListBeansPage } from '../pages/coffeelog/beans/index';
 import { RoasterCafeFormPage ,ListRoasterCafesPage } from '../pages/coffeelog/roasters/index';
-import { DrinkReportFormPage } from '../pages/coffeelog/drinks/index';
+import { ListDrinksPage, DrinksFormPage } from '../pages/coffeelog/drinks/index';
 
 export const coffeelogOptionsRow1 = [
   {
@@ -18,11 +18,11 @@ export const coffeelogOptionsRow1 = [
     element: <RoasterCafeFormPage />
   },
   {
-    id: 'AddDrinkReport',
-    title:'Add Drink Report',
-    description: 'Add new report about drink from an existing roaster/cafe',
+    id: 'AddDrink',
+    title:'Add Drink',
+    description: 'Add new drink from an existing roaster/cafe',
     path: 'drink',
-    element: <DrinkReportFormPage />
+    element: <DrinksFormPage />
   }
 ];
 
@@ -40,6 +40,13 @@ export const coffeelogOptionsRow2 = [
     description: 'Get list of existing Roasters in system',
     path: 'roasters/list',
     element: <ListRoasterCafesPage />
+  },
+  {
+    id: 'ListDrinks',
+    title:'List Drinks',
+    description: 'Get list of existing Drinks in system',
+    path: 'drinks/list',
+    element: <ListDrinksPage />
   }
 ];
 
@@ -71,6 +78,20 @@ export const coffeelogOptionsMasked = [
     description: 'View an existing roaster in system',
     path: 'roasters/view/:shortid',
     element: <RoasterCafeFormPage />
+  },
+  {
+    id: 'EditDrinks',
+    title:'Edit Drinks',
+    description: 'Edit an existing drink in system',
+    path: 'drinks/edit/:shortid',
+    element: <DrinksFormPage />
+  },
+  {
+    id: 'ViewDrinks',
+    title:'View Drinks',
+    description: 'View an existing drink in system',
+    path: 'drinks/view/:shortid',
+    element: <DrinksFormPage />
   },
 ];
 

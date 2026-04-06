@@ -1,7 +1,7 @@
 // src/pages/coffeelog/roasters/AddRoasterCafe.jsx
 import * as React from "react";
 import CoffeeLogFormShell from "../shared/CoffeeLogFormShell";
-import { roasterFieldConfig, ROASTERFORM_STATIC_OPTIONS, roasterFormBeansTableFieldsConfig } from "../../../constants/forms/roasterFormConfig";
+import { roasterFieldConfig, ROASTERFORM_STATIC_OPTIONS, roasterFormBeansTableFieldsConfig, roasterFormDrinkTableFieldsConfig } from "../../../constants/forms/roasterFormConfig";
 import { roastersCountries, submitRoaster, getRoasterById, updateRoaster } from "../../../api/roasterApi";
 import DialogueBox from "../../../components/DialogueBox";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
@@ -15,7 +15,7 @@ export default function RoasterCafeFormPage() {
   const [errors, setErrors] = React.useState({});
   const [saveDialogue, setSaveDialogue] = React.useState(false);
   const [relatedBeans, setRelatedBeans] = React.useState([]);
-  const [relatedCafeLog, setRelatedCafeLog] = React.useState([]);
+  const [relatedDrinks, setRelatedDrinks] = React.useState([]);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -52,7 +52,7 @@ export default function RoasterCafeFormPage() {
             ]);
             console.log(beans);
             setRelatedBeans(beans);
-            setRelatedCafeLog(cafeLog);
+            setRelatedDrinks(cafeLog);
           }
         }
       };
@@ -61,6 +61,7 @@ export default function RoasterCafeFormPage() {
 
   const handleFieldChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: undefined }));
   };
 
   const handleSubmit = async () => {
@@ -108,7 +109,10 @@ export default function RoasterCafeFormPage() {
         onCloseParent={() => { setSaveDialogue(false); navigate('/coffeeLog/roasters/list') } }
       />
       { mode === "view" && 
-        <CoffeeTable columns={roasterFormBeansTableFieldsConfig} rows={relatedBeans} viewRoute={"/coffeeLog/beans/view"}/>
+        <>
+          <CoffeeTable columns={roasterFormBeansTableFieldsConfig} rows={relatedBeans} viewRoute={"/coffeeLog/beans/view"}/>
+          <CoffeeTable columns={roasterFormDrinkTableFieldsConfig} rows={relatedDrinks} viewRoute={"/coffeeLog/drink/view"}/>
+        </>
       }
     </>
   );

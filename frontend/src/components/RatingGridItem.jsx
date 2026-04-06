@@ -14,7 +14,7 @@ const StyledRating = styled(Rating)(({ theme }) => ({
   },
 }));
 
-const customIcons = {
+export const ratingCustomIcons = {
   1: {
     icon: <SentimentVeryDissatisfiedIcon color="error" />,
     label: 'Sad',
@@ -39,7 +39,7 @@ const customIcons = {
 
 function IconContainer(props) {
   const { value, ...other } = props;
-  return <span {...other}>{customIcons[value].icon}</span>;
+  return <span {...other}>{ratingCustomIcons[value].icon}</span>;
 }
 
 IconContainer.propTypes = {
@@ -62,7 +62,7 @@ export default function RatingGridItem({ item, onChange, value, mode, error }) {
                   IconContainer 
                 } 
             }}
-            getLabelText={(value) => customIcons[value].label}
+            getLabelText={(value) => ratingCustomIcons[value].label}
             highlightSelectedOnly
             onChange={(e) => onChange(item.name, parseInt(e.target.value))}
             error={!!error}

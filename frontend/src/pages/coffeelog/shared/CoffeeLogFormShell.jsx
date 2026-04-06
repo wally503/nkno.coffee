@@ -31,14 +31,13 @@ export default function CoffeeLogFormShell({
         flexDirection: "column",
         justifyContent: "flex-start",
         alignItems: "center",
-        height: "calc(100vh - 69px)",
         px: 4,
         py: 4,
         width: "100%",
       }}
     >
       
-      <PageTitle title={title} hasBackButton={hasBackButton} backRoute={backRoute}  />
+      <PageTitle title={title} hasBackButton={hasBackButton} backRoute={backRoute} />
       <Box sx={{ width: "90%", maxWidth: 1400 }}>
         <Grid container spacing={3} columns={12}>
           {fields.map((field) => {
@@ -57,7 +56,7 @@ export default function CoffeeLogFormShell({
       </Box>
 
       <Box sx={{ width: "100%", maxWidth: 1400 }}>
-        <Grid container spacing={3} columns={12}>
+        <Grid container spacing={3} columns={12} my={3}>
           <Grid size={ {xs: 2 }}>
             {mode === "view"
               ? <Button variant="contained" onClick={onEdit}>Edit</Button>

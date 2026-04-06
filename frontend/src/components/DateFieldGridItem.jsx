@@ -25,7 +25,9 @@ function addEditMode(item, onChange, value, error) {
         slotProps={{
           textField: {
             fullWidth: true,
-            required: item.isRequired,
+            required: item.required,
+            error: !!error,
+            helperText: error?.[0],
             sx: {
               "& fieldset": {
                 borderColor: "rgba(180, 140, 100, 0.5)",
@@ -36,7 +38,7 @@ function addEditMode(item, onChange, value, error) {
         error={!!error}
         helperText={error?.[0]}
       />
-      {item.isRequired && (error ? null : <FormHelperText>Required</FormHelperText>)}
+      {item.required && (error ? null : <FormHelperText>Required</FormHelperText>)}
     </Grid>
   );
 }

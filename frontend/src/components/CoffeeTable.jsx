@@ -10,6 +10,7 @@ import TableRow from "@mui/material/TableRow";
 import PageHeaderTitle from "./PageTitle";
 import { useNavigate } from "react-router-dom";
 import { Grid, FormControl, FormHelperText, Box, Rating, Typography } from "@mui/material";
+import { ratingCustomIcons } from "./RatingGridItem";
 
 export default function CoffeeTable({columns, rows, viewRoute}) {
   const [page, setPage] = React.useState(0);
@@ -37,7 +38,7 @@ export default function CoffeeTable({columns, rows, viewRoute}) {
         }}
       >
         <Paper>
-          <TableContainer sx={{ maxHeight: 440 }}>
+          <TableContainer sx={{ overflowX: "auto" }}>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
@@ -68,9 +69,11 @@ export default function CoffeeTable({columns, rows, viewRoute}) {
                           const value = row[column.id];
                           return (
                             <TableCell key={column.id} align={column.align}>
-                              {column.format && typeof value === "number"
-                                ? column.format(value)
-                                : value}
+                              {column.id === "rating"
+                                ? ratingCustomIcons[value]?.icon ?? <span style={{ opacity: 0.3 }}>{ratingCustomIcons[3].icon}</span>
+                                : column.format && typeof value === "number"
+                                  ? column.format(value)
+                                  : value}
                             </TableCell>
                           );
                         })}

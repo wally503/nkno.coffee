@@ -128,3 +128,27 @@ export const roasterFormBeansTableFieldsConfig = [
     minWidth: 180,
   }
 ];
+
+export const roasterFormDrinkTableFieldsConfig = [
+  { 
+    id: "drink", 
+    label: "Drink Name", 
+    minWidth: 150 
+  },
+  {
+    id: "bean",
+    label: "Bean",
+    minWidth: 85,
+  },
+  {
+    id: "rating",
+    label: "Rating",
+    minWidth: 120,
+    render: (value) => customIcons[value]?.icon ?? "-"
+  },
+  {
+    id: "drink_date",
+    label: "Drink Date",
+    minWidth: 85,
+  }
+];

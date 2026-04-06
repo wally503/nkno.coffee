@@ -66,9 +66,10 @@ class BeanViewSet(viewsets.ModelViewSet):
             case _:
                 return BeanSerializer
     
-class CafeLogViewSet(viewsets.ModelViewSet):
-    queryset = CafeLog.objects.all()
-    serializer_class = CafeLogSerializer
+class DrinkViewSet(viewsets.ModelViewSet):
+    queryset = Drink.objects.all()
+    serializer_class = DrinkSerializer
+    lookup_field = 'short_id'
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -79,10 +80,10 @@ class CafeLogViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         match self.action:
-            case 'create':
-                return CafeLogCreateSerializer
+            case 'create' | 'retrieve' :
+                return DrinkCreateSerializer
             case _:
-                return CafeLogSerializer
+                return DrinkSerializer
     
 class CountriesViewSet(viewsets.ModelViewSet):
     queryset = Countries.objects.all()

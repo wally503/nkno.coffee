@@ -1,7 +1,7 @@
 // src/components/MultilineTextFieldGridItem.jsx
 import { Grid, FormControl, TextField, FormHelperText, Box } from "@mui/material";
 
-export default function MultilineTextFieldGridItem({ item,  onChange, value, error }) {
+export default function MultilineTextFieldGridItem({ item,  onChange, value, mode, error }) {
   return (
     <Grid size={item.size || { xs: 12 }}>
       <FormControl fullWidth required={item.required} component="fieldset">
@@ -9,13 +9,22 @@ export default function MultilineTextFieldGridItem({ item,  onChange, value, err
           <TextField
             fullWidth
             multiline
-            variant="outlined"
+            variant={mode === "view" ? "standard" : "outlined"}
             label={item.label}
-            required={item.required}
-            placeholder={item.placeholder || ""}
+            required={mode === "view" ? false : item.required}
+            placeholder={mode === "view" ? "-" : (item.placeholder || "")}
             onChange={(e) => onChange(item.name, e.target.value)}
             error={!!error}
             helperText={error?.[0]}
+            slotProps={{
+              input: {
+                readOnly: mode === "view",
+                disableUnderline: mode === "view",
+                tabIndex: mode === "view" ? -1 : 0,
+                sx: mode === "view" ? { cursor: "default", caretColor: "transparent" } : {}
+              },
+              inputLabel: mode === "view" ? { shrink: true, sx: { color: "text.secondary" } } : {},
+            }}
           />
         </Box>
         {item.required && (error ? null : <FormHelperText>Required</FormHelperText>)}

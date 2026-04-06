@@ -1,19 +1,19 @@
 // src/api/drinkApi.js
 import axiosInstance from './axiosInstance'
 
-// export async function defaultRoastersTableList(){
-//     try{
-//         const { data } = await axiosInstance.get('roasters/')
-//         return data
-//     } catch (error) {
-//         console.error(error.response.status)
-//         console.error(error.response.data)
-//     }
-// }
+export async function defaultDrinksTableList(){
+    try{
+        const { data } = await axiosInstance.get('drinks/')
+        return data
+    } catch (error) {
+        console.error(error.response.status)
+        console.error(error.response.data)
+    }
+}
 
 export async function drinksByRoaster(shortid){
     try{
-        const { data } = await axiosInstance.get(`cafelog/?roaster=${shortid}`);
+        const { data } = await axiosInstance.get(`drinks/?roaster=${shortid}`);
         return data
     } catch (error) {
         console.error(error.response.status)
@@ -23,7 +23,7 @@ export async function drinksByRoaster(shortid){
 
 export async function submitDrink(formData) {
     try {
-        return await axiosInstance.post('cafelog/', formData);
+        return await axiosInstance.post('drinks/', formData);
     } catch (error){
         if (error.response?.status === 400){
             throw error.response.data;
@@ -39,5 +39,14 @@ export async function drinksRoasters(){
     } catch (error) {
         console.error(error.response.status)
         console.error(error.response.data)
+    }
+}
+
+export async function getDrinkById(id){
+    try {
+        return await axiosInstance.get('drinks/' + id)
+    } catch (error) {
+        console.error(error.response.status);
+        console.error(error.response.data);
     }
 }

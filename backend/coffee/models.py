@@ -73,7 +73,7 @@ class Bean(models.Model):
         return f"{self.roaster} – {self.name}"
 
 
-class CafeLog(models.Model):
+class Drink(models.Model):
     roaster = models.ForeignKey(
         Roaster,
         on_delete=models.CASCADE,
@@ -87,7 +87,13 @@ class CafeLog(models.Model):
     drink = models.CharField(max_length=200)
     rating = models.IntegerField(null=True, blank=True)
     notes = models.CharField(max_length=2000, blank=True)
-    logged_at = models.DateTimeField(auto_now_add=True)
+    drink_date = models.DateField()
+    short_id = models.CharField(max_length=10, unique=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.short_id:
+            self.short_id = nanoid.generate(size=8)
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.roaster} – {self.drink} ({self.logged_at.date()})"
+        return f"{self.roaster} – {self.drink} ({self.drink_date})"

@@ -1,2 +1,2 @@
-export { default as RoasterCafeFormPage } from './RoasterCafeForm';
+export { default as RoasterCafeFormPage } from './RoasterCafesForm';
 export { default as ListRoasterCafesPage } from './ListRoasterCafes';

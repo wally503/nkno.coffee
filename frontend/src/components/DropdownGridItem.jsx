@@ -36,7 +36,7 @@ function addEditMode(dropdown, onChange, value, mode, error){
                 />
               )}
               onChange={(e, selectedOption) => onChange(dropdown.name, selectedOption?.value)}
-              value={dropdown.options.find(o => o.value === value) ?? null}
+              value={dropdown.options?.find(o => o.value === value) ?? null}
             />
         </Box>
         {dropdown.required && (error ? null : <FormHelperText>Required</FormHelperText>)}
@@ -48,7 +48,7 @@ function addEditMode(dropdown, onChange, value, mode, error){
 function viewMode(dropdown, onChange, value, mode, error){
   return <TextFieldGridItem 
             item={dropdown} 
-            value={dropdown.options.find(o => o.value === value)?.label ?? "-"} 
+            value={dropdown.options?.find(o => o.value === value)?.label ?? "-"} 
             onChange={onChange} 
             mode={mode} 
             error={error} />

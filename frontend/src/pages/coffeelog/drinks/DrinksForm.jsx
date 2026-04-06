@@ -2,25 +2,46 @@
 import * as React from "react";
 import CoffeeLogFormShell from "../shared/CoffeeLogFormShell";
 import { drinkFieldConfig } from "../../../constants/forms/drinkFormConfig";
-import { submitDrink, drinksRoasters } from "../../../api/drinkApi";
+import { submitDrink, drinksRoasters, getDrinkById } from "../../../api/drinkApi";
 import DialogueBox from "../../../components/DialogueBox";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 
-export default function DrinkReportFormPage() {
+export default function DrinksFormPage() {
   const [formData, setFormData] = React.useState({});
   const [options, setOptions] = React.useState(null);
   const [errors, setErrors] = React.useState({});
   const [saveDialogue, setSaveDialogue] = React.useState(false);
 
   const navigate = useNavigate();
-  const { id } = useParams();
+  const location = useLocation();
+  const { shortid } = useParams();
+  const getMode = (pathname, shortid) => {
+    switch(true) {
+      case pathname.includes("view"): return "view";
+      case !!shortid: return "edit";
+      default: return "add";
+    }
+  }
+  const mode = getMode(location.pathname, shortid)
+  const titles = {
+    view: "View Drinks",
+    edit: "Edit Drinks",
+    add: "Add Drinks"
+  } 
 
   React.useEffect(() => {
     const load = async () => {
       const [roasters] = await Promise.all([
           drinksRoasters(),
         ]);
+        console.log(roasters)
       setOptions({ roasters });
+      if (shortid){
+        const { data } = await getDrinkById(shortid);
+        if(data){
+          setFormData(data);
+          console.log(data);
+        }}
     };
     load().catch(console.error);
   }, []);
@@ -29,6 +50,7 @@ export default function DrinkReportFormPage() {
 
   const handleFieldChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: undefined }));
   };
 
   const handleSubmit = async () => {
@@ -51,14 +73,16 @@ export default function DrinkReportFormPage() {
   return (
     <>
       <CoffeeLogFormShell
-        title="Add Drink"
+        title={titles[mode]}
         hasBackButton={true}
-        backRoute={"/coffeeLog"}
+        backRoute={shortid ? "/coffeeLog/drinks/list": "/coffeeLog"}
         fields={resolvedFields}
         formData={formData}
         onFieldChange={handleFieldChange}
         onSubmit={handleSubmit}
+        onEdit={() => navigate(`/coffeeLog/drinks/edit/${shortid}`)}
         errors={errors}
+        mode={mode}
       />
       <DialogueBox 
         title={"Saving Drink"}
