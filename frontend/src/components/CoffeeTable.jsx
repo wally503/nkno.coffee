@@ -30,14 +30,12 @@ export default function CoffeeTable({columns, rows, viewRoute}) {
   return (
     <Box
         sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "95%",
-          mx: "auto",
+          width: "90%", 
+          maxWidth: 1400, 
+          mx: "auto" 
         }}
       >
-        <Paper>
+        <Paper  >
           <TableContainer sx={{ overflowX: "auto" }}>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
@@ -69,11 +67,7 @@ export default function CoffeeTable({columns, rows, viewRoute}) {
                           const value = row[column.id];
                           return (
                             <TableCell key={column.id} align={column.align}>
-                              {column.id === "rating"
-                                ? ratingCustomIcons[value]?.icon ?? <span style={{ opacity: 0.3 }}>{ratingCustomIcons[3].icon}</span>
-                                : column.format && typeof value === "number"
-                                  ? column.format(value)
-                                  : value}
+                              {renderCell(column, value)}
                             </TableCell>
                           );
                         })}
@@ -95,4 +89,14 @@ export default function CoffeeTable({columns, rows, viewRoute}) {
         </Paper>
       </Box>
   );
+
+  function renderCell(column, value) {
+    if (column.id === "rating") 
+      return ratingCustomIcons[value]?.icon ?? <span style={{ opacity: 0.3 }}>{ratingCustomIcons[3].icon}</span>;
+    if (column.render) 
+      return column.render(value);
+    if (column.format && typeof value === "number") 
+      return column.format(value);
+    return value || "-";
+  }
 }

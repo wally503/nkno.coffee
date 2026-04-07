@@ -34,4 +34,9 @@ export const defaultBeansTableColumns = [
     label: "Notes",
     minWidth: 180,
   },
+  {
+    id: "purchase_date",
+    label: "Purchase Date",
+    minWidth: 180,
+  }
 ];

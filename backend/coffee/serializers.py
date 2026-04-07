@@ -18,6 +18,8 @@ class RoasterListSerializer(serializers.ModelSerializer):
     state_region = serializers.SerializerMethodField()
     city = serializers.SerializerMethodField()
     business_type = serializers.SerializerMethodField()
+    total_drinks = serializers.SerializerMethodField()
+    total_beans = serializers.SerializerMethodField()
 
     def get_country(self, obj):
         return obj.country.name if obj.country else '-'
@@ -31,9 +33,15 @@ class RoasterListSerializer(serializers.ModelSerializer):
     def get_business_type(self, obj):
         return obj.business_type if obj.business_type else '-'
 
+    def get_total_drinks(self, obj):
+        return obj.drink_set.count()
+
+    def get_total_beans(self, obj):
+        return obj.beans.count()
+
     class Meta:
         model = Roaster
-        fields = ['id', 'name', 'business_type', 'country', 'city', 'state_region', 'short_id']
+        fields = ['id', 'name', 'business_type', 'country', 'city', 'state_region', 'short_id', 'total_beans', 'total_drinks']
 
 class BeanSerializer(serializers.ModelSerializer):
     # flavor_notes = serializers.ListField(
@@ -82,7 +90,7 @@ class BeanListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Bean
-        fields = ['id', 'name', 'roaster', 'origin_country', 'organic_or_not', 'washing_style', 'flavor_notes', 'elevation', 'short_id']
+        fields = ['id', 'name', 'roaster', 'origin_country', 'organic_or_not', 'washing_style', 'flavor_notes', 'elevation', 'short_id', 'purchase_date']
 
 class DrinkSerializer(serializers.ModelSerializer):
     roaster = serializers.SerializerMethodField()
@@ -96,7 +104,7 @@ class DrinkSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Drink
-        fields = ['id', 'drink', 'rating', 'notes', 'roaster', 'bean', 'short_id']
+        fields = ['id', 'drink', 'rating', 'notes', 'roaster', 'bean', 'short_id', 'drink_date']
 
 class DrinkCreateSerializer(serializers.ModelSerializer):
     roaster = serializers.PrimaryKeyRelatedField(

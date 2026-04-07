@@ -24,4 +24,14 @@ export const defaultRoastersTableColumns = [
     label: "State",
     minWidth: 85,
   },
+  {
+    id: "total_beans",
+    label: "Beans Purchased",
+    minWidth: 85,
+  },
+  {
+    id: "total_drinks",
+    label: "Drinks Purchased",
+    minWidth: 85,
+  },
 ];

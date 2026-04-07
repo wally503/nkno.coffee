@@ -8,6 +8,11 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { beansByRoaster } from "../../../api/beansApi";
 import { drinksByRoaster } from "../../../api/drinkApi";
 import CoffeeTable from "../../../components/CoffeeTable";
+import Box from '@mui/material/Box';
+import Tab from '@mui/material/Tab';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
 
 export default function RoasterCafeFormPage() {
   const [formData, setFormData] = React.useState({});
@@ -16,6 +21,7 @@ export default function RoasterCafeFormPage() {
   const [saveDialogue, setSaveDialogue] = React.useState(false);
   const [relatedBeans, setRelatedBeans] = React.useState([]);
   const [relatedDrinks, setRelatedDrinks] = React.useState([]);
+  const [tabValue, setTabValue] = React.useState(1);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -64,6 +70,10 @@ export default function RoasterCafeFormPage() {
     setErrors((prev) => ({ ...prev, [name]: undefined }));
   };
 
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
+
   const handleSubmit = async () => {
     try{
       const res = shortid ? await updateRoaster(id, formData) : await submitRoaster(formData);
@@ -86,8 +96,6 @@ export default function RoasterCafeFormPage() {
       : field
   );
 
-
-  console.log('last drop: ' + relatedBeans);
   return (
     <>
       <CoffeeLogFormShell
@@ -108,12 +116,33 @@ export default function RoasterCafeFormPage() {
         open={saveDialogue}
         onCloseParent={() => { setSaveDialogue(false); navigate('/coffeeLog/roasters/list') } }
       />
-      { mode === "view" && 
-        <>
-          <CoffeeTable columns={roasterFormBeansTableFieldsConfig} rows={relatedBeans} viewRoute={"/coffeeLog/beans/view"}/>
-          <CoffeeTable columns={roasterFormDrinkTableFieldsConfig} rows={relatedDrinks} viewRoute={"/coffeeLog/drinks/view"}/>
-        </>
-      }
+      { mode === "view" && roasterViewTables() }
     </>
   );
+
+  function roasterViewTables(){
+    return (
+      <>
+        <Box sx={{ width: "90%", maxWidth: 1400, mx: "auto" }}>
+          <TabContext value={tabValue}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <TabList onChange={handleTabChange} aria-label="lab API tabs example">
+                <Tab label="Beans" value="1" />
+                <Tab label="Drinks" value="2" />
+              </TabList>
+            </Box>
+            <TabPanel value="1">
+              <CoffeeTable columns={roasterFormBeansTableFieldsConfig} rows={relatedBeans} viewRoute={"/coffeeLog/beans/view"}/>
+            </TabPanel>
+            <TabPanel value="2">
+              <CoffeeTable columns={roasterFormDrinkTableFieldsConfig} rows={relatedDrinks} viewRoute={"/coffeeLog/drinks/view"}/>
+            </TabPanel>
+          </TabContext>
+        </Box>
+      </>
+    )
+  }
+
 }
+
+
