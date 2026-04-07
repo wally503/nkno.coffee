@@ -63,7 +63,6 @@ function addEditMode(item, mode, val, index, handleChange, handleAdd, handleRemo
   return (
     <Grid
       key={index}
-      item
       size={{ xs: 12, sm: 6, md: 6 }}  // always 2 per row ≥ sm
     >
       <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
@@ -105,7 +104,7 @@ function addEditMode(item, mode, val, index, handleChange, handleAdd, handleRemo
 
 function viewMode(item, values) {
   return (
-    <Grid key="flavor-view" item size={{ xs: 12, sm: 6, md: 6 }}>
+    <Grid key="flavor-view" size={{ xs: 12, sm: 6, md: 6 }}>
       <TextField
         fullWidth
         label="Flavor Notes"

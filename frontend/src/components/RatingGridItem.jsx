@@ -65,8 +65,8 @@ export default function RatingGridItem({ item, onChange, value, mode, error }) {
             getLabelText={(value) => ratingCustomIcons[value].label}
             highlightSelectedOnly
             onChange={(e) => onChange(item.name, parseInt(e.target.value))}
-            error={!!error}
-            helperText={error?.[0]}
+            // error={!!error}
+            // helperText={error?.[0]}
             readOnly={mode === "view"}
           />
         </Box>

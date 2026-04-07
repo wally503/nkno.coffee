@@ -21,7 +21,7 @@ export default function RoasterCafeFormPage() {
   const [saveDialogue, setSaveDialogue] = React.useState(false);
   const [relatedBeans, setRelatedBeans] = React.useState([]);
   const [relatedDrinks, setRelatedDrinks] = React.useState([]);
-  const [tabValue, setTabValue] = React.useState(1);
+  const [tabValue, setTabValue] = React.useState("1");
 
   const navigate = useNavigate();
   const location = useLocation();

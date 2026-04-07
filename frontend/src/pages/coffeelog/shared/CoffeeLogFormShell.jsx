@@ -40,7 +40,7 @@ export default function CoffeeLogFormShell({
       <PageTitle title={title} hasBackButton={hasBackButton} backRoute={backRoute} />
       <Box sx={{ width: "90%", maxWidth: 1400 }}>
         <Grid container spacing={3} columns={12}>
-          {fields.map((field) => {
+          {fields.map((field, index) => {
             // console.log(field)
             switch(field.type) {
               case "text":              return buildTextField(field, formData, onFieldChange, mode, errors)
@@ -48,7 +48,7 @@ export default function CoffeeLogFormShell({
               case "long_text":         return buildMultilineTextField(field, formData, onFieldChange, mode, errors)
               case "rating":            return buildRatingField(field, formData, onFieldChange, mode, errors)
               case "dropdown":          return buildDropdownField(field, formData, onFieldChange, mode, errors)
-              case "divider":           return buildDivider()
+              case "divider":           return buildDivider(index)
               case "dynamic_dropdown":  return buildDynamicMultiselectField(field, formData, onFieldChange, mode, errors)
             }
           })}
@@ -93,10 +93,12 @@ function buildDateField(field, formData, onFieldChange, mode, errors){
           />
 }
 
-function buildDivider(){
-  return <Box sx={{ width: "100%", my: 0.3 }}>
-            <Divider />
-          </Box>
+function buildDivider(key){
+  return ( 
+    <Box key={key} sx={{ width: "100%", my: 0.3 }}>
+      <Divider />
+    </Box>
+  )
 }
 
 function buildMultilineTextField(field, formData, onFieldChange, mode, errors){
@@ -133,7 +135,7 @@ function buildDropdownField(field, formData, onFieldChange, mode, errors) {
 }
 
 function buildDynamicMultiselectField(field, formData, onFieldChange, mode, errors){
-  return <Grid item size={{ xs: 12, sm: 10, md: 10 }} offset={{ sm: 1, md: 1 }}>
+  return <Grid key={field.name} size={{ xs: 12, sm: 10, md: 10 }} offset={{ sm: 1, md: 1 }}>
           <DynamicDropdownList
             item={field}
             onChange={(val) => onFieldChange(field.name, val)}

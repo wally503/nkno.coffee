@@ -19,7 +19,7 @@ export default function MultilineTextFieldGridItem({ item,  onChange, value, mod
             slotProps={{
               input: {
                 readOnly: mode === "view",
-                disableUnderline: mode === "view",
+                ... (mode === "view" && { disableUnderline: true }),
                 tabIndex: mode === "view" ? -1 : 0,
                 sx: mode === "view" ? { cursor: "default", caretColor: "transparent" } : {}
               },

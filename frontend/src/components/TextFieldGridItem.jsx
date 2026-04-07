@@ -17,8 +17,9 @@ export default function TextFieldGridItem({ item, onChange, value, mode, error }
             value={value}
             slotProps={{
               input: {
+                ... (mode === "view" && { disableUnderline: true }),
                 readOnly: mode === "view",
-                disableUnderline: mode === "view",
+                
                 tabIndex: mode === "view" ? -1 : 0,
                 sx: mode === "view" ? { cursor: "default", caretColor: "transparent" } : {}
               },

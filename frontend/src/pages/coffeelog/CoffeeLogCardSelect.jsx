@@ -43,19 +43,11 @@ export default function CoffeeLogSelect(){
       width: '100%',
     }}
   >
-    <Grid container spacing={3} justifyContent="center">
-      {coffeelogOptionRows.map((row, rowIndex) => (
-        <Grid item xs={12} key={rowIndex}>
-          <Grid container spacing={3} justifyContent="center">
-            {row.map((option) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={option.id}>
-                <LogTypeCard option={option} />
-              </Grid>
-            ))}
-          </Grid>
-        </Grid>
+    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3, justifyContent: 'center', maxWidth: 900 }}>
+      {[...coffeelogOptionsRow1, ...coffeelogOptionsRow2].map((option) => (
+        <LogTypeCard key={option.id} option={option} />
       ))}
-    </Grid>
+    </Box>
   </Box>
 );
 }
