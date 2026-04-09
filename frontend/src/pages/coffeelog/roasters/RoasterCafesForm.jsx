@@ -56,7 +56,7 @@ export default function RoasterCafeFormPage() {
               beansByRoaster(shortid),
               drinksByRoaster(shortid)
             ]);
-            console.log(beans);
+            // console.log(beans);
             setRelatedBeans(beans);
             setRelatedDrinks(cafeLog);
           }
@@ -78,7 +78,7 @@ export default function RoasterCafeFormPage() {
     try{
       const res = shortid ? await updateRoaster(id, formData) : await submitRoaster(formData);
       setSaveDialogue(true);
-      console.log("Add roaster result:", res);
+      // console.log("Add roaster result:", res);
     } catch(err){
       console.log(err);
       setErrors(err);

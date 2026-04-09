@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from .serializers import *
 from .models import *
+from django.db.models import Count
 
 class RoasterViewSet(viewsets.ModelViewSet):
     queryset = Roaster.objects.all()
@@ -51,6 +53,14 @@ class BeanViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         bean = serializer.save()
         return Response(BeanListSerializer(bean).data, status=201)
+
+    @action(detail=False, methods=['get'])
+    def country_counts(self, request):
+        queryset = (Bean.objects
+            .filter(origin_country__isnull=False)
+            .values('origin_country__name')
+            .annotate(count=Count('id')))
+        return Response(queryset.values('origin_country__name', 'count'))
 
     def get_queryset(self):
         queryset = super().get_queryset()

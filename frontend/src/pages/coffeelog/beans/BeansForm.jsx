@@ -65,7 +65,7 @@ export default function BeansFormPage() {
       const payload = { ...formData };  
       const res = shortid ? await updateBean(shortid, payload) : await submitBeans(payload);
       setSaveDialogue(true);
-      console.log("Add beans result:", res);
+      // console.log("Add beans result:", res);
     } catch(err){
       console.log(err);
       setErrors(err);

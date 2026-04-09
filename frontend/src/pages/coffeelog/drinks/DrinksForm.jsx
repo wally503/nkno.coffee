@@ -34,13 +34,13 @@ export default function DrinksFormPage() {
       const [roasters] = await Promise.all([
           drinksRoasters(),
         ]);
-        console.log(roasters)
+        // console.log(roasters)
       setOptions({ roasters });
       if (shortid){
         const { data } = await getDrinkById(shortid);
         if(data){
           setFormData(data);
-          console.log(data);
+          // console.log(data);
         }}
     };
     load().catch(console.error);
@@ -57,7 +57,7 @@ export default function DrinksFormPage() {
     try {
       const res = await submitDrink(formData);
       setSaveDialogue(true);
-      console.log("Add drink result:", res);
+      // console.log("Add drink result:", res);
     } catch(err){
       console.log(err);
       setErrors(err);

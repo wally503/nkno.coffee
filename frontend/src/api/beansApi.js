@@ -81,3 +81,12 @@ export async function updateBean(id, formData) {
         throw error;
     }
 }
+
+export async function getBeanCountryCount(){
+    try {
+        return await axiosInstance.get('beans/country_counts/')
+    } catch (error) {
+        console.error(error.response.status);
+        console.error(error.response.data);
+    }
+}

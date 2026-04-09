@@ -18,10 +18,12 @@
     "@mui/x-date-pickers": "^8.19.0",
     "axios": "^1.13.6",
     "bootstrap": "^5.3.7",
+    "d3": "^7.9.0",
     "dayjs": "^1.11.19",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-router-dom": "^7.6.3"
+    "react-router-dom": "^7.6.3",
+    "topojson-client": "^3.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",
