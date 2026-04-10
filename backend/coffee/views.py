@@ -58,9 +58,9 @@ class BeanViewSet(viewsets.ModelViewSet):
     def country_counts(self, request):
         queryset = (Bean.objects
             .filter(origin_country__isnull=False)
-            .values('origin_country__name')
+            .values('origin_country__iso_code')
             .annotate(count=Count('id')))
-        return Response(queryset.values('origin_country__name', 'count'))
+        return Response(queryset.values('origin_country__iso_code', 'count'))
 
     def get_queryset(self):
         queryset = super().get_queryset()

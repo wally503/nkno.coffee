@@ -5,6 +5,7 @@ import nanoid
 
 class Countries(models.Model):
     name = models.CharField(max_length=200, unique=True)
+    iso_code = models.IntegerField(unique=True, null=True)
 
     def __str__(self):
         return self.name

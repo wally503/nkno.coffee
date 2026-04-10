@@ -5,7 +5,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import { Routes, Route } from 'react-router-dom'
-import { CoffeeLogCardSelect, HomePage, LocationsPage, LogHistoryPage } from './pages'
+import { CoffeeLogCardSelect, HomePage, MapsPage, LogHistoryPage } from './pages'
 import { drawerWidth } from './constants/layout';
 import { coffeelogOptions } from './routes/coffeeLogRoutes';
 import CoffeeLogLayout from './pages/coffeelog/CoffeeLogLayout';
@@ -21,7 +21,7 @@ function App() {
         <Toolbar/>
         <Routes>
           <Route path="/" element={ <HomePage />  } />
-          <Route path="/locations" element={ <LocationsPage />  } />
+          <Route path="/maps" element={ <MapsPage />  } />
           <Route path="/coffeeLog" element={ <CoffeeLogLayout />  }>
             <Route index element={<CoffeeLogCardSelect />} />
               {coffeelogOptions.map(({path, element}) => ( 
