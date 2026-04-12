@@ -61,3 +61,12 @@ export async function updateRoaster(id, formData) {
         throw error;
     }
 }
+
+export async function getRoasterCountryCount(){
+    try {
+        return await axiosInstance.get('roasters/country_counts/')
+    } catch (error) {
+        console.error(error.response.status);
+        console.error(error.response.data);
+    }
+}

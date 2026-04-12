@@ -11,6 +11,14 @@ class RoasterViewSet(viewsets.ModelViewSet):
     serializer_class = RoasterSerializer
     lookup_field = 'short_id'
 
+    @action(detail=False, methods=['get'])
+    def country_counts(self, request):
+        queryset = (Roaster.objects
+            .filter(country__isnull=False)
+            .values('country__iso_code')
+            .annotate(count=Count('id')))
+        return Response(queryset.values('country__iso_code', 'count'))
+
     def get_serializer_class(self):
         match self.action:
             case 'list':
