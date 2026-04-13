@@ -71,9 +71,18 @@ export async function getRoasterCountryCount(){
     }
 }
 
+export async function getRoasterCountryRegionCount(countryId){
+    try {
+        return await axiosInstance.get(`roasters/region_counts/?country=${countryId}`)
+    } catch (error) {
+        console.error(error.response.status);
+        console.error(error.response.data);
+    }
+}
+
 export async function getRegionsForCountry(countryId){
     try {
-        return await axiosInstance.get(`regions/?country_id=${countryId}`)
+        return await axiosInstance.get(`regions/?country=${countryId}`)
     } catch (error) {
         console.error(error.response.status);
         console.error(error.response.data);

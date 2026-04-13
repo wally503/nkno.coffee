@@ -15,10 +15,6 @@ class RoasterSerializer(serializers.ModelSerializer):
 
 class RoasterListSerializer(serializers.ModelSerializer):
     country = serializers.SerializerMethodField()
-    # region = serializers.PrimaryKeyRelatedField(
-    #     queryset=Region.objects.all(),
-    #     required=True
-    # )
     region = serializers.SerializerMethodField()
     city = serializers.SerializerMethodField()
     business_type = serializers.SerializerMethodField()

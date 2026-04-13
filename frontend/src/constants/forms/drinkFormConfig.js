@@ -33,7 +33,7 @@ export const drinkFieldConfig = [
   {
     type: "long_text",
     name: "notes",
-    label: "Notes",
+    label: "Notes / Comments",
     required: false,
     size: { xs: 12, sm: 12, md: 12 },
   }

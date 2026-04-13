@@ -19,6 +19,16 @@ class RoasterViewSet(viewsets.ModelViewSet):
             .annotate(count=Count('id')))
         return Response(queryset.values('country__iso_code', 'count'))
 
+    @action(detail=False, methods=['get'])
+    def region_counts(self, request):
+        country = self.request.query_params.get('country')
+        queryset = (Roaster.objects
+            .filter(country__isnull=False)
+            .filter(country__id=country)
+            .values('region__identifier_code')
+            .annotate(count=Count('id')))
+        return Response(queryset.values('region__identifier_code', 'count'))
+
     def get_serializer_class(self):
         match self.action:
             case 'list':

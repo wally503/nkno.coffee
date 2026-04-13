@@ -15,13 +15,13 @@ export const defaultRoastersTableColumns = [
     minWidth: 150 
   },
   {
-    id: "city",
-    label: "City",
+    id: "region",
+    label: "State",
     minWidth: 85,
   },
   {
-    id: "state_region",
-    label: "State",
+    id: "city",
+    label: "City",
     minWidth: 85,
   },
   {
