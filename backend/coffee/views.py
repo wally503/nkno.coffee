@@ -127,7 +127,7 @@ class RegionsViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        country = self.request.query_params.get('country_id')
+        country = self.request.query_params.get('country')
         if country:
             queryset = queryset.filter(country_id=country)
         return queryset
