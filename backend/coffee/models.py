@@ -10,6 +10,19 @@ class Countries(models.Model):
     def __str__(self):
         return self.name
 
+class Region(models.Model):
+    name = models.CharField(max_length=200)
+    identifier_code = models.CharField(max_length=200)
+    country = models.ForeignKey(
+        Countries,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+
+    def __str__(self):
+        return f"{self.name} – Country: ({self.country.name}) ID Code: {self.identifier_code}"
+
 class Roaster(models.Model):
     name = models.CharField(max_length=200, unique=True)
     business_type = models.CharField(max_length=80, blank=True, choices=BusinessType.choices)
@@ -19,7 +32,12 @@ class Roaster(models.Model):
 
     address = models.CharField(max_length=300, blank=True)
     city = models.CharField(max_length=200, blank=True)
-    state_region = models.CharField(max_length=200, blank=True)
+    region = models.ForeignKey(
+        Region,
+        on_delete=models.SET_NULL, 
+        null=True
+    ) 
+
     country = models.ForeignKey(
         Countries,
         on_delete=models.SET_NULL, 
@@ -98,3 +116,4 @@ class Drink(models.Model):
 
     def __str__(self):
         return f"{self.roaster} – {self.drink} ({self.drink_date})"
+

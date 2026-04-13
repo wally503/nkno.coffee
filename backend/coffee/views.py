@@ -110,3 +110,19 @@ class CountriesViewSet(viewsets.ModelViewSet):
 class FlavorNotesViewSet(viewsets.ModelViewSet):
     queryset = FlavorNotes.objects.all()
     serializer_class = FlavorNotesSerializer
+
+class RegionsViewSet(viewsets.ModelViewSet):
+    queryset = Region.objects.all()
+    serializer_class = RegionsSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        country = self.request.query_params.get('country_id')
+        if country:
+            queryset = queryset.filter(country_id=country)
+        return queryset
+
+    def get_serializer_class(self):
+        match self.action:
+            case _:
+                return RegionsSerializer

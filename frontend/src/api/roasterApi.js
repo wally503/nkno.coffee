@@ -70,3 +70,12 @@ export async function getRoasterCountryCount(){
         console.error(error.response.data);
     }
 }
+
+export async function getRegionsForCountry(countryId){
+    try {
+        return await axiosInstance.get(`regions/?country_id=${countryId}`)
+    } catch (error) {
+        console.error(error.response.status);
+        console.error(error.response.data);
+    }
+}

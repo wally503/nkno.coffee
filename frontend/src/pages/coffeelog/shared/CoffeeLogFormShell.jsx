@@ -120,6 +120,7 @@ function buildRatingField(field, formData, onFieldChange, mode, errors){
             onChange={onFieldChange}
             error={errors[field.name]}
             mode={mode}
+            
           />
 }
 
@@ -131,6 +132,8 @@ function buildDropdownField(field, formData, onFieldChange, mode, errors) {
             onChange={onFieldChange}
             error={errors[field.name]}
             mode={mode}
+            dependsOn={field.dependsOn}
+            dependsOnFieldValue={formData[field.dependsOn] ?? null }
           />
 }
 
@@ -142,6 +145,7 @@ function buildDynamicMultiselectField(field, formData, onFieldChange, mode, erro
             initialValues={formData[field.name]}
             error={errors[field.name]}
             mode={mode}
+            dependsOn={field.dependsOn}
           />
         </Grid>
 }

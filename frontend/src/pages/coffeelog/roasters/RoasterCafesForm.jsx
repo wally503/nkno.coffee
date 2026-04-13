@@ -68,6 +68,7 @@ export default function RoasterCafeFormPage() {
   const handleFieldChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: undefined }));
+    console.log(name + ', ' + value);
   };
 
   const handleTabChange = (event, newValue) => {
@@ -76,9 +77,8 @@ export default function RoasterCafeFormPage() {
 
   const handleSubmit = async () => {
     try{
-      const res = shortid ? await updateRoaster(id, formData) : await submitRoaster(formData);
+      const res = shortid ? await updateRoaster(shortid, formData) : await submitRoaster(formData);
       setSaveDialogue(true);
-      // console.log("Add roaster result:", res);
     } catch(err){
       console.log(err);
       setErrors(err);

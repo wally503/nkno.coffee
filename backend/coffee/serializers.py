@@ -15,7 +15,11 @@ class RoasterSerializer(serializers.ModelSerializer):
 
 class RoasterListSerializer(serializers.ModelSerializer):
     country = serializers.SerializerMethodField()
-    state_region = serializers.SerializerMethodField()
+    # region = serializers.PrimaryKeyRelatedField(
+    #     queryset=Region.objects.all(),
+    #     required=True
+    # )
+    region = serializers.SerializerMethodField()
     city = serializers.SerializerMethodField()
     business_type = serializers.SerializerMethodField()
     total_drinks = serializers.SerializerMethodField()
@@ -24,8 +28,8 @@ class RoasterListSerializer(serializers.ModelSerializer):
     def get_country(self, obj):
         return obj.country.name if obj.country else '-'
     
-    def get_state_region(self, obj):
-        return obj.state_region if obj.state_region else '-'
+    def get_region(self, obj):
+        return obj.region.name if obj.region else '-'
 
     def get_city(self, obj):
         return obj.city if obj.city else '-'
@@ -41,7 +45,7 @@ class RoasterListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Roaster
-        fields = ['id', 'name', 'business_type', 'country', 'city', 'state_region', 'short_id', 'total_beans', 'total_drinks']
+        fields = ['id', 'name', 'business_type', 'country', 'city', 'region', 'short_id', 'total_beans', 'total_drinks']
 
 class BeanSerializer(serializers.ModelSerializer):
     # flavor_notes = serializers.ListField(
@@ -124,4 +128,9 @@ class CountriesSerializer(serializers.ModelSerializer):
 class FlavorNotesSerializer(serializers.ModelSerializer):
     class Meta:
         model = FlavorNotes
+        fields = '__all__'
+
+class RegionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Region
         fields = '__all__'
