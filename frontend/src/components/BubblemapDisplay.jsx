@@ -18,6 +18,7 @@ export default function BubblemapDisplayPage({ mapType, mapData, projection, iso
     }, []);
 
     useEffect(() => {
+        console.log('data: ' + data);
         if (!map || !projection || !data.length) return;
         // Prep data for transforms
         const mappeddata = Object.fromEntries(data.map((result) =>[result[isoKey], result.count]));
