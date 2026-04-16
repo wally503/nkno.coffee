@@ -52,7 +52,14 @@ export default function CoffeeTable({columns, rows, viewRoute}) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows
+                {rows.length === 0 ?
+                <TableRow
+                  tabIndex={-1}
+                  key={0}>
+                    <TableCell colSpan={columns.length} align="center" sx={{ fontStyle: 'italic' }}>- No data found -</TableCell>
+                </TableRow>
+                :
+                rows
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => {
                     return (
