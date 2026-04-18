@@ -38,7 +38,7 @@ export default function BeansHeatmapPage(){
 
     return (
         <>
-            <Box sx={{ width: "100%", maxWidth: 1400, mx: "auto"}}>
+            <Box sx={{ width: "90%", maxWidth: 1400, mx: "auto"}}>
                 <TabContext value={tabValue}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <TabList onChange={handleTabChange} aria-label="lab API tabs example">
