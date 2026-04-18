@@ -26,38 +26,38 @@ export default function DialogueBox( {title, message, open, onCloseParent } ) {
     };
 
     return (
-        <React.Fragment>
-        <BootstrapDialog
-            onClose={handleClose}
-            aria-labelledby="customized-dialog-title"
-            open={open}
-        >
-            <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-            {title}
-            </DialogTitle>
-            <IconButton
-            aria-label="close"
-            onClick={handleClose}
-            sx={(theme) => ({
-                position: 'absolute',
-                right: 8,
-                top: 8,
-                color: theme.palette.grey[500],
-            })}
+        <>
+            <BootstrapDialog
+                onClose={handleClose}
+                aria-labelledby="customized-dialog-title"
+                open={open}
             >
-            <CloseIcon />
-            </IconButton>
-            <DialogContent dividers>
-            <Typography gutterBottom>
-                {message}
-            </Typography>
-            </DialogContent>
-            <DialogActions>
-            <Button autoFocus onClick={handleClose}>
-                OK
-            </Button>
-            </DialogActions>
-        </BootstrapDialog>
-        </React.Fragment>
+                <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+                    {title}
+                </DialogTitle>
+                <IconButton
+                aria-label="close"
+                onClick={handleClose}
+                sx={(theme) => ({
+                    position: 'absolute',
+                    right: 8,
+                    top: 8,
+                    color: theme.palette.grey[500],
+                })}
+                >
+                    <CloseIcon />
+                </IconButton>
+                <DialogContent dividers>
+                    <Typography gutterBottom>
+                        {message}
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button autoFocus onClick={handleClose}>
+                        OK
+                    </Button>
+                </DialogActions>
+            </BootstrapDialog>
+        </>
     );
 }

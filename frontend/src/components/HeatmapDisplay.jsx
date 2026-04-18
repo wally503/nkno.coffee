@@ -55,7 +55,16 @@ export default function HeatmapDisplayPage({ mapType, mapData, projection, isoKe
 
     return (
         <>
-            <Box sx={{ display: 'flex', width: '100%', alignItems:'center', flexDirection: 'column' }}>
+          <Box 
+                sx={{ 
+                    display: 'flex', 
+                    width: '100%', 
+                    alignItems:'center', 
+                    flexDirection: 'column', 
+                    border: '1px solid', 
+                    borderRadius: '8px', 
+                    borderColor: 'primary.main',
+                    overflow: 'hidden' }}>
                 <svg ref={svgRef} width={1200} height={600} style={{ background: '#0d0d6b8e' }}/>
                 <div ref={svgHoverRef} style={{ position: 'absolute', visibility: 'hidden' }}/>
             </Box>

@@ -3,7 +3,7 @@
 import * as React from "react";
 import { getBeanCountryCount } from "../../../api/beansApi";
 import * as d3 from 'd3';
-import { Typography, Box, Tab } from "@mui/material";
+import { Typography, Box, Tab, Divider } from "@mui/material";
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import HeatmapDisplayPage from "../../../components/HeatmapDisplay";
 import BubblemapDisplayPage from "../../../components/BubblemapDisplay";
@@ -42,14 +42,12 @@ export default function BeansHeatmapPage(){
                 <TabContext value={tabValue}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <TabList onChange={handleTabChange} aria-label="lab API tabs example">
-                        <Tab label="World Bubblemap" value="1" />
-                        <Tab label="World Heatmap" value="2" />
+                        <Tab label="World" value="1" />
                     </TabList>
                     </Box>
                     <TabPanel value="1">
                         <BubbleMapWorldMapDisplay map={map} data={results} />
-                    </TabPanel>
-                    <TabPanel value="2">
+                        <Divider sx={{ mt:5, mb: 4, mx: -5, justifyContent: 'center' }} />
                         <HeatmapWorldMapDisplay map={map} data={results} />
                     </TabPanel>
                 </TabContext>
@@ -62,7 +60,11 @@ export default function BeansHeatmapPage(){
 function BubbleMapWorldMapDisplay({map, data}){
     return (
         <>
-            <Typography variant="h4" sx={{ ml: 7, my: 2 }}>Beans by Country of Origin</Typography>
+            <Box sx= {{ width: 'fit-content' }}>
+                <Typography variant="h4" sx={{ ml: 1, my: 0.5 }}>Beans by Country of Origin</Typography>
+                <Typography sx={{ ml: 10, my: -.5 }}><i>Beans by Country of Origin</i></Typography>
+                <Divider sx={{ ml: 7, mr: -7, mb: 3, mt: 1.5, borderColor: '#6c4e4d8e'  }}/>
+            </Box>
             <BubblemapDisplayPage 
                 mapType={map} 
                 mapData={data} 
@@ -77,7 +79,11 @@ function BubbleMapWorldMapDisplay({map, data}){
 function HeatmapWorldMapDisplay({map, data}){
     return (
         <>
-            <Typography variant="h4" sx={{ ml: 7, my: 2 }}>Beans by Country of Origin</Typography>
+            <Box sx= {{ width: 'fit-content' }}>
+                <Typography variant="h4" sx={{ ml: 1, my: 0.5 }}>Beans by Country of Origin</Typography>
+                <Typography sx={{ ml: 10, my: -.5 }}><i>Beans by Country of Origin</i></Typography>
+                <Divider sx={{ ml: 7, mr: -7, mb: 3, mt: 1.5, borderColor: '#6c4e4d8e'  }}/>
+            </Box>
             <HeatmapDisplayPage 
                 mapType={map} 
                 mapData={data} 

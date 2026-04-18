@@ -30,7 +30,7 @@ export default function HeatmapPage(){
                         <RoastersHeatmapPage />
                     </TabPanel>
                     <TabPanel value="3">
-                        <Typography>Drinks not implemented yet</Typography>
+                        <Typography>Drinks not implemented yet, sorry!</Typography>
                     </TabPanel>
                 </TabContext>
             </Box>
