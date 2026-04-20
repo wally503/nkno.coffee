@@ -23,14 +23,14 @@ export default function ListDrinksPage() {
         flexDirection: "column",
         justifyContent: "flex-start",
         alignItems: "center",
-        height: "calc(100vh - 69px)",
+
         px: 4,
         py: 4,
         width: "100%",
       }}
     >
       <PageHeaderTitle title={"List Drinks"} hasBackButton={true} backRoute={"/CoffeeLog"}  />
-      <CoffeeTable columns={defaultDrinkTableColumns} rows={rows} viewRoute={"/coffeeLog/drinks/view"}/>
+      <CoffeeTable columns={defaultDrinkTableColumns} rows={rows} viewRoute={"/coffeeLog/drinks/view"} rowsPerPageDefault={25}/>
     </Box>
   );
 }

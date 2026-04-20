@@ -25,14 +25,14 @@ export default function ListBeansPage() {
         flexDirection: "column",
         justifyContent: "flex-start",
         alignItems: "center",
-        height: "calc(100vh - 69px)",
+
         px: 4,
         py: 4,
         width: "100%",
       }}
     >
       <PageHeaderTitle title={"List Roasters"} hasBackButton={true} backRoute={"/CoffeeLog"}  />
-      <CoffeeTable columns={defaultRoastersTableColumns} rows={rows} viewRoute={"/coffeeLog/roasters/view"}/>
+      <CoffeeTable columns={defaultRoastersTableColumns} rows={rows} viewRoute={"/coffeeLog/roasters/view"} rowsPerPageDefault={25} />
     </Box>
   );
 }

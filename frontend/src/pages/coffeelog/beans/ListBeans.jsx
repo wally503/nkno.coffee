@@ -25,14 +25,14 @@ export default function ListBeansPage() {
         flexDirection: "column",
         justifyContent: "flex-start",
         alignItems: "center",
-        height: "calc(100vh - 69px)",
+
         px: 4,
         py: 4,
         width: "100%",
       }}
     >
       <PageHeaderTitle title={"List Beans"} hasBackButton={true} backRoute={"/coffeeLog"}  />
-      <CoffeeTable columns={defaultBeansTableColumns} rows={rows} viewRoute={"/coffeeLog/beans/view"}  />
+      <CoffeeTable columns={defaultBeansTableColumns} rows={rows} viewRoute={"/coffeeLog/beans/view"} rowsPerPageDefault={25} />
     </Box>
   );
 }

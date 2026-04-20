@@ -1,3 +1,5 @@
+// src/components/CoffeeTable.jsx
+
 import * as React from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -12,9 +14,9 @@ import { useNavigate } from "react-router-dom";
 import { Grid, FormControl, FormHelperText, Box, Rating, Typography } from "@mui/material";
 import { ratingCustomIcons } from "./RatingGridItem";
 
-export default function CoffeeTable({columns, rows, viewRoute}) {
+export default function CoffeeTable({columns, rows, viewRoute, rowsPerPageDefault = 10}) {
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState(rowsPerPageDefault);
   const navigate = useNavigate();
 
   const handleChangePage = (event, newPage) => {

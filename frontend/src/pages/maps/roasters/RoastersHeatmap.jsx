@@ -61,7 +61,7 @@ export default function RoastersHeatmapPage(){
                     </TabPanel>
                     <TabPanel value="2">
                         <BubbleMapWorldMapDisplay map={worldMap} data={worldData} />
-                        
+                        <Divider sx={{ mt:5, mb: 4, mx: -5, justifyContent: 'center' }} />
                         <HeatmapWorldMapDisplay map={worldMap} data={worldData} />
                     </TabPanel>
                 </TabContext>

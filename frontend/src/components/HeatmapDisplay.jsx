@@ -65,7 +65,7 @@ export default function HeatmapDisplayPage({ mapType, mapData, projection, isoKe
                     borderRadius: '8px', 
                     borderColor: 'primary.main',
                     overflow: 'hidden' }}>
-                <svg ref={svgRef} width={1200} height={600} style={{ background: '#0d0d6b8e' }}/>
+                <svg ref={svgRef} viewBox="0 0 1200 600" width='100%' style={{ background: '#0d0d6b8e' }}/>
                 <div ref={svgHoverRef} style={{ position: 'absolute', visibility: 'hidden' }}/>
             </Box>
 

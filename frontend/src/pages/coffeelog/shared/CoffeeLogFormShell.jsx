@@ -55,7 +55,7 @@ export default function CoffeeLogFormShell({
         </Grid>
       </Box>
 
-      <Box sx={{ width: "100%", maxWidth: 1400 }}>
+      <Box sx={{ width: "100%", maxWidth: 1400, mt: 5 }}>
         <Grid container spacing={3} columns={12} my={3}>
           <Grid size={ {xs: 2 }}>
             {mode === "view"
