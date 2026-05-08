@@ -7,7 +7,7 @@ export default function DropdownGridItem({ dropdown, onChange, value, mode, depe
   const [options, setOptions] = useState(dropdown.options?.length ? dropdown.options : []);
 
   useEffect(() => {
-    console.log('see dependson: ' +dependsOn + '. dep val: ' + dependsOnFieldValue);
+    // console.log('see dependson: ' +dependsOn + '. dep val: ' + dependsOnFieldValue);
     if(!dependsOn) return;
     // filter
 
@@ -19,7 +19,7 @@ export default function DropdownGridItem({ dropdown, onChange, value, mode, depe
     console.log('countryid in region: ' + countryId);
     const load = async () => {
       const newOptions = await getRegionsForCountry(countryId).then(r => r.data.map(r => ({ label: r.name, value: r.id })));
-      console.log('new options: ' + newOptions);
+      // console.log('new options: ' + newOptions);
       setOptions(newOptions);
     };
     load();

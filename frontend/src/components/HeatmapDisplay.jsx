@@ -24,7 +24,7 @@ export default function HeatmapDisplayPage({ mapType, mapData, projection, isoKe
         const maxCount = Math.max(...data.map((x) => x.count));
 
         const path = d3.geoPath(projection);
-        console.log('mapkey: ' + mapKey);
+        // console.log('mapkey: ' + mapKey);
         const mapFeatures = topojson.feature(map, map.objects[mapKey]);
         projection.fitSize([1200, 600], mapFeatures);
         const scale = d3.scaleSequential([0, maxCount], d3.interpolateOranges);
