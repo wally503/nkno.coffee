@@ -4,7 +4,7 @@ import axiosInstance from './axiosInstance'
 export async function defaultBeansTableList(){
     try{
         const { data } = await axiosInstance.get('beans/')
-        return data
+        return data.results
     } catch (error) {
         console.error(error.response.status)
         console.error(error.response.data)
@@ -14,7 +14,7 @@ export async function defaultBeansTableList(){
 export async function beansByRoaster(shortid){
     try{
         const { data } = await axiosInstance.get(`beans/?roaster=${shortid}`);
-        return data
+        return data.results
     } catch (error) {
         console.error(error.response.status)
         console.error(error.response.data)
@@ -24,7 +24,7 @@ export async function beansByRoaster(shortid){
 export async function beansRoasters(){
     try{
         const { data } = await axiosInstance.get('roasters/')
-        return data.map(r => ({ label: r.name, value: r.id }))
+        return data.results.map(r => ({ label: r.name, value: r.id }))
     } catch (error) {
         console.error(error.response.status)
         console.error(error.response.data)
@@ -34,7 +34,7 @@ export async function beansRoasters(){
 export async function beansCountries(){
     try{
         const { data } = await axiosInstance.get('countries/')
-        return data.map(r => ({ label: r.name, value: r.id }))
+        return data.results.map(r => ({ label: r.name, value: r.id }))
     } catch (error) {
         console.error(error.response.status);
         console.error(error.response.data);
@@ -44,7 +44,7 @@ export async function beansCountries(){
 export async function beansNotes(){
     try{
         const { data } = await axiosInstance.get('notes/')
-        return data.map(r => ({ label: r.name, value: r.id }))
+        return data.results.map(r => ({ label: r.name, value: r.id }))
     } catch (error) {
         console.error(error.response.status);
         console.error(error.response.data);

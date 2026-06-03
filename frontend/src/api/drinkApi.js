@@ -4,7 +4,7 @@ import axiosInstance from './axiosInstance'
 export async function defaultDrinksTableList(){
     try{
         const { data } = await axiosInstance.get('drinks/')
-        return data
+        return data.results
     } catch (error) {
         console.error(error.response.status)
         console.error(error.response.data)
@@ -14,7 +14,7 @@ export async function defaultDrinksTableList(){
 export async function drinksByRoaster(shortid){
     try{
         const { data } = await axiosInstance.get(`drinks/?roaster=${shortid}`);
-        return data
+        return data.results
     } catch (error) {
         console.error(error.response.status)
         console.error(error.response.data)
@@ -35,7 +35,7 @@ export async function submitDrink(formData) {
 export async function drinksRoasters(){
     try{
         const { data } = await axiosInstance.get('roasters/')
-        return data.map(r => ({ label: r.name, value: r.id }))
+        return data.results.map(r => ({ label: r.name, value: r.id }))
     } catch (error) {
         console.error(error.response.status)
         console.error(error.response.data)

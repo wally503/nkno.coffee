@@ -4,7 +4,7 @@ import axiosInstance from './axiosInstance'
 export async function defaultRoastersTableList(){
     try{
         const { data } = await axiosInstance.get('roasters/')
-        return data
+        return data.results
     } catch (error) {
         console.error(error.response.status)
         console.error(error.response.data)
@@ -25,7 +25,7 @@ export async function submitRoaster(formData) {
 export async function roastersCountries(){
     try{
         const { data } = await axiosInstance.get('countries/')
-        return data.map(r => ({ label: r.name, value: r.id }))
+        return data.results.map(r => ({ label: r.name, value: r.id }))
     } catch (error) {
         console.error(error.response.status);
         console.error(error.response.data);
@@ -35,7 +35,7 @@ export async function roastersCountries(){
 export async function roastersRoasterCafe(){
     try{
         const { data } = await axiosInstance.get('roasters/')
-        return data.map(r => ({ label: r.name, value: r.id }))
+        return data.results.map(r => ({ label: r.name, value: r.id }))
     } catch (error) {
         console.error(error.response.status)
         console.error(error.response.data)
