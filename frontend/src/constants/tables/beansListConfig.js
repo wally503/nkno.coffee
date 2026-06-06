@@ -15,8 +15,8 @@ export const defaultBeansTableColumns = [
     minWidth: 120,
   },
   {
-    id: "organic_or_not",
-    label: "Organic",
+    id: "roast_level",
+    label: "Roast",
     minWidth: 85,
   },
   {

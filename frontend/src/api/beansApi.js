@@ -1,20 +1,20 @@
 // src/api/beansApi.js
 import axiosInstance from './axiosInstance'
 
-export async function defaultBeansTableList(){
+export async function defaultBeansTableList(page = 0, pageSize = 10){
     try{
-        const { data } = await axiosInstance.get('beans/')
-        return data.results
+        const { data } = await axiosInstance.get(`beans/?page=${page + 1}&page_size=${pageSize}`)
+        return data
     } catch (error) {
         console.error(error.response.status)
         console.error(error.response.data)
     }
 }
 
-export async function beansByRoaster(shortid){
+export async function beansByRoaster(shortid, page = 0, pageSize = 10){
     try{
-        const { data } = await axiosInstance.get(`beans/?roaster=${shortid}`);
-        return data.results
+        const { data } = await axiosInstance.get(`beans/?roaster=${shortid}&page=${page + 1}&page_size=${pageSize}`);
+        return data
     } catch (error) {
         console.error(error.response.status)
         console.error(error.response.data)

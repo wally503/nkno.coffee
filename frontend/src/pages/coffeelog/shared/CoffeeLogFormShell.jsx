@@ -102,6 +102,9 @@ function buildDivider(key){
 }
 
 function buildMultilineTextField(field, formData, onFieldChange, mode, errors){
+  console.log('multiline text field entered for: ' ,field)
+  console.log('formdata:', formData)
+  console.log('field.name: ', field.name)
   return  <MultilineTextFieldGridItem
             key={field.name}
             item={field}

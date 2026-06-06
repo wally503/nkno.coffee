@@ -81,6 +81,7 @@ class Bean(models.Model):
     min_elevation = models.IntegerField(null=True, blank=True)
     max_elevation = models.IntegerField(null=True, blank=True)
     flavor_notes = models.ManyToManyField(FlavorNotes, null=True, blank=True, related_name="beans")
+    comments = models.TextField(blank=True, null=True)
     short_id = models.CharField(max_length=10, unique=True, blank=True)
 
     def save(self, *args, **kwargs):

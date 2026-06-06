@@ -16,6 +16,7 @@ export default function MultilineTextFieldGridItem({ item,  onChange, value, mod
             onChange={(e) => onChange(item.name, e.target.value)}
             error={!!error}
             helperText={error?.[0]}
+            value={value}
             slotProps={{
               input: {
                 readOnly: mode === "view",

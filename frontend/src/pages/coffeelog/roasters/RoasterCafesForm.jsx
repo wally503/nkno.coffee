@@ -19,9 +19,16 @@ export default function RoasterCafeFormPage() {
   const [options, setOptions] = React.useState(null);
   const [errors, setErrors] = React.useState({});
   const [saveDialogue, setSaveDialogue] = React.useState(false);
-  const [relatedBeans, setRelatedBeans] = React.useState([]);
-  const [relatedDrinks, setRelatedDrinks] = React.useState([]);
   const [tabValue, setTabValue] = React.useState("1");
+
+  const [beanRows, setBeanRows] = React.useState([]);
+  const [beanPage, setBeanPage] = React.useState(0);
+  const [beanPageSize, setBeanPageSize] = React.useState(5);
+  const [beanTotalCount, setBeanTotalCount] = React.useState(0);
+  const [drinkRows, setDrinkRows] = React.useState([]);
+  const [drinkPage, setDrinkPage] = React.useState(0);
+  const [drinkPageSize, setDrinkPageSize] = React.useState(5);
+  const [drinkTotalCount, setDrinkTotalCount] = React.useState(0);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -52,18 +59,19 @@ export default function RoasterCafeFormPage() {
             setFormData(data)
           }
           if(mode === "view"){
-            const [beans, cafeLog] = await Promise.all([
-              beansByRoaster(shortid),
-              drinksByRoaster(shortid)
+            const [beans, drinks] = await Promise.all([
+              beansByRoaster(shortid, beanPage, beanPageSize),
+              drinksByRoaster(shortid, drinkPage, drinkPageSize)
             ]);
-            // console.log(beans);
-            setRelatedBeans(beans);
-            setRelatedDrinks(cafeLog);
+            setBeanRows(beans.results);
+            setBeanTotalCount(beans.count);
+            setDrinkRows(drinks.resolts);
+            setDrinkTotalCount(drinks.count);
           }
         }
       };
       load().catch(console.error);
-  }, []);
+  }, [beanPage, beanPageSize, drinkPage, drinkPageSize]);
 
   const handleFieldChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -132,10 +140,26 @@ export default function RoasterCafeFormPage() {
               </TabList>
             </Box>
             <TabPanel value="1">
-              <CoffeeTable columns={roasterFormBeansTableFieldsConfig} rows={relatedBeans} viewRoute={"/coffeeLog/beans/view"}/>
+              <CoffeeTable 
+                  columns={roasterFormBeansTableFieldsConfig} 
+                  rows={beanRows} 
+                  totalCount={beanTotalCount}
+                  onPageChange={setBeanPage} 
+                  onRowsPerPageChange={setBeanPageSize} 
+                  viewRoute={"/coffeeLog/beans/view"} 
+                  rowsPerPageDefault={5}
+                />
             </TabPanel>
             <TabPanel value="2">
-              <CoffeeTable columns={roasterFormDrinkTableFieldsConfig} rows={relatedDrinks} viewRoute={"/coffeeLog/drinks/view"}/>
+              <CoffeeTable 
+                  columns={roasterFormDrinkTableFieldsConfig} 
+                  rows={drinkRows} 
+                  totalCount={drinkTotalCount}
+                  onPageChange={setDrinkPage} 
+                  onRowsPerPageChange={setDrinkPageSize} 
+                  viewRoute={"/coffeeLog/drinks/view"} 
+                  rowsPerPageDefault={5}
+                />
             </TabPanel>
           </TabContext>
         </Box>

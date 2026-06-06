@@ -11,10 +11,18 @@ import { defaultRoastersTableColumns } from "../../../constants/tables/roasterLi
 
 export default function ListBeansPage() {
   const [rows, setRows] = React.useState([]);
+  const [page, setPage] = React.useState(0);
+  const [pageSize, setPageSize] = React.useState(10);
+  const [totalCount, setTotalCount] = React.useState(0);
 
   React.useEffect(() => {
-    defaultRoastersTableList().then(setRows);
-  }, []);
+    const load = async () => {
+      const roasterResult = await defaultRoastersTableList(page, pageSize);
+      setRows(roasterResult.results);
+      setTotalCount(roasterResult.count);
+    };
+    load().catch(console.error);
+  }, [page, pageSize]);
   
   const navigate = useNavigate();
   
@@ -32,7 +40,15 @@ export default function ListBeansPage() {
       }}
     >
       <PageHeaderTitle title={"List Roasters"} hasBackButton={true} backRoute={"/CoffeeLog"}  />
-      <CoffeeTable columns={defaultRoastersTableColumns} rows={rows} viewRoute={"/coffeeLog/roasters/view"} rowsPerPageDefault={25} />
+      <CoffeeTable 
+          columns={defaultRoastersTableColumns} 
+          rows={rows} 
+          totalCount={totalCount}
+          onPageChange={setPage} 
+          onRowsPerPageChange={setPageSize} 
+          viewRoute={"/coffeeLog/roasters/view"} 
+          rowsPerPageDefault={10}
+        />
     </Box>
   );
 }

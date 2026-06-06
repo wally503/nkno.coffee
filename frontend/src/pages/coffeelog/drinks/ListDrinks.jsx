@@ -9,11 +9,20 @@ import { defaultDrinksTableList } from "../../../api/drinkApi";
 
 export default function ListDrinksPage() {
   const [rows, setRows] = React.useState([]);
+  const [page, setPage] = React.useState(0);
+  const [pageSize, setPageSize] = React.useState(10);
+  const [totalCount, setTotalCount] = React.useState(0);
+
 
   React.useEffect(() => {
-    defaultDrinksTableList().then(setRows);
-  }, []);
-  
+    const load = async () => {
+      const drinksResult = await defaultDrinksTableList(page, pageSize);
+      setRows(drinksResult.results);
+      setTotalCount(drinksResult.count);
+    };
+    load().catch(console.error);
+  }, [page, pageSize]);
+
   const navigate = useNavigate();
   
   return (
@@ -30,7 +39,15 @@ export default function ListDrinksPage() {
       }}
     >
       <PageHeaderTitle title={"List Drinks"} hasBackButton={true} backRoute={"/CoffeeLog"}  />
-      <CoffeeTable columns={defaultDrinkTableColumns} rows={rows} viewRoute={"/coffeeLog/drinks/view"} rowsPerPageDefault={25}/>
+      <CoffeeTable 
+          columns={defaultDrinkTableColumns} 
+          rows={rows} 
+          totalCount={totalCount}
+          onPageChange={setPage} 
+          onRowsPerPageChange={setPageSize} 
+          viewRoute={"/coffeeLog/drinks/view"}
+          rowsPerPageDefault={10}
+        />
     </Box>
   );
 }

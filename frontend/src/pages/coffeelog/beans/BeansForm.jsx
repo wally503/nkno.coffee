@@ -41,13 +41,14 @@ export default function BeansFormPage() {
       setOptions({...BEANFORM_STATIC_OPTIONS, roasters, countries, notes});
       if (shortid){
         const { data } = await getBeanById(shortid);
+        // console.log('testin data', data)
         if(data){
-          setFormData(data)
           const noteLabels = data.flavor_notes.map(id => 
           notes.find(n => n.value === id)?.label
             ).filter(Boolean);
-          //console.log(noteLabels)
-          setFormData(prev => ({ ...prev, flavor_notes: noteLabels }));
+          console.log('data: ', data)
+          setFormData(prev => ({ ...data, flavor_notes: noteLabels }));
+          console.log('formdata: ', formData)
         }
       }
     };
@@ -63,9 +64,10 @@ export default function BeansFormPage() {
   const handleSubmit = async () => {
     try {
       const payload = { ...formData };  
+      console.log("result formdate for beans:", formData)
       const res = shortid ? await updateBean(shortid, payload) : await submitBeans(payload);
       setSaveDialogue(true);
-      // console.log("Add beans result:", res);
+      console.log("Add beans result:", res);
     } catch(err){
       console.log(err);
       setErrors(err);

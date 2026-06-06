@@ -94,7 +94,7 @@ class BeanListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Bean
-        fields = ['id', 'name', 'roaster', 'origin_country', 'roast_level', 'organic_or_not', 'washing_style', 'flavor_notes', 'elevation', 'short_id', 'purchase_date']
+        fields = ['id', 'name', 'roaster', 'origin_country', 'roast_level', 'organic_or_not', 'washing_style', 'flavor_notes', 'elevation', 'short_id', 'purchase_date', 'comments']
 
 class DrinkSerializer(serializers.ModelSerializer):
     roaster = serializers.SerializerMethodField()

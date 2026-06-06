@@ -11,10 +11,18 @@ import { defaultBeansTableColumns } from "../../../constants/tables/beansListCon
 
 export default function ListBeansPage() {
   const [rows, setRows] = React.useState([]);
+  const [page, setPage] = React.useState(0);
+  const [pageSize, setPageSize] = React.useState(10);
+  const [totalCount, setTotalCount] = React.useState(0);
 
   React.useEffect(() => {
-    defaultBeansTableList().then(setRows);
-  }, []);
+    const load = async () => {
+      const beansResult = await defaultBeansTableList(page, pageSize);
+      setRows(beansResult.results);
+      setTotalCount(beansResult.count);
+    };
+    load().catch(console.error);
+  }, [page, pageSize]);
   
   const navigate = useNavigate();
   
@@ -32,7 +40,15 @@ export default function ListBeansPage() {
       }}
     >
       <PageHeaderTitle title={"List Beans"} hasBackButton={true} backRoute={"/coffeeLog"}  />
-      <CoffeeTable columns={defaultBeansTableColumns} rows={rows} viewRoute={"/coffeeLog/beans/view"} rowsPerPageDefault={25} />
+      <CoffeeTable 
+          columns={defaultBeansTableColumns} 
+          rows={rows} 
+          totalCount={totalCount}
+          onPageChange={setPage} 
+          onRowsPerPageChange={setPageSize} 
+          viewRoute={"/coffeeLog/beans/view"} 
+          rowsPerPageDefault={10}
+        />
     </Box>
   );
 }

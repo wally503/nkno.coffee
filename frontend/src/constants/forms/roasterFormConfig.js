@@ -67,11 +67,11 @@ export const roasterFieldConfig = [
     placeholder: "https://instagram.com/perkatorycoffee",
   },
   {
-    type: "text",
+    type: "long_test",
     name: "notes",
     label: "Notes",
     required: false,
-    size: { xs: 12 },
+    size: { xs: 12, sm: 12, md: 12 },
     placeholder: "Personal notes about the roaster/cafe",
   },
 ];
@@ -99,13 +99,13 @@ export const roasterFormBeansTableFieldsConfig = [
     minWidth: 120,
   },
   {
-    id: "organic_or_not",
-    label: "Organic",
+    id: "roast_level",
+    label: "Roast",
     minWidth: 85,
   },
   {
     id: "washing_style",
-    label: "Washed",
+    label: "Process",
     minWidth: 85,
   },
   {

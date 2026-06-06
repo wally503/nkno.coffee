@@ -1,10 +1,10 @@
 // src/api/roasterApi.js
 import axiosInstance from './axiosInstance'
 
-export async function defaultRoastersTableList(){
+export async function defaultRoastersTableList(page = 0, pageSize = 10){
     try{
-        const { data } = await axiosInstance.get('roasters/')
-        return data.results
+        const { data } = await axiosInstance.get(`roasters/?page=${page + 1}&page_size=${pageSize}`)
+        return data
     } catch (error) {
         console.error(error.response.status)
         console.error(error.response.data)

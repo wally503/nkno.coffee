@@ -14,18 +14,21 @@ import { useNavigate } from "react-router-dom";
 import { Grid, FormControl, FormHelperText, Box, Rating, Typography } from "@mui/material";
 import { ratingCustomIcons } from "./RatingGridItem";
 
-export default function CoffeeTable({columns, rows, viewRoute, rowsPerPageDefault = 10}) {
+export default function CoffeeTable({columns, rows, totalCount, onPageChange, onRowsPerPageChange, rowsPerPageDefault, viewRoute}) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(rowsPerPageDefault);
   const navigate = useNavigate();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+    onPageChange(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+    onRowsPerPageChange(+event.target.value);
+    onPageChange(0);
   };
 
   if (!columns?.length) return null;
@@ -54,7 +57,7 @@ export default function CoffeeTable({columns, rows, viewRoute, rowsPerPageDefaul
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.length === 0 ?
+                {!rows || rows.length === 0 ?
                 <TableRow
                   tabIndex={-1}
                   key={0}>
@@ -62,7 +65,6 @@ export default function CoffeeTable({columns, rows, viewRoute, rowsPerPageDefaul
                 </TableRow>
                 :
                 rows
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => {
                     return (
                       <TableRow
@@ -87,9 +89,9 @@ export default function CoffeeTable({columns, rows, viewRoute, rowsPerPageDefaul
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
+            rowsPerPageOptions={[5, 10, 25, 100]}
             component="div"
-            count={rows.length}
+            count={totalCount}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

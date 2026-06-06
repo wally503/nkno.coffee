@@ -74,13 +74,13 @@ export const beansFieldConfig = [
     placeholder: "1800",
   },
   {
-    type: "text",
-    name: "max_elevation",
-    label: "Maximum Elevation (in MASL)",
+    type: "long_text",
+    name: "comments",
+    label: "Comments on Bean",
     required: false,
-    size: { xs: 12, sm: 4, md: 4 },
-    placeholder: "3000",
-  },  
+    size: { xs: 12, sm: 12, md: 12 },
+    placeholder: "Personal notes about the beans",
+  },
   {
     type: "divider",
   },
@@ -93,6 +93,7 @@ export const beansFieldConfig = [
     // size: { xs: 12, sm: 4, md: 4 },
     // placeholder: "",
   },  
+  
 ];
 
 
