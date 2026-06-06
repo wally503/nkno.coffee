@@ -72,7 +72,7 @@ class Bean(models.Model):
         null=True,
         blank=True,
     ) 
-    roast_level = models.CharField(max_length=50, blank=True, choices=RoastLevel.choices)
+    roast_level = roast_level = models.CharField(max_length=50, blank=True, null=True, choices=RoastLevel.choices)
     organic_or_not = models.CharField(max_length=20, blank=True, choices=OrganicOrNot.choices)
     washing_style = models.CharField(max_length=50, blank=True, choices=WashingStyle.choices)
     caff_or_decaf = models.CharField(max_length=20, choices=CaffOrDecaf.choices)

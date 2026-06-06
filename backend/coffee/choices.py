@@ -7,9 +7,11 @@ class CaffOrDecaf(models.TextChoices):
 class WashingStyle(models.TextChoices):
     WASHED = 'washed', 'Washed'
     NATURAL = 'natural', 'Natural'
-    FERMENTED = 'fermented', 'Fermented'
     HONEY = 'honey', 'Honey'
-
+    WASHED_NATURAL = 'washed_natural', 'Washed & Natural'
+    ANAEROBIC_NATURAL = 'anaerobic_natural', 'Anaerobic Natural'
+    ANAEROBIC_WASHED = 'anaerobic_washed', 'Anaerobic Washed'
+    
 class OrganicOrNot(models.TextChoices):
     ORGANIC = 'organic', 'Organic'
     NOT_ORGANIC = 'not_organic', 'Not Organic'

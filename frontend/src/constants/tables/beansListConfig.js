@@ -21,7 +21,7 @@ export const defaultBeansTableColumns = [
   },
   {
     id: "washing_style",
-    label: "Washed",
+    label: "Process",
     minWidth: 85,
   },
   {

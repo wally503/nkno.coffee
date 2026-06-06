@@ -44,7 +44,7 @@ export const beansFieldConfig = [
   {
     type: "dropdown",
     name: "organic_or_not",
-    label: "Organic",
+    label: "Organic or Not",
     required: false,
     size: { xs: 12, sm: 4, md: 4 },
     optionSource: "organicFlags",
@@ -52,7 +52,7 @@ export const beansFieldConfig = [
   {
     type: "dropdown",
     name: "washing_style",
-    label: "Washed/Natural",
+    label: "Process",
     required: false,
     size: { xs: 12, sm: 4, md: 4 },
     optionSource: "processTypes",
@@ -119,9 +119,13 @@ export const BEANFORM_STATIC_OPTIONS = {
     { label: "Organic", value: 'organic' },
     { label: "Non-organic", value: 'not_organic' },
   ],
-  processTypes: [
+processTypes: [
     { label: "Washed", value: "washed" },
     { label: "Natural", value: "natural" },
+    { label: "Anaerobic Natural", value: "anaerobic_natural" },
+    { label: "Anaerobic Washed", value: "anaerobic_washed" },
+    { label: "Honey", value: "honey" },
+    { label: "Washed & Natural", value: "washed_natural" },
   ],
   caffeineFlags: [
     { label: "Caffeinated", value: 'caffeinated' },
