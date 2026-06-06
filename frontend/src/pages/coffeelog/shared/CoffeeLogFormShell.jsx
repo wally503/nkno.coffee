@@ -41,7 +41,6 @@ export default function CoffeeLogFormShell({
       <Box sx={{ width: "90%", maxWidth: 1400 }}>
         <Grid container spacing={3} columns={12}>
           {fields.map((field, index) => {
-            // console.log(field)
             switch(field.type) {
               case "text":              return buildTextField(field, formData, onFieldChange, mode, errors)
               case "date":              return buildDateField(field, formData, onFieldChange, mode, errors)
@@ -102,9 +101,6 @@ function buildDivider(key){
 }
 
 function buildMultilineTextField(field, formData, onFieldChange, mode, errors){
-  console.log('multiline text field entered for: ' ,field)
-  console.log('formdata:', formData)
-  console.log('field.name: ', field.name)
   return  <MultilineTextFieldGridItem
             key={field.name}
             item={field}

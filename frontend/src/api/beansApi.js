@@ -41,9 +41,9 @@ export async function beansCountries(){
     }
 }
 
-export async function beansNotes(){
+export async function beansNotes(pageSize = 500){
     try{
-        const { data } = await axiosInstance.get('notes/')
+        const { data } = await axiosInstance.get(`notes/?page_size=${pageSize}`)
         return data.results.map(r => ({ label: r.name, value: r.id }))
     } catch (error) {
         console.error(error.response.status);

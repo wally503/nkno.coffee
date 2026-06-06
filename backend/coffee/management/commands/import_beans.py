@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from coffee.models import Bean, Roaster, Countries
+from coffee.models import Bean, Roaster, Countries, FlavorNotes
 
 
 import csv
@@ -31,6 +31,9 @@ PROCESS_MAP = {
     'anaerobic natural': 'anaerobic_natural',
     'ethiopia (washed) - no remarks on kenya': 'washed',
 }
+
+def normalize_note(note):
+    return note.strip().replace('  ', ' ').rstrip('.').title()
 
 def parse_elevation(raw):
     if not raw.strip():
@@ -70,6 +73,12 @@ class Command(BaseCommand):
                 roaster = Roaster.objects.get(name=row['Roaster'])
                 
                 country_name = row['Country'].strip().lower()
+
+                raw_notes = row['Roaster Descrip']
+                if raw_notes:
+                    notes = [normalize_note(n) for n in raw_notes.split(',')]
+                    self.stdout.write(f"{row['Blend Name']} -> {notes}")
+
                 if not country_name or country_name.startswith('blend'):
                     country = None
                 else:
@@ -78,7 +87,7 @@ class Command(BaseCommand):
                 min_elev, max_elev = parse_elevation(row['Elevation'])
                 self.stdout.write(f"{row['Blend Name']} -> min:{min_elev} max:{max_elev}")
 
-                Bean.objects.create(
+                bean = Bean.objects.create(
                     name=row['Blend Name'],
                     roaster_id=roaster.id,
                     origin_country_id=country.id if country else None,
@@ -89,3 +98,10 @@ class Command(BaseCommand):
                     washing_style=PROCESS_MAP.get(row['Process'].strip().lower()) or '',
                     caff_or_decaf='decaffeinated' if 'decaf' in row['Blend Name'].lower() else 'caffeinated',
                 )
+
+                if raw_notes:
+                    note_objects = []
+                    for note_name in notes:
+                        note, _ = FlavorNotes.objects.get_or_create(name=note_name)
+                        note_objects.append(note)
+                    bean.flavor_notes.add(*note_objects)

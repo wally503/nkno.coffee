@@ -103,12 +103,19 @@ function addEditMode(item, mode, val, index, handleChange, handleAdd, handleRemo
 }
 
 function viewMode(item, values) {
+  // console.log('count: ', item.options.length)
+  const labels = values
+    .map(v => item.options.find(o => o.value == v)?.label ?? v)
+    .filter(Boolean);
+
+  // console.log('id type:', typeof values[0], 'value:', values[0]);
+  // console.log('option type:', typeof item.options[0]?.value, 'value:', item.options[0]?.value);
   return (
     <Grid key="flavor-view" size={{ xs: 12, sm: 6, md: 6 }}>
       <TextField
         fullWidth
         label="Flavor Notes"
-        value={values.filter(v => v).join(", ") || "-"}
+        value={labels.join(", ") || "-"}
         variant="standard"
         slotProps={{
           input: {

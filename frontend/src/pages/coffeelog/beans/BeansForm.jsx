@@ -46,9 +46,7 @@ export default function BeansFormPage() {
           const noteLabels = data.flavor_notes.map(id => 
           notes.find(n => n.value === id)?.label
             ).filter(Boolean);
-          console.log('data: ', data)
           setFormData(prev => ({ ...data, flavor_notes: noteLabels }));
-          console.log('formdata: ', formData)
         }
       }
     };
