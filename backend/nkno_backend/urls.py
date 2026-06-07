@@ -20,6 +20,18 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from django.shortcuts import redirect
+from rest_framework_simplejwt import views as jwt_views
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from . import views
+
+class Protected(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response({"content": "This view is protected"})
+
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -37,4 +49,11 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    
+    path('admin/', admin.site.urls),
+    path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+
+    path('api/auth/login/', views.login, name='login'),
+    path('api/auth/logout', views.logout, name='logout')
 ]

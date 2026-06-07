@@ -21,9 +21,9 @@ export async function beansByRoaster(shortid, page = 0, pageSize = 10){
     }
 }
 
-export async function beansRoasters(){
+export async function beansRoasters(pageSize = 500){
     try{
-        const { data } = await axiosInstance.get('roasters/')
+        const { data } = await axiosInstance.get(`roasters/?page_size=${pageSize}`)
         return data.results.map(r => ({ label: r.name, value: r.id }))
     } catch (error) {
         console.error(error.response.status)
@@ -31,9 +31,9 @@ export async function beansRoasters(){
     }
 }
 
-export async function beansCountries(){
+export async function beansCountries(pageSize = 500){
     try{
-        const { data } = await axiosInstance.get('countries/')
+        const { data } = await axiosInstance.get(`countries/?page_size=${pageSize}`)
         return data.results.map(r => ({ label: r.name, value: r.id }))
     } catch (error) {
         console.error(error.response.status);

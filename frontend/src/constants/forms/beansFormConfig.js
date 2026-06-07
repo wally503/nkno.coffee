@@ -76,7 +76,7 @@ export const beansFieldConfig = [
   {
     type: "long_text",
     name: "comments",
-    label: "Comments on Bean",
+    label: "Comments on Beans",
     required: false,
     size: { xs: 12, sm: 12, md: 12 },
     placeholder: "Personal notes about the beans",
@@ -87,7 +87,7 @@ export const beansFieldConfig = [
   {
     type: "dynamic_dropdown",
     name: "flavor_notes",
-    label: "Flavor Notes",
+    label: "Flavor / Body Notes",
     required: false,
     optionSource: "notes"
     // size: { xs: 12, sm: 4, md: 4 },

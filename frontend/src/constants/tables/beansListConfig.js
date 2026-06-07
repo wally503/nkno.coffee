@@ -31,7 +31,7 @@ export const defaultBeansTableColumns = [
   },
   {
     id: "flavor_notes",
-    label: "Notes",
+    label: "Flavor / Body Notes",
     minWidth: 180,
   },
   {

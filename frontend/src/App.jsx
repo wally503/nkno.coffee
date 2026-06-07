@@ -12,6 +12,8 @@ import { coffeelogOptions } from './routes/coffeeLogRoutes';
 import CoffeeLogLayout from './pages/coffeelog/CoffeeLogLayout';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import LoginPage from './Login';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -19,17 +21,21 @@ function App() {
   return (
     <>
       <Box component="main" sx={{ flexGrow: 1, p: 0, ml: `${drawerWidth}px`,}}>
-        <Toolbar/>
+        {/* <Toolbar/> */}
         <Routes>
-          <Route path="/" element={ <HomePage />  } />
-          <Route path="/maps" element={ <MapsPage />  } />
-          <Route path="/coffeeLog" element={ <CoffeeLogLayout />  }>
-            <Route index element={<CoffeeLogCardSelect />} />
-              {coffeelogOptions.map(({path, element}) => ( 
-                <Route key={path} path={path} element={element} />
-              ))}
+          <Route path="/login" element={<LoginPage />} />
+          {/* <Route path="/error" element={<ErrorPage />} /> */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/" element={ <HomePage />  } />
+            <Route path="/maps" element={ <MapsPage />  } />
+            <Route path="/coffeeLog" element={ <CoffeeLogLayout />  }>
+              <Route index element={<CoffeeLogCardSelect />} />
+                {coffeelogOptions.map(({path, element}) => ( 
+                  <Route key={path} path={path} element={element} />
+                ))}
+            </Route>
+            <Route path="/logHistory" element={ <LogHistoryPage />  } />
           </Route>
-          <Route path="/logHistory" element={ <LogHistoryPage />  } />
         </Routes>
       </Box>
     </>

@@ -76,7 +76,7 @@ function addEditMode(item, mode, val, index, handleChange, handleAdd, handleRemo
           renderInput={(params) => (
             <TextField
               {...params}
-              label="Flavor Note"
+              label={item.label}
               placeholder={item.mainLabel}
             />
           )}
@@ -111,9 +111,10 @@ function viewMode(item, values) {
   // console.log('id type:', typeof values[0], 'value:', values[0]);
   // console.log('option type:', typeof item.options[0]?.value, 'value:', item.options[0]?.value);
   return (
-    <Grid key="flavor-view" size={{ xs: 12, sm: 6, md: 6 }}>
+    <Grid key="flavor-view" size={{ xs: 12, sm: 12, md: 12}}>
       <TextField
         fullWidth
+        multiline
         label="Flavor Notes"
         value={labels.join(", ") || "-"}
         variant="standard"

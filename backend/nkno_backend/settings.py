@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'drf_yasg',
     'corsheaders',
     'rest_framework',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'api',
     'coffee',
 ]
@@ -136,5 +138,8 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'coffee.pagination.DynamicPageSizePagination',
-    'PAGE_SIZE': 20
+    'PAGE_SIZE': 20,
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
 }

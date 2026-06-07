@@ -7,6 +7,7 @@ export default function TextFieldGridItem({ item, onChange, value, mode, error }
         <Box sx={{ width: "100%" }}>
           <TextField
             fullWidth
+            multiline
             variant={mode === "view" ? "standard" : "outlined"}
             label={item.label}
             required={mode === "view" ? false : item.required}

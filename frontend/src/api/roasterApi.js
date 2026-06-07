@@ -22,9 +22,9 @@ export async function submitRoaster(formData) {
     }
 }
 
-export async function roastersCountries(){
+export async function roastersCountries(pageSize = 500){
     try{
-        const { data } = await axiosInstance.get('countries/')
+        const { data } = await axiosInstance.get(`countries/?page_size=${pageSize}`)
         return data.results.map(r => ({ label: r.name, value: r.id }))
     } catch (error) {
         console.error(error.response.status);
@@ -32,9 +32,9 @@ export async function roastersCountries(){
     }
 }
 
-export async function roastersRoasterCafe(){
+export async function roastersRoasterCafe(pageSize = 500){
     try{
-        const { data } = await axiosInstance.get('roasters/')
+        const { data } = await axiosInstance.get(`roasters/?page_size=${pageSize}`)
         return data.results.map(r => ({ label: r.name, value: r.id }))
     } catch (error) {
         console.error(error.response.status)
