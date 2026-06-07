@@ -3,7 +3,7 @@ import axiosInstance from './axiosInstance'
 
 export async function defaultDrinksTableList(page = 0, pageSize = 10){
     try{
-        const { data } = await axiosInstance.get(`drinks/?page=${page + 1}&page_size=${pageSize}`)
+        const { data } = await axiosInstance.get(`coffee/drinks/?page=${page + 1}&page_size=${pageSize}`)
         return data
     } catch (error) {
         console.error(error.response.status)
@@ -13,7 +13,7 @@ export async function defaultDrinksTableList(page = 0, pageSize = 10){
 
 export async function drinksByRoaster(shortid, page = 0, pageSize = 10){
     try{
-        const { data } = await axiosInstance.get(`drinks/?roaster=${shortid}&page=${page + 1}&page_size=${pageSize}`);
+        const { data } = await axiosInstance.get(`coffee/drinks/?roaster=${shortid}&page=${page + 1}&page_size=${pageSize}`);
         return data
     } catch (error) {
         console.error(error.response.status)
@@ -23,7 +23,7 @@ export async function drinksByRoaster(shortid, page = 0, pageSize = 10){
 
 export async function submitDrink(formData) {
     try {
-        return await axiosInstance.post('drinks/', formData);
+        return await axiosInstance.post('coffee/drinks/', formData);
     } catch (error){
         if (error.response?.status === 400){
             throw error.response.data;
@@ -34,7 +34,7 @@ export async function submitDrink(formData) {
 
 export async function drinksRoasters(){
     try{
-        const { data } = await axiosInstance.get('roasters/')
+        const { data } = await axiosInstance.get('coffee/roasters/')
         return data.results.map(r => ({ label: r.name, value: r.id }))
     } catch (error) {
         console.error(error.response.status)
@@ -44,7 +44,7 @@ export async function drinksRoasters(){
 
 export async function getDrinkById(id){
     try {
-        return await axiosInstance.get('drinks/' + id)
+        return await axiosInstance.get('coffee/drinks/' + id)
     } catch (error) {
         console.error(error.response.status);
         console.error(error.response.data);

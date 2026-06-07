@@ -9,11 +9,22 @@ import HomeIcon from '@mui/icons-material/Home';
 import CoffeeIcon from '@mui/icons-material/Coffee';
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import AssessmentIcon from '@mui/icons-material/Assessment';
+import LogoutIcon from '@mui/icons-material/Logout';
 import './NavDrawer.css'
 import NavBarItem from './NavBarItem.jsx'
 import { drawerWidth } from '../constants/layout';
+import { logout } from '../api/authApi.js';
+import { useNavigate, Navigate } from 'react-router-dom';
 
 export default function NavDrawer() {
+  const navigate = useNavigate();
+  
+  async function Logout(){
+    console.log('calling logout func')
+    await logout();
+    navigate('/login');
+  }
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -37,8 +48,9 @@ export default function NavDrawer() {
           <List>
             <NavBarItem icon={<HomeIcon/>} route="/" label="Home" />
             <NavBarItem icon={<AddLocationAltIcon/>} route="/maps" label="Maps" />
-            <NavBarItem icon={<CoffeeIcon/>} route="/coffeeLog" label="CoffeeLog" />
-            <NavBarItem icon={<AssessmentIcon/>} route="/logHistory" label="LogHistory" />
+            <NavBarItem icon={<CoffeeIcon/>} route="/coffeeLog" label="Coffee Log" />
+            <NavBarItem icon={<AssessmentIcon/>} route="/logHistory" label="Log History" />
+            <NavBarItem icon={<LogoutIcon/>} onClick={Logout} label="Logout" />
           </List>    
         </Box>
       </Drawer>

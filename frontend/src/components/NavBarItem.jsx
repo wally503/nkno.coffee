@@ -4,12 +4,12 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 
-const NavBarItem = ({ icon, label, route }) => {
+const NavBarItem = ({ icon, label, route, onClick }) => {
   const navigate = useNavigate();
 
   return (
     <ListItem key={label} disablePadding>
-      <ListItemButton onClick={() => navigate(route)}>
+      <ListItemButton onClick={onClick ?? (() => navigate(route))}>
         <ListItemIcon>{icon}</ListItemIcon>
         <ListItemText primary={label} />
       </ListItemButton>
