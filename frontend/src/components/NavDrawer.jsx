@@ -26,7 +26,7 @@ export default function NavDrawer() {
   }
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: 'calc(100% - 64px)' }}>
       <CssBaseline />
       <AppBar className="title-appbar-style" position="fixed" sx={{ backgroundColor: '#512929', zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar className='title-container-align'>
@@ -40,16 +40,30 @@ export default function NavDrawer() {
         sx={{
           width: drawerWidth,
           flexShrink: 0,
-          [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box', backgroundColor: "#2f2e2e" },
+          [`& .MuiDrawer-paper`]: { 
+            alignSelf: 'flex-start',
+            width: drawerWidth, 
+            boxSizing: 'border-box', 
+            backgroundColor: "#2f2e2e",
+            display: 'flex',
+            flexDirection: 'column',
+            // justifyContent: 'space-between'
+          },
         }}
       >
         <Toolbar />
-        <Box sx={{ overflow: 'auto' }}>
+        {/* top bar  */}
+        <Box sx={{ }}>
           <List>
             <NavBarItem icon={<HomeIcon/>} route="/" label="Home" />
             <NavBarItem icon={<AddLocationAltIcon/>} route="/maps" label="Maps" />
             <NavBarItem icon={<CoffeeIcon/>} route="/coffeeLog" label="Coffee Log" />
             <NavBarItem icon={<AssessmentIcon/>} route="/logHistory" label="Log History" />
+          </List>    
+        </Box>
+        {/* bottom bar */}
+        <Box sx={{ mt: 'auto' }}>
+          <List>
             <NavBarItem icon={<LogoutIcon/>} onClick={Logout} label="Logout" />
           </List>    
         </Box>
