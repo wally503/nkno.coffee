@@ -15,14 +15,29 @@ import NavBarItem from './NavBarItem.jsx'
 import { drawerWidth } from '../constants/layout';
 import { logout } from '../api/authApi.js';
 import { useNavigate, Navigate } from 'react-router-dom';
+import { useContext } from 'react'
+import { AuthContext } from '../context/AuthContext'
+import SettingsIcon from '@mui/icons-material/Settings';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import IconButton from '@mui/material/IconButton';
+import { Divider } from '@mui/material';
 
 export default function NavDrawer() {
   const navigate = useNavigate();
-  
+  const { usernameContext } = useContext(AuthContext)
+
   async function Logout(){
     console.log('calling logout func')
     await logout();
     navigate('/login');
+  }
+
+  async function UserSettings(){
+    0
   }
 
   return (
@@ -65,6 +80,17 @@ export default function NavDrawer() {
         <Box sx={{ mt: 'auto' }}>
           <List>
             <NavBarItem icon={<LogoutIcon/>} onClick={Logout} label="Logout" />
+            {/* user bar */}
+            <Divider  />
+            <ListItem sx={{ pl: 1.7, pr: 1, pb: 0.3  }} key={usernameContext}>
+              <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', gap: 1 }}>
+                <AccountCircleIcon sx={{ color: '#64b5f6' }} />
+                <ListItemText primary={usernameContext} sx={{ flex: 1, ml: 0.6, color: '#aea8a8' }} />
+                <IconButton onClick={UserSettings} size="small">
+                  <SettingsIcon sx={{ color: '#9e9e9e' }} />
+                </IconButton>
+              </Box>
+            </ListItem>
           </List>    
         </Box>
       </Drawer>

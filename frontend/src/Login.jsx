@@ -11,7 +11,6 @@ export default function LoginPage() {
 
     return (
         <>
-
             <Grid sx={{ backgroundColor: '#1c1c1c', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', flexDirection: 'column' }}>
                 <Box className="title-font" component="h1">
                     nkno.coffee

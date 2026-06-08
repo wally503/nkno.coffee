@@ -1,0 +1,133 @@
+-- STARTUP
+---------------------------------------------------------------------------
+  Backend (Terminal 1):
+    1) cd backend
+    2) source venv/bin/activate
+       OR . venv/bin/activate
+    3) python manage.py runserver
+       -> runs on http://127.0.0.1:8000
+       -> swagger at http://127.0.0.1:8000/swagger
+
+  Frontend (Terminal 2):
+    1) cd frontend
+    2) npm run dev
+       -> runs on http://127.0.0.1:5173
+
+  Deactivate venv when done:
+    deactivate
+
+
+-- FRESH CLONE / REBUILDING DEPENDENCIES
+---------------------------------------------------------------------------
+  Python (from backend dir):
+    python -m venv venv
+    source venv/bin/activate
+    pip install -r requirements.txt
+
+  Node (from frontend dir):
+    npm install
+
+
+-- MIGRATIONS
+---------------------------------------------------------------------------
+  Django (from backend dir, venv must be active):
+    python manage.py makemigrations         (all apps)
+    python manage.py makemigrations coffee  (coffee app only)
+    python manage.py migrate
+
+  EF Core equivalent:
+    dotnet ef migrations add Init
+    dotnet ef database update
+
+
+-- SQLITE
+---------------------------------------------------------------------------
+  1) cd backend
+  2) sqlite3 db.sqlite3
+  3) .tables
+
+  Schema:
+    .schema coffee_bean
+    PRAGMA table_info(coffee_beans);
+
+  Cleaner table view:
+    .headers on
+    .mode column
+
+  Example insert:
+    INSERT INTO beans (name, origin_country)
+      VALUES
+        ('Kochere', 'Ethiopia'),
+        ('Gedeb', 'Ethiopia'),
+        ('Aricha', 'Ethiopia');
+
+
+-- MENTAL MODELS / EXAMPLES
+---------------------------------------------------------------------------
+
+  // beanExample
+  const beanExample = {
+    id: 1,                         // DB primary key (server side)
+    bean_name: "House Blend",      // text input
+    roaster_id: 2,                 // foreign key -> roaster table
+    country_id: 3,                 // foreign key -> country table
+    roast_level: "medium",         // enum: "light" | "light_medium" | ...
+    is_organic: true,              // true / false
+    process: "washed",             // "washed" | "natural"
+    is_caffeinated: true,          // true / false
+    flavor_notes: [                // tags from the dynamic dropdown
+      "chocolate",
+      "berry",
+      "citrus"
+    ]
+  };
+
+  -- NPM / DEPENDENCY MAINTENANCE
+---------------------------------------------------------------------------
+  Audit & fix vulnerabilities:
+    npm audit           (see what's flagged)
+    npm audit fix       (auto-fix semver-safe ones)
+
+  Bump direct deps manually if needed:
+    npm install vite@latest
+    npm install react-router@latest
+    npm install rollup@latest
+
+  Last resolved: March 2026
+    - Cleared all Dependabot alerts (rollup, vite, react-router,
+      cross-spawn, nanoid, micromatch, esbuild, babel, etc.)
+    - High severity hits were rollup, cross-spawn, minimatch,
+      @remix-run/router
+
+
+-- ENVIRONMENT / CONFIG
+---------------------------------------------------------------------------
+  Copy .env.example to .env and fill in values:
+    cp .env.example .env
+
+  Variables:
+    VITE_API_URL=http://localhost:8000/api/   (backend base URL)
+    VITE_DEV_BYPASS=false                     (set true to skip auth in dev)
+
+  Vite loads .env.{mode} based on run mode:
+    npm run dev              -> .env.development (falls back to .env)
+    npm run dev --mode foo   -> .env.foo
+
+  Django superuser (first time setup):
+    python manage.py createsuperuser
+
+
+-- AUTH NOTES
+---------------------------------------------------------------------------
+  JWT stored as httpOnly cookies (set by Django, invisible to JS).
+  Access token: short-lived (5min default).
+  Refresh token: longer-lived, blacklisted on logout.
+
+  CORS must specify origin (not wildcard) when using withCredentials:
+    CORS_ALLOWED_ORIGINS = ["http://localhost:5173"]
+    CORS_ALLOW_CREDENTIALS = True
+
+  Test auth endpoints via Insomnia:
+    POST api/auth/login/   -> sets cookies
+    GET  api/auth/valid/   -> checks access token
+    POST api/auth/logout/  -> clears cookies + blacklists refresh token

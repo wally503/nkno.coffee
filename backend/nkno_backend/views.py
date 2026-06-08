@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework.exceptions import ValidationError, ParseError
 from rest_framework import status
+from django.contrib.auth.models import User
 
 @api_view(['POST'])
 def login(request):
@@ -40,11 +41,13 @@ def logout(request):
 @api_view(['GET'])
 def valid(request):
     raw_access_token = request.COOKIES.get('access_token')
+
     if not raw_access_token:
         return Response({"detail": "BAD"}, status=status.HTTP_401_UNAUTHORIZED)
     try:
         token = AccessToken(raw_access_token)
-        return Response({"detail": "OK"})
+        user = User.objects.get(id=token["user_id"])
+        return Response({"detail": "OK", "username": user.username})
     except Exception:
         return Response({"detail": "BAD"}, status=status.HTTP_401_UNAUTHORIZED)
     
