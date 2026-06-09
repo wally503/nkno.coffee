@@ -6,12 +6,12 @@ import * as topojson from 'topojson-client';
 import { Box } from "@mui/material";
 
 
-export default function HeatmapDisplayPage({ mapType, mapData, projection, isoKey, mapKey }){
+export default function HeatmapDisplayPage({ mapType, mapData, projection, isoKey, mapKey, fitWorld=false }){
     const [map, setMap] = useState();
     const [data, setData] = useState([]);
     const svgRef = useRef(null);
     const svgHoverRef = useRef(null);
-
+    
     useEffect(() => {
         setMap(mapType);
         setData(mapData);
@@ -19,15 +19,15 @@ export default function HeatmapDisplayPage({ mapType, mapData, projection, isoKe
 
     useEffect(() => {
         if (!map || !projection || !data.length) return;
-        // Prep data for transforms
         const mappeddata = Object.fromEntries(data.map((result) =>[result[isoKey], result.count]));
         const maxCount = Math.max(...data.map((x) => x.count));
 
         const path = d3.geoPath(projection);
-        // console.log('mapkey: ' + mapKey);
         const mapFeatures = topojson.feature(map, map.objects[mapKey]);
-        projection.fitSize([1200, 600], mapFeatures);
-        const scale = d3.scaleSequential([0, maxCount], d3.interpolateOranges);
+        if (fitWorld) {
+            projection.fitSize([1200, 600], mapFeatures);
+        }
+        const scale = d3.scaleSequential([-5, maxCount], d3.interpolateBuPu);
         
         const svgTooltip = d3.select(svgHoverRef.current);
         const svg = d3.select(svgRef.current);
@@ -37,7 +37,7 @@ export default function HeatmapDisplayPage({ mapType, mapData, projection, isoKe
             .join('path')
             .attr('d', path)
             .attr('fill', (d) => mappeddata[d.id] ? scale(mappeddata[d.id]) : '#023011' )
-            .attr('stroke', '#8d2500b4')
+            .attr('stroke', '#bb3200b4')
             .on('mouseover', (event, d) => { 
                 svgTooltip.style('visibility', 'visible').text(d.properties.name + ": " + (mappeddata[d.id] ? mappeddata[d.id] : 0));
             })
@@ -55,7 +55,7 @@ export default function HeatmapDisplayPage({ mapType, mapData, projection, isoKe
 
     return (
         <>
-          <Box 
+            <Box 
                 sx={{ 
                     display: 'flex', 
                     width: '100%', 

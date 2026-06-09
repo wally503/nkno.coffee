@@ -3,11 +3,11 @@
 import * as React from "react";
 import { getBeanCountryCount } from "../../../api/beansApi";
 import * as d3 from 'd3';
-import { Typography, Box, Tab, Divider } from "@mui/material";
+import { Typography, Box, Tab, Divider, backdropClasses } from "@mui/material";
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import HeatmapDisplayPage from "../../../components/HeatmapDisplay";
 import BubblemapDisplayPage from "../../../components/BubblemapDisplay";
-
+import {HeatmapUSMapDisplay, HeatmapMercatorMapDisplay, HeatmapWorldMapDisplay}  from "../HeatmapTemplates";
 
 export default function BeansHeatmapPage(){
     const [map, setMap] = React.useState();
@@ -43,54 +43,28 @@ export default function BeansHeatmapPage(){
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <TabList onChange={handleTabChange} aria-label="lab API tabs example">
                         <Tab label="World" value="1" />
+                        <Tab label="Americas" value="2" />
+                        <Tab label="Africa" value="3" />
+                        <Tab label="Asia Pacific" value="4" />
                     </TabList>
                     </Box>
                     <TabPanel value="1">
-                        <BubbleMapWorldMapDisplay map={map} data={results} />
-                        <Divider sx={{ mt:5, mb: 4, mx: -5, justifyContent: 'center' }} />
-                        <HeatmapWorldMapDisplay map={map} data={results} />
+                        <HeatmapWorldMapDisplay map={map} data={results} title="Beans by Location" subtitle="in the World" isoKey="origin_country__iso_code"/>
+                    </TabPanel>
+                    <TabPanel value="2">
+                        <HeatmapMercatorMapDisplay map={map} data={results} title="Beans by Location" 
+                            subtitle="in the Americas" longetude={-95} latitude={15} scale={550} isoKey="origin_country__iso_code"/>
+                    </TabPanel>
+                    <TabPanel value="3">
+                        <HeatmapMercatorMapDisplay map={map} data={results} title="Beans by Location" 
+                            subtitle="in Africa" longetude={10} latitude={15} scale={550} isoKey="origin_country__iso_code"/>
+                    </TabPanel>
+                    <TabPanel value="4">
+                        <HeatmapMercatorMapDisplay map={map} data={results} title="Beans by Location" 
+                            subtitle="in Asia Pacific" longetude={115} latitude={15} scale={500} isoKey="origin_country__iso_code"/>
                     </TabPanel>
                 </TabContext>
             </Box>
-        </>
-    )
-}
-
-
-function BubbleMapWorldMapDisplay({map, data}){
-    return (
-        <>
-            <Box sx= {{ width: 'fit-content' }}>
-                <Typography variant="h4" sx={{ ml: 1, my: 0.5 }}>Beans by Country of Origin</Typography>
-                <Typography sx={{ ml: 10, my: -.5 }}><i>Beans by Country of Origin</i></Typography>
-                <Divider sx={{ ml: 7, mr: -7, mb: 3, mt: 1.5, borderColor: '#6c4e4d8e'  }}/>
-            </Box>
-            <BubblemapDisplayPage 
-                mapType={map} 
-                mapData={data} 
-                projection={d3.geoNaturalEarth1()} 
-                isoKey={"origin_country__iso_code"}
-                mapKey={"countries"}
-                />
-        </>
-    )
-}
-
-function HeatmapWorldMapDisplay({map, data}){
-    return (
-        <>
-            <Box sx= {{ width: 'fit-content' }}>
-                <Typography variant="h4" sx={{ ml: 1, my: 0.5 }}>Beans by Country of Origin</Typography>
-                <Typography sx={{ ml: 10, my: -.5 }}><i>Beans by Country of Origin</i></Typography>
-                <Divider sx={{ ml: 7, mr: -7, mb: 3, mt: 1.5, borderColor: '#6c4e4d8e'  }}/>
-            </Box>
-            <HeatmapDisplayPage 
-                mapType={map} 
-                mapData={data} 
-                projection={d3.geoNaturalEarth1()} 
-                isoKey={"origin_country__iso_code"}
-                mapKey={"countries"}
-                />
         </>
     )
 }

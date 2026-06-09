@@ -1,13 +1,10 @@
 // src/pages/maps/roasters/RoastersHeatmap.jsx
 
 import * as React from "react";
-import * as d3 from 'd3';
 import { Typography, Box, Tab, Divider } from "@mui/material";
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import HeatmapDisplayPage from "../../../components/HeatmapDisplay";
-import BubblemapDisplayPage from "../../../components/BubblemapDisplay";
 import { getRoasterCountryRegionCount, getRoasterCountryCount } from "../../../api/roasterApi";
-
+import {HeatmapUSMapDisplay, HeatmapMercatorMapDisplay, HeatmapWorldMapDisplay}  from "../HeatmapTemplates";
 
 export default function RoastersHeatmapPage(){
     const [worldMap, setWorldMap] = React.useState();
@@ -55,14 +52,10 @@ export default function RoastersHeatmapPage(){
                     </TabList>
                     </Box>
                     <TabPanel value="1">
-                        <BubblemapUSMapDisplay map={usMap} data={usData} />
-                        <Divider sx={{ mt:5, mb: 4, mx: -5, justifyContent: 'center' }} />
-                        <HeatmapUSMapDisplay map={usMap} data={usData} />
+                        <HeatmapUSMapDisplay map={usMap} data={usData} title="Roasters by Country of Origin" subtitle="in the United States"/>
                     </TabPanel>
                     <TabPanel value="2">
-                        <BubbleMapWorldMapDisplay map={worldMap} data={worldData} />
-                        <Divider sx={{ mt:5, mb: 4, mx: -5, justifyContent: 'center' }} />
-                        <HeatmapWorldMapDisplay map={worldMap} data={worldData} />
+                        <HeatmapWorldMapDisplay map={worldMap} data={worldData} title="Roasters by Country of Origin" subtitle="in the World" isoKey={"country__iso_code"}/>
                     </TabPanel>
                 </TabContext>
             </Box>
@@ -70,78 +63,3 @@ export default function RoastersHeatmapPage(){
     )
 }
 
-function BubbleMapWorldMapDisplay({map, data}){
-    return (
-        <>
-            <Box sx= {{ width: 'fit-content' }}>
-                <Typography variant="h4" sx={{ ml: 1, my: 0.5 }}>Roasters by Country of Origin</Typography>
-                <Typography sx={{ ml: 10, my: -.5 }}><i>Roasters by Country of Origin</i></Typography>
-                <Divider sx={{ ml: 7, mr: -7, mb: 3, mt: 1.5, borderColor: '#6c4e4d8e'  }}/>
-            </Box>
-            <BubblemapDisplayPage 
-                mapType={map} 
-                mapData={data} 
-                projection={d3.geoNaturalEarth1()} 
-                isoKey={"country__iso_code"}
-                mapKey={"countries"}
-                />
-        </>
-    )
-}
-
-function HeatmapWorldMapDisplay({map, data}){
-    return (
-        <>
-            <Box sx= {{ width: 'fit-content' }}>
-                <Typography variant="h4" sx={{ ml: 1, my: 0.5 }}>Roasters by Country of Origin</Typography>
-                <Typography sx={{ ml: 10, my: -.5 }}><i>Roasters by Country of Origin</i></Typography>
-                <Divider sx={{ ml: 7, mr: -7, mb: 3, mt: 1.5, borderColor: '#6c4e4d8e'  }}/>
-            </Box>
-            <HeatmapDisplayPage 
-                mapType={map} 
-                mapData={data} 
-                projection={d3.geoNaturalEarth1()} 
-                isoKey={"country__iso_code"}
-                mapKey={"countries"}
-                />
-        </>
-    )
-}
-
-function BubblemapUSMapDisplay({map, data}){
-    return (
-        <>
-            <Box sx= {{ width: 'fit-content' }}>
-                <Typography variant="h4" sx={{ ml: 1, my: 0.5 }}>Roasters by State In US</Typography>
-                <Typography sx={{ ml: 10, my: -.5 }}><i>Roasters by State In US</i></Typography>
-                <Divider sx={{ ml: 7, mr: -7, mb: 3, mt: 1.5, borderColor: '#6c4e4d8e'  }}/>
-            </Box>
-            <BubblemapDisplayPage 
-                mapType={map} 
-                mapData={data} 
-                projection={d3.geoAlbersUsa()} 
-                isoKey={"region__identifier_code"}
-                mapKey={"states"}
-                />
-        </>
-    )
-}
-
-function HeatmapUSMapDisplay({map, data}){
-    return (
-        <>
-            <Box sx= {{ width: 'fit-content' }}>
-                <Typography variant="h4" sx={{ ml: 1, my: 0.5 }}>Roasters by Country of Origin</Typography>
-                <Typography sx={{ ml: 10, my: -.5 }}><i>Roasters by Country of Origin</i></Typography>
-                <Divider sx={{ ml: 7, mr: -7, mb: 3, mt: 1.5, borderColor: '#6c4e4d8e'  }}/>
-            </Box>
-            <HeatmapDisplayPage 
-                mapType={map} 
-                mapData={data} 
-                projection={d3.geoAlbersUsa()} 
-                isoKey={"region__identifier_code"}
-                mapKey={"states"}
-                />
-        </>
-    )
-}
