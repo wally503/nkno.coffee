@@ -136,3 +136,14 @@ class RegionsViewSet(viewsets.ModelViewSet):
         match self.action:
             case _:
                 return RegionsSerializer
+
+class MapzoneViewSet(viewsets.ModelViewSet):
+    queryset = MapZone.objects.all()
+    serializer_class = MapZoneSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        zone = self.request.query_params.get('zone_name')
+        if zone:
+            queryset = queryset.filter(zone_name=zone)
+        return queryset

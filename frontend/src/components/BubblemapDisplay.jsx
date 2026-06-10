@@ -55,7 +55,12 @@ export default function BubblemapDisplayPage({ mapType, mapData, projection, iso
             .on('mousemove', (event) => { 
                 svgTooltip
                     .style('left', (event.pageX + 10) + 'px')
-                    .style('top', (event.pageY + 10) + 'px');
+                    .style('top', (event.pageY + 10) + 'px')
+                    .style('background', 'rgba(30, 30, 30, 0.85)')
+                    .style('color', '#f0e6d3')
+                    .style('padding', '6px 10px')
+                    .style('border-radius', '6px')
+                    .style('font-size', '14px')
             })
             .on('mouseout', (event, d) => {
                 svgTooltip.style('visibility', 'hidden').text('')

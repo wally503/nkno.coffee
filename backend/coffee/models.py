@@ -118,3 +118,9 @@ class Drink(models.Model):
     def __str__(self):
         return f"{self.roaster} – {self.drink} ({self.drink_date})"
 
+class MapZone(models.Model):
+    zone_name = models.CharField(max_length=100, blank=False)
+    countries = models.ManyToManyField(Countries)
+
+    def __str__(self):
+        return f"{self.zone_name} ID: {self.id}"

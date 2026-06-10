@@ -25,12 +25,10 @@ export default function RoastersHeatmapPage(){
                 fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(r => r.json()),
                 fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').then(r => r.json())
             ]);
-            console.log('us data pre: ' + usResult.data);
             setWorldData(worldResult.data);
             setUsData(usResult.data);
             setWorldMap(worldMapResult);
             setUsMap(usMapResult);
-            console.log('us data: ' + usData);
         }
         load().catch(console.error);
     }, []);
@@ -52,10 +50,10 @@ export default function RoastersHeatmapPage(){
                     </TabList>
                     </Box>
                     <TabPanel value="1">
-                        <HeatmapUSMapDisplay map={usMap} data={usData} title="Roasters by Country of Origin" subtitle="in the United States"/>
+                        <HeatmapUSMapDisplay map={usMap} data={usData} title="Roasters by States" subtitle="in the United States"/>
                     </TabPanel>
                     <TabPanel value="2">
-                        <HeatmapWorldMapDisplay map={worldMap} data={worldData} title="Roasters by Country of Origin" subtitle="in the World" isoKey={"country__iso_code"}/>
+                        <HeatmapWorldMapDisplay map={worldMap} data={worldData} title="Roasters by Country" subtitle="in the World" isoKey={"country__iso_code"}/>
                     </TabPanel>
                 </TabContext>
             </Box>

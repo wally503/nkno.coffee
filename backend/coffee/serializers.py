@@ -91,7 +91,7 @@ class BeanListSerializer(serializers.ModelSerializer):
 
     def get_roast_level(self, obj):
         return obj.get_roast_level_display() if obj.roast_level else '-'
-
+    
     class Meta:
         model = Bean
         fields = ['id', 'name', 'roaster', 'origin_country', 'roast_level', 'organic_or_not', 'washing_style', 'flavor_notes', 'elevation', 'short_id', 'purchase_date', 'comments']
@@ -133,4 +133,14 @@ class FlavorNotesSerializer(serializers.ModelSerializer):
 class RegionsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Region
+        fields = '__all__'
+
+class MapZoneSerializer(serializers.ModelSerializer):
+    countries = serializers.SerializerMethodField()
+
+    def get_countries(self, obj):
+        return list(obj.countries.values_list('iso_code', flat=True))
+
+    class Meta:
+        model = MapZone
         fields = '__all__'
