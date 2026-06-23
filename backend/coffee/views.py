@@ -1,10 +1,12 @@
 from django.shortcuts import render
+from django.db.models import Count
+from django.db.models.functions import Coalesce
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.filters import OrderingFilter, SearchFilter
 from .serializers import *
 from .models import *
-from django.db.models import Count
 
 class RoasterViewSet(viewsets.ModelViewSet):
     queryset = Roaster.objects.all()
@@ -37,9 +39,13 @@ class RoasterViewSet(viewsets.ModelViewSet):
                 return RoasterSerializer
     
 class BeanViewSet(viewsets.ModelViewSet):
-    queryset = Bean.objects.all()
+    queryset = Bean.objects.all().distinct()
     serializer_class = BeanSerializer
     lookup_field = 'short_id'
+    filter_backends = [OrderingFilter, SearchFilter]
+    search_fields = ['name', 'roaster__name', 'origin_country__name', 'roast_level', 'washing_style', 'flavor_notes__name']
+    ordering_fields = ['name', 'roaster__name', 'origin_country__name', 'roast_level', 'washing_style', 'purchase_date']  # whitelist what's sortable
+    ordering = ['name']  # default ordering
 
     def create(self, request):
         flav_notes = request.data.get('flavor_notes')

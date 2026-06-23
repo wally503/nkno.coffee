@@ -1,9 +1,9 @@
 // src/api/beansApi.js
 import axiosInstance from './axiosInstance'
 
-export async function defaultBeansTableList(page = 0, pageSize = 10){
+export async function defaultBeansTableList(page = 0, pageSize = 10, search = null, order = null){
     try{
-        const { data } = await axiosInstance.get(`coffee/beans/?page=${page + 1}&page_size=${pageSize}`)
+        const { data } = await axiosInstance.get(`coffee/beans/?page=${page + 1}&page_size=${pageSize}&search=${search ?? ''}&ordering=${order ?? ''}`)
         return data
     } catch (error) {
         console.error(error.response.status)
@@ -11,9 +11,9 @@ export async function defaultBeansTableList(page = 0, pageSize = 10){
     }
 }
 
-export async function beansByRoaster(shortid, page = 0, pageSize = 10){
+export async function beansByRoaster(shortid, page = 0, pageSize = 10, search = null, order = null){
     try{
-        const { data } = await axiosInstance.get(`coffee/beans/?roaster=${shortid}&page=${page + 1}&page_size=${pageSize}`);
+        const { data } = await axiosInstance.get(`coffee/beans/?roaster=${shortid}&page=${page + 1}&page_size=${pageSize}&search=${search ?? ''}&ordering=${order ?? ''}`)
         return data
     } catch (error) {
         console.error(error.response.status)
@@ -21,9 +21,9 @@ export async function beansByRoaster(shortid, page = 0, pageSize = 10){
     }
 }
 
-export async function beansRoasters(pageSize = 500){
+export async function beansRoasters(pageSize = 500, search = null, order = null){
     try{
-        const { data } = await axiosInstance.get(`coffee/roasters/?page_size=${pageSize}`)
+        const { data } = await axiosInstance.get(`coffee/roasters/?page_size=${pageSize}&search=${search ?? ''}&ordering=${order ?? ''}`)
         return data.results.map(r => ({ label: r.name, value: r.id }))
     } catch (error) {
         console.error(error.response.status)

@@ -10,19 +10,30 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import PageHeaderTitle from "./PageTitle";
+import TextField from "@mui/material/TextField";
 import { useNavigate } from "react-router-dom";
-import { Grid, FormControl, FormHelperText, Box, Rating, Typography } from "@mui/material";
+import { Grid, FormControl, FormHelperText, Box, Rating, Typography, TableSortLabel } from "@mui/material";
 import { ratingCustomIcons } from "./RatingGridItem";
 
-export default function CoffeeTable({columns, rows, totalCount, onPageChange, onRowsPerPageChange, rowsPerPageDefault, viewRoute}) {
+export default function CoffeeTable({columns, rows, totalCount, onPageChange, onRowsPerPageChange, onSearchChange, onOrderingChange, orderField, orderDir, rowsPerPageDefault, viewRoute}) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(rowsPerPageDefault);
+  const [search, setSearch] = React.useState('');
+  const [ordering, setOrdering] = React.useState('name');
   const navigate = useNavigate();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
     onPageChange(newPage);
   };
+
+  const handleSearchChange = (event) => {
+    setSearch(event.target.value);
+  }
+
+  const handleOrderingChange = (event) => {
+    setOrdering(event.target.value);
+  }
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
@@ -40,9 +51,12 @@ export default function CoffeeTable({columns, rows, totalCount, onPageChange, on
           mx: "auto" 
         }}
       >
-        <Paper  >
+        <Paper>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 2 }}>
+            <TextField placeholder="Search..." onChange={onSearchChange} size="small" />
+          </Box>
           <TableContainer sx={{ overflowX: "auto" }}>
-            <Table stickyHeader aria-label="sticky table">
+            <Table stickyHeader aria-label="sticky table" sx={{ tableLayout: 'fixed' }}>
               <TableHead>
                 <TableRow>
                   {columns.map((column) => (
@@ -50,9 +64,19 @@ export default function CoffeeTable({columns, rows, totalCount, onPageChange, on
                       key={column.id}
                       align={column.align}
                       style={{ top: 0, minWidth: column.minWidth }}
+                      onClick={() => column.orderingField !== null && onOrderingChange(column.orderingField ?? column.id)}
+                      sx={{ cursor: column.orderingField === null ? 'default' : 'pointer' }}
                     >
-                      {column.label}
+                      <TableSortLabel
+                        active={column.orderingField !== null && (column.orderingField ?? column.id) === orderField}
+                        direction={orderDir}
+                        hideSortIcon={column.orderingField === null}
+                        disabled={column.orderingField === null}
+                      >
+                          {column.label}
+                      </TableSortLabel>
                     </TableCell>
+
                   ))}
                 </TableRow>
               </TableHead>

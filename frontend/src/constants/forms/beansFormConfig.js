@@ -73,6 +73,14 @@ export const beansFieldConfig = [
     size: { xs: 12, sm: 4, md: 4 },
     placeholder: "1800",
   },
+    {
+    type: "text",
+    name: "max_elevation",
+    label: "Maximum Elevation (in MASL)",
+    required: false,
+    size: { xs: 12, sm: 4, md: 4 },
+    placeholder: "1800",
+  },
   {
     type: "long_text",
     name: "comments",

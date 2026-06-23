@@ -12,18 +12,36 @@ import { defaultBeansTableColumns } from "../../../constants/tables/beansListCon
 export default function ListBeansPage() {
   const [rows, setRows] = React.useState([]);
   const [page, setPage] = React.useState(0);
+  const [search, setSearch] = React.useState('');
+  const [orderField, setOrderField] = React.useState('name');
+  const [orderDir, setOrderDir] = React.useState('asc');
   const [pageSize, setPageSize] = React.useState(10);
   const [totalCount, setTotalCount] = React.useState(0);
 
   React.useEffect(() => {
     const load = async () => {
-      const beansResult = await defaultBeansTableList(page, pageSize);
+      const orderingParam = orderDir === 'desc' ? `-${orderField}` : orderField;
+      const beansResult = await defaultBeansTableList(page, pageSize, search, orderingParam);
       setRows(beansResult.results);
       setTotalCount(beansResult.count);
     };
     load().catch(console.error);
-  }, [page, pageSize]);
+  }, [page, pageSize, search, orderField, orderDir]);
   
+
+  const handleOrderingChange = (field) => {
+    if (field !== orderField) {
+      setOrderField(field);
+      setOrderDir('asc');
+    } else if (orderDir === 'asc') {
+      setOrderDir('desc');
+    } else {
+      setOrderField('name');
+      setOrderDir('asc');
+    }
+  };
+
+
   const navigate = useNavigate();
   
   return (
@@ -46,6 +64,10 @@ export default function ListBeansPage() {
           totalCount={totalCount}
           onPageChange={setPage} 
           onRowsPerPageChange={setPageSize} 
+          onSearchChange={(e) => setSearch(e.target.value)}
+          onOrderingChange={handleOrderingChange}
+          orderField={orderField}
+          orderDir={orderDir}
           viewRoute={"/coffeeLog/beans/view"} 
           rowsPerPageDefault={10}
         />

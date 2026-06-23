@@ -7,17 +7,20 @@ export const defaultBeansTableColumns = [
   { 
     id: "roaster", 
     label: "Roaster", 
-    minWidth: 150 
+    minWidth: 150,
+    orderingField: "roaster__name"
   },
   {
     id: "origin_country",
     label: "Roast Origin",
     minWidth: 120,
+    orderingField: "origin_country__name"
   },
   {
     id: "roast_level",
     label: "Roast",
     minWidth: 85,
+    orderingField: "roast_level"
   },
   {
     id: "washing_style",
@@ -28,11 +31,13 @@ export const defaultBeansTableColumns = [
     id: "elevation",
     label: "Elevation",
     minWidth: 100,
+    orderingField: null
   },
   {
     id: "flavor_notes",
     label: "Flavor / Body Notes",
     minWidth: 180,
+    orderingField: null
   },
   {
     id: "purchase_date",
