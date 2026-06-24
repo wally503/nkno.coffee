@@ -61,6 +61,9 @@ dotnet ef database update
 
 ### Creating the app
 ```bash
+(If not in venv already)
+source venv/bin/activate
+
 cd backend
 python manage.py startapp brew
 ```
