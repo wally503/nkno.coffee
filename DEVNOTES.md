@@ -57,6 +57,45 @@ dotnet ef database update
 
 ---
 
+## Add New DB App
+
+### Creating the app
+```bash
+cd backend
+python manage.py startapp brew
+```
+
+Then register in `settings.py`:
+```python
+INSTALLED_APPS = [
+    ...
+    'brew',
+]
+```
+
+### Migrations (brew app only)
+```bash
+python manage.py makemigrations brew
+python manage.py migrate
+```
+
+### App structure
+```
+brew/
+├── models.py        # all brew models
+├── serializers.py
+├── views.py
+├── urls.py
+└── admin.py
+```
+
+Register URLs in `backend/urls.py`:
+```python
+path('api/brew/', include('brew.urls')),
+```
+
+---
+
 ## SQLite
 
 ```bash
