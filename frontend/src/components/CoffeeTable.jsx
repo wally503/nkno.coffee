@@ -63,7 +63,7 @@ export default function CoffeeTable({columns, rows, totalCount, onPageChange, on
                     <TableCell
                       key={column.id}
                       align={column.align}
-                      style={{ top: 0, minWidth: column.minWidth }}
+                      style={{ top: 0, minWidth: column.minWidth, width: column.minWidth }}
                       onClick={() => column.orderingField !== null && onOrderingChange(column.orderingField ?? column.id)}
                       sx={{ cursor: column.orderingField === null ? 'default' : 'pointer' }}
                     >

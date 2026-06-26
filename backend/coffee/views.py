@@ -12,6 +12,10 @@ class RoasterViewSet(viewsets.ModelViewSet):
     queryset = Roaster.objects.all()
     serializer_class = RoasterSerializer
     lookup_field = 'short_id'
+    filter_backends = [OrderingFilter, SearchFilter]
+    search_fields = ['name', 'business_type', 'country__name', 'region__name', 'city']
+    ordering_fields = ['name', 'business_type', 'country__name', 'region__name', 'city', 'total_beans', 'total_drinks']
+    ordering = ['name']
 
     @action(detail=False, methods=['get'])
     def country_counts(self, request):
@@ -37,6 +41,12 @@ class RoasterViewSet(viewsets.ModelViewSet):
                 return RoasterListSerializer
             case _:
                 return RoasterSerializer
+    
+    def get_queryset(self):
+        return Roaster.objects.annotate(
+            total_beans=Count('beans', distinct=True),
+            total_drinks=Count('drink', distinct=True)
+        )
     
 class BeanViewSet(viewsets.ModelViewSet):
     queryset = Bean.objects.all().distinct()

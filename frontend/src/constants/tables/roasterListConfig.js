@@ -2,7 +2,7 @@ export const defaultRoastersTableColumns = [
   { 
     id: "name", 
     label: "Roaster", 
-    minWidth: 150 
+    minWidth: 150,
   },
   {
     id: "business_type",
@@ -12,12 +12,14 @@ export const defaultRoastersTableColumns = [
   { 
     id: "country", 
     label: "Country", 
-    minWidth: 150 
+    minWidth: 150,
+    orderingField: "country__name",
   },
   {
     id: "region",
     label: "State",
     minWidth: 85,
+    orderingField: "region__name",
   },
   {
     id: "city",

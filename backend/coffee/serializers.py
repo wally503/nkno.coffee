@@ -31,7 +31,7 @@ class RoasterListSerializer(serializers.ModelSerializer):
         return obj.city if obj.city else '-'
 
     def get_business_type(self, obj):
-        return obj.business_type if obj.business_type else '-'
+        return obj.get_business_type_display() if obj.business_type else '-'
 
     def get_total_drinks(self, obj):
         return obj.drink_set.count()

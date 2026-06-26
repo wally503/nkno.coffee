@@ -1,9 +1,9 @@
 // src/api/roasterApi.js
 import axiosInstance from './axiosInstance'
 
-export async function defaultRoastersTableList(page = 0, pageSize = 10){
+export async function defaultRoastersTableList(page = 0, pageSize = 10, search = null, order = null){
     try{
-        const { data } = await axiosInstance.get(`coffee/roasters/?page=${page + 1}&page_size=${pageSize}`)
+        const { data } = await axiosInstance.get(`coffee/roasters/?page=${page + 1}&page_size=${pageSize}&search=${search ?? ''}&ordering=${order ?? ''}`)
         return data
     } catch (error) {
         console.error(error.response.status)
