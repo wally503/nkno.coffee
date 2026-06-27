@@ -82,7 +82,7 @@ export async function getRoasterCountryRegionCount(countryId){
 
 export async function getRegionsForCountry(countryId){
     try {
-        return await axiosInstance.get(`coffee/regions/?country=${countryId}`)
+        return await axiosInstance.get(`coffee/regions/?country=${countryId}&page_size=500`)
     } catch (error) {
         console.error(error.response.status);
         console.error(error.response.data);

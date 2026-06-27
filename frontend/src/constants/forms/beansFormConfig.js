@@ -62,7 +62,15 @@ export const beansFieldConfig = [
     name: "roast_date",
     label: "Roast Date",
     required: false,
-    size: { xs: 12, sm: 4, md: 4 },
+    size: { xs: 12, sm: 3, md: 3 },
+    placeholder: "12",
+  },
+  {
+    type: "date",
+    name: "purchase_date",
+    label: "Purchase Date",
+    required: false,
+    size: { xs: 12, sm: 3, md: 3 },
     placeholder: "12",
   },
   {
@@ -70,7 +78,7 @@ export const beansFieldConfig = [
     name: "min_elevation",
     label: "Minimum Elevation (in MASL)",
     required: false,
-    size: { xs: 12, sm: 4, md: 4 },
+    size: { xs: 12, sm: 3, md: 3 },
     placeholder: "1800",
   },
     {
@@ -78,7 +86,7 @@ export const beansFieldConfig = [
     name: "max_elevation",
     label: "Maximum Elevation (in MASL)",
     required: false,
-    size: { xs: 12, sm: 4, md: 4 },
+    size: { xs: 12, sm: 3, md: 3 },
     placeholder: "1800",
   },
   {

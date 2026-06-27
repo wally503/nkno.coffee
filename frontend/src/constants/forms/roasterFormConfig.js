@@ -91,12 +91,13 @@ export const roasterFormBeansTableFieldsConfig = [
   { 
     id: "name", 
     label: "Bean Name", 
-    minWidth: 150 
+    minWidth: 150,
   },
   {
     id: "origin_country",
     label: "Roast Origin",
     minWidth: 120,
+    orderingField: "origin_country__name",
   },
   {
     id: "roast_level",
@@ -112,11 +113,13 @@ export const roasterFormBeansTableFieldsConfig = [
     id: "elevation",
     label: "Elevation",
     minWidth: 100,
+    orderingField: null,
   },
   {
     id: "flavor_notes",
     label: "Notes",
     minWidth: 180,
+    orderingField: null,
   },
   {
     id: "roast_date",

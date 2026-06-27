@@ -8,6 +8,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { beansByRoaster } from "../../../api/beansApi";
 import { drinksByRoaster } from "../../../api/drinkApi";
 import CoffeeTable from "../../../components/CoffeeTable";
+import { useTableState } from "../../../hooks/useTableState";
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
@@ -21,13 +22,12 @@ export default function RoasterCafeFormPage() {
   const [saveDialogue, setSaveDialogue] = React.useState(false);
   const [tabValue, setTabValue] = React.useState("1");
 
+  const beansTable = useTableState('name');
   const [beanRows, setBeanRows] = React.useState([]);
-  const [beanPage, setBeanPage] = React.useState(0);
-  const [beanPageSize, setBeanPageSize] = React.useState(5);
   const [beanTotalCount, setBeanTotalCount] = React.useState(0);
+
+  const drinksTable = useTableState('name');
   const [drinkRows, setDrinkRows] = React.useState([]);
-  const [drinkPage, setDrinkPage] = React.useState(0);
-  const [drinkPageSize, setDrinkPageSize] = React.useState(5);
   const [drinkTotalCount, setDrinkTotalCount] = React.useState(0);
 
   const navigate = useNavigate();
@@ -60,18 +60,19 @@ export default function RoasterCafeFormPage() {
           }
           if(mode === "view"){
             const [beans, drinks] = await Promise.all([
-              beansByRoaster(shortid, beanPage, beanPageSize),
-              drinksByRoaster(shortid, drinkPage, drinkPageSize)
+              beansByRoaster(shortid, beansTable.page, beansTable.pageSize, beansTable.search, beansTable.orderingParam),
+              drinksByRoaster(shortid, drinksTable.page, drinksTable.pageSize, drinksTable.search, drinksTable.orderingParam)
             ]);
             setBeanRows(beans.results);
             setBeanTotalCount(beans.count);
-            setDrinkRows(drinks.resolts);
+            setDrinkRows(drinks.results);
             setDrinkTotalCount(drinks.count);
           }
         }
       };
       load().catch(console.error);
-  }, [beanPage, beanPageSize, drinkPage, drinkPageSize]);
+}, [beansTable.page, beansTable.pageSize, beansTable.search, beansTable.orderField, beansTable.orderDir, 
+    drinksTable.page, drinksTable.pageSize, drinksTable.search, drinksTable.orderField, drinksTable.orderDir]);
 
   const handleFieldChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -144,10 +145,14 @@ export default function RoasterCafeFormPage() {
                   columns={roasterFormBeansTableFieldsConfig} 
                   rows={beanRows} 
                   totalCount={beanTotalCount}
-                  onPageChange={setBeanPage} 
-                  onRowsPerPageChange={setBeanPageSize} 
+                  onPageChange={beansTable.setPage} 
+                  onRowsPerPageChange={beansTable.setPageSize} 
                   viewRoute={"/coffeeLog/beans/view"} 
                   rowsPerPageDefault={5}
+                  onSearchChange={(e) => beansTable.setSearch(e.target.value)}
+                  onOrderingChange={beansTable.handleOrderingChange}
+                  orderField={beansTable.orderField}
+                  orderDir={beansTable.orderDir}
                 />
             </TabPanel>
             <TabPanel value="2">
@@ -155,8 +160,8 @@ export default function RoasterCafeFormPage() {
                   columns={roasterFormDrinkTableFieldsConfig} 
                   rows={drinkRows} 
                   totalCount={drinkTotalCount}
-                  onPageChange={setDrinkPage} 
-                  onRowsPerPageChange={setDrinkPageSize} 
+                  onPageChange={drinksTable.setPage} 
+                  onRowsPerPageChange={drinksTable.setPageSize} 
                   viewRoute={"/coffeeLog/drinks/view"} 
                   rowsPerPageDefault={5}
                 />

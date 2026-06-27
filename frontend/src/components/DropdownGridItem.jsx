@@ -18,10 +18,11 @@ export default function DropdownGridItem({ dropdown, onChange, value, mode, depe
     const countryId = dependsOnFieldValue;
     console.log('countryid in region: ' + countryId);
     const load = async () => {
-      const newOptions = await getRegionsForCountry(countryId).then(r => r.data.map(r => ({ label: r.name, value: r.id })));
+      const newOptions = await getRegionsForCountry(countryId).then(r => r.data.results.map(r => ({ label: r.name, value: r.id })));
+      console.log(newOptions)
       // console.log('new options: ' + newOptions);
       setOptions(newOptions);
-    };
+    };  
     load();
   }, [dependsOnFieldValue]); 
 
