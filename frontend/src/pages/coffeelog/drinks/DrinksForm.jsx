@@ -64,7 +64,7 @@ export default function DrinksFormPage() {
     }
   };
 
-  if (!options) return <div>Loading drinks options…</div>;
+  if (!options) return null;
 
   const resolvedFields = drinkFieldConfig.map((field) =>
     field.optionSource ? { ...field, options: options[field.optionSource] } : field
@@ -75,7 +75,7 @@ export default function DrinksFormPage() {
       <CoffeeLogFormShell
         title={titles[mode]}
         hasBackButton={true}
-        backRoute={shortid ? "/coffeeLog/drinks/list": "/coffeeLog"}
+        backRoute={location.state?.backRoute ?? (shortid ? "/coffeeLog/drinks/list" : "/coffeeLog")}
         fields={resolvedFields}
         formData={formData}
         onFieldChange={handleFieldChange}

@@ -3,8 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
-import { Box } from "@mui/material";
-
+import { Box, Skeleton } from "@mui/material";
+import '../App.css';
 
 export default function HeatmapDisplayPage({ mapType, mapData, projection, isoKey, mapKey, fitWorld=false }){
     const [map, setMap] = useState();
@@ -58,20 +58,17 @@ export default function HeatmapDisplayPage({ mapType, mapData, projection, isoKe
             });
     }, [map, data]);
 
-    if (!map || !data) return <div>Loading map...</div>;
+    if (!map || !data) return (
+        <>
+            <Box className="heatmap-box" sx={{ borderColor: 'primary.main' }}>
+                <Skeleton variant="rectangular" width="100%" height={600} />
+            </Box>
+        </>
+    );
 
     return (
         <>
-            <Box 
-                sx={{ 
-                    display: 'flex', 
-                    width: '100%', 
-                    alignItems:'center', 
-                    flexDirection: 'column', 
-                    border: '1px solid', 
-                    borderRadius: '8px', 
-                    borderColor: 'primary.main',
-                    overflow: 'hidden' }}>
+            <Box className="heatmap-box" sx={{ borderColor: 'primary.main' }}>
                 <svg ref={svgRef} viewBox="0 0 1200 600" width='100%' style={{ background: '#0e22958e' }}/>
                 <div ref={svgHoverRef} style={{ position: 'absolute', visibility: 'hidden' }}/>
             </Box>

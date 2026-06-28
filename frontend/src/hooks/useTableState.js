@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export function useTableState(defaultOrderField = 'name') {
+export function useTableState(defaultOrderField = 'name', defaultPageSize = 10) {
     const [page, setPage] = useState(0);
     const [pageSize, setPageSize] = useState(10);
     const [search, setSearch] = useState('');
@@ -21,5 +21,5 @@ export function useTableState(defaultOrderField = 'name') {
 
     const orderingParam = orderDir === 'desc' ? `-${orderField}` : orderField;
 
-    return { page, setPage, pageSize, setPageSize, search, setSearch, orderField, orderDir, orderingParam, handleOrderingChange };
+    return { page, setPage, pageSize, setPageSize, search, setSearch, orderField, orderDir, orderingParam, handleOrderingChange, defaultPageSize };
 }

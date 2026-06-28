@@ -5,23 +5,21 @@ import { Grid, FormControl, FormHelperText, Box, Rating, Typography } from "@mui
 import CoffeeTable from "../../../components/CoffeeTable";
 import { defaultDrinkTableColumns } from "../../../constants/tables/drinkListConfig";
 import { defaultDrinksTableList } from "../../../api/drinkApi";
-
+import { useTableState } from "../../../hooks/useTableState";
 
 export default function ListDrinksPage() {
+  const drinksTableState = useTableState('name');
   const [rows, setRows] = React.useState([]);
-  const [page, setPage] = React.useState(0);
-  const [pageSize, setPageSize] = React.useState(10);
   const [totalCount, setTotalCount] = React.useState(0);
-
 
   React.useEffect(() => {
     const load = async () => {
-      const drinksResult = await defaultDrinksTableList(page, pageSize);
+      const drinksResult = await defaultDrinksTableList(drinksTableState.page, drinksTableState.pageSize);
       setRows(drinksResult.results);
       setTotalCount(drinksResult.count);
     };
     load().catch(console.error);
-  }, [page, pageSize]);
+  }, [drinksTableState.page, drinksTableState.pageSize]);
 
   const navigate = useNavigate();
   
@@ -43,10 +41,8 @@ export default function ListDrinksPage() {
           columns={defaultDrinkTableColumns} 
           rows={rows} 
           totalCount={totalCount}
-          onPageChange={setPage} 
-          onRowsPerPageChange={setPageSize} 
+          tableState={drinksTableState}
           viewRoute={"/coffeeLog/drinks/view"}
-          rowsPerPageDefault={10}
         />
     </Box>
   );

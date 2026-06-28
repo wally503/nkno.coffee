@@ -1,3 +1,29 @@
+/* src/App.css */
 #root {
   margin: 0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.page-fade {
+  animation: fadeIn 0.15s ease-in;
+}
+
+.map-container {
+  width: 90%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.heatmap-box {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  flex-direction: column;
+  border: 1px solid;
+  border-radius: 8px;
+  overflow: hidden;
 }

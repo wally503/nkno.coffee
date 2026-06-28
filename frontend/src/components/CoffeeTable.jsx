@@ -11,20 +11,19 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import PageHeaderTitle from "./PageTitle";
 import TextField from "@mui/material/TextField";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Grid, FormControl, FormHelperText, Box, Rating, Typography, TableSortLabel } from "@mui/material";
 import { ratingCustomIcons } from "./RatingGridItem";
 
-export default function CoffeeTable({columns, rows, totalCount, onPageChange, onRowsPerPageChange, onSearchChange, onOrderingChange, orderField, orderDir, rowsPerPageDefault, viewRoute}) {
+export default function CoffeeTable({columns, rows, totalCount, tableState, viewRoute}) {
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(rowsPerPageDefault);
-  const [search, setSearch] = React.useState('');
-  const [ordering, setOrdering] = React.useState('name');
+  const [rowsPerPage, setRowsPerPage] = React.useState(tableState.pageSize);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-    onPageChange(newPage);
+    tableState.setPage(newPage);
   };
 
   const handleSearchChange = (event) => {
@@ -38,8 +37,8 @@ export default function CoffeeTable({columns, rows, totalCount, onPageChange, on
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
-    onRowsPerPageChange(+event.target.value);
-    onPageChange(0);
+    tableState.setPageSize(+event.target.value);
+    tableState.setPage(0);
   };
 
   if (!columns?.length) return null;
@@ -53,7 +52,7 @@ export default function CoffeeTable({columns, rows, totalCount, onPageChange, on
       >
         <Paper>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 2 }}>
-            <TextField placeholder="Search..." onChange={onSearchChange} size="small" />
+            <TextField placeholder="Search..." onChange={(e) => tableState.setSearch(e.target.value)} size="small" />
           </Box>
           <TableContainer sx={{ overflowX: "auto" }}>
             <Table stickyHeader aria-label="sticky table" sx={{ tableLayout: 'fixed' }}>
@@ -64,12 +63,12 @@ export default function CoffeeTable({columns, rows, totalCount, onPageChange, on
                       key={column.id}
                       align={column.align}
                       style={{ top: 0, minWidth: column.minWidth, width: column.minWidth }}
-                      onClick={() => column.orderingField !== null && onOrderingChange(column.orderingField ?? column.id)}
+                      onClick={() => column.orderingField !== null && tableState.handleOrderingChange(column.orderingField ?? column.id)}
                       sx={{ cursor: column.orderingField === null ? 'default' : 'pointer' }}
                     >
                       <TableSortLabel
-                        active={column.orderingField !== null && (column.orderingField ?? column.id) === orderField}
-                        direction={orderDir}
+                        active={column.orderingField !== null && (column.orderingField ?? column.id) === tableState.orderField}
+                        direction={tableState.orderDir}
                         hideSortIcon={column.orderingField === null}
                         disabled={column.orderingField === null}
                       >
@@ -96,7 +95,7 @@ export default function CoffeeTable({columns, rows, totalCount, onPageChange, on
                         role="checkbox"
                         tabIndex={-1}
                         key={row.id}
-                        onClick={() => navigate(`${viewRoute}/${row.short_id}`)}
+                        onClick={() => navigate(`${viewRoute}/${row.short_id}`, { state: { backRoute: location.pathname } })}
                       >
                         {columns.map((column) => {
                           const value = row[column.id];

@@ -1,10 +1,11 @@
 // src/pages/maps/roasters/RoastersHeatmap.jsx
 
 import * as React from "react";
-import { Typography, Box, Tab, Divider } from "@mui/material";
+import { Typography, Box, Tab, Divider, Skeleton } from "@mui/material";
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { getRoasterCountryRegionCount, getRoasterCountryCount } from "../../../api/roasterApi";
 import {HeatmapUSMapDisplay, HeatmapMercatorMapDisplay, HeatmapWorldMapDisplay}  from "../HeatmapTemplates";
+import '../../../App.css';
 
 export default function RoastersHeatmapPage(){
     const [worldMap, setWorldMap] = React.useState();
@@ -37,11 +38,17 @@ export default function RoastersHeatmapPage(){
         if (!worldMap || !usMap) return;
     }, [worldMap, usMap]);
 
-    if (!worldMap || !usMap || !worldData || !usData) return <div>Loading map...</div>;
+    if (!worldMap || !usMap || !worldData || !usData) return (
+        <>
+            <Box className="map-container">
+                <Skeleton variant="rectangular" width="100%" height={500} sx={{ bgcolor: 'background.paper' }} />
+            </Box>
+        </>
+    );
 
     return (
         <>
-            <Box sx={{ width: "90%", maxWidth: 1400, mx: "auto" }}>
+            <Box className="map-container">
                 <TabContext value={tabValue}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <TabList onChange={handleTabChange} aria-label="lab API tabs example">

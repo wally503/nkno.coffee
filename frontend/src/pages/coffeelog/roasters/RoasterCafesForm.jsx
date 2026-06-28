@@ -22,11 +22,11 @@ export default function RoasterCafeFormPage() {
   const [saveDialogue, setSaveDialogue] = React.useState(false);
   const [tabValue, setTabValue] = React.useState("1");
 
-  const beansTable = useTableState('name');
+  const beansTableState = useTableState('name');
   const [beanRows, setBeanRows] = React.useState([]);
   const [beanTotalCount, setBeanTotalCount] = React.useState(0);
 
-  const drinksTable = useTableState('name');
+  const drinksTableState = useTableState('name');
   const [drinkRows, setDrinkRows] = React.useState([]);
   const [drinkTotalCount, setDrinkTotalCount] = React.useState(0);
 
@@ -60,8 +60,8 @@ export default function RoasterCafeFormPage() {
           }
           if(mode === "view"){
             const [beans, drinks] = await Promise.all([
-              beansByRoaster(shortid, beansTable.page, beansTable.pageSize, beansTable.search, beansTable.orderingParam),
-              drinksByRoaster(shortid, drinksTable.page, drinksTable.pageSize, drinksTable.search, drinksTable.orderingParam)
+              beansByRoaster(shortid, beansTableState.page, beansTableState.pageSize, beansTableState.search, beansTableState.orderingParam),
+              drinksByRoaster(shortid, drinksTableState.page, drinksTableState.pageSize, drinksTableState.search, drinksTableState.orderingParam)
             ]);
             setBeanRows(beans.results);
             setBeanTotalCount(beans.count);
@@ -71,8 +71,8 @@ export default function RoasterCafeFormPage() {
         }
       };
       load().catch(console.error);
-}, [beansTable.page, beansTable.pageSize, beansTable.search, beansTable.orderField, beansTable.orderDir, 
-    drinksTable.page, drinksTable.pageSize, drinksTable.search, drinksTable.orderField, drinksTable.orderDir]);
+}, [beansTableState.page, beansTableState.pageSize, beansTableState.search, beansTableState.orderField, beansTableState.orderDir, 
+    drinksTableState.page, drinksTableState.pageSize, drinksTableState.search, drinksTableState.orderField, drinksTableState.orderDir]);
 
   const handleFieldChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -96,7 +96,7 @@ export default function RoasterCafeFormPage() {
 
 
   if (!options) {
-    return <div>Loading roaster options…</div>;
+    return null;
   }
 
   const resolvedFields = roasterFieldConfig.map((field) =>
@@ -145,25 +145,17 @@ export default function RoasterCafeFormPage() {
                   columns={roasterFormBeansTableFieldsConfig} 
                   rows={beanRows} 
                   totalCount={beanTotalCount}
-                  onPageChange={beansTable.setPage} 
-                  onRowsPerPageChange={beansTable.setPageSize} 
-                  viewRoute={"/coffeeLog/beans/view"} 
-                  rowsPerPageDefault={5}
-                  onSearchChange={(e) => beansTable.setSearch(e.target.value)}
-                  onOrderingChange={beansTable.handleOrderingChange}
-                  orderField={beansTable.orderField}
-                  orderDir={beansTable.orderDir}
-                />
-            </TabPanel>
-            <TabPanel value="2">
-              <CoffeeTable 
-                  columns={roasterFormDrinkTableFieldsConfig} 
+                  tableState={beansTableState}
+                viewRoute={`/coffeeLog/beans/view`}
+              />
+          </TabPanel>
+          <TabPanel value="2">
+            <CoffeeTable 
+                columns={roasterFormDrinkTableFieldsConfig} 
                   rows={drinkRows} 
                   totalCount={drinkTotalCount}
-                  onPageChange={drinksTable.setPage} 
-                  onRowsPerPageChange={drinksTable.setPageSize} 
-                  viewRoute={"/coffeeLog/drinks/view"} 
-                  rowsPerPageDefault={5}
+                  tableState={drinksTableState}
+                  viewRoute={`/coffeeLog/drinks/view`} 
                 />
             </TabPanel>
           </TabContext>

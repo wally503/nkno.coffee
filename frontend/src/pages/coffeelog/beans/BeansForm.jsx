@@ -72,7 +72,7 @@ export default function BeansFormPage() {
     }
   };
 
-  if (!options) return <div>Loading beans options…</div>;
+  if (!options) return null;
 
   const resolvedFields = beansFieldConfig.map((field) =>
     field.optionSource ? { ...field, options: options[field.optionSource] } : field
@@ -83,7 +83,7 @@ export default function BeansFormPage() {
       <CoffeeLogFormShell
         title={titles[mode]}
         hasBackButton={true}
-        backRoute={shortid ? "/coffeeLog/beans/list": "/coffeeLog"}
+        backRoute={location.state?.backRoute ?? (shortid ? "/coffeeLog/beans/list" : "/coffeeLog")}
         fields={resolvedFields}
         formData={formData}
         onFieldChange={handleFieldChange}

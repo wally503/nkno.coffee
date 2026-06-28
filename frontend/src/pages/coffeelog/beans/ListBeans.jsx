@@ -10,18 +10,18 @@ import { defaultBeansTableColumns } from "../../../constants/tables/beansListCon
 
 
 export default function ListBeansPage() {
-  const { page, setPage, pageSize, setPageSize, search, setSearch, orderField, orderDir, orderingParam, handleOrderingChange } = useTableState('name');
+  const beansTableState = useTableState('name');
   const [rows, setRows] = React.useState([]);
   const [totalCount, setTotalCount] = React.useState(0);
 
   React.useEffect(() => {
     const load = async () => {
-      const beansResult = await defaultBeansTableList(page, pageSize, search, orderingParam);
+      const beansResult = await defaultBeansTableList(beansTableState.page, beansTableState.pageSize, beansTableState.search, beansTableState.orderingParam);
       setRows(beansResult.results);
       setTotalCount(beansResult.count);
     };
     load().catch(console.error);
-  }, [page, pageSize, search, orderField, orderDir]);
+  }, [beansTableState.page, beansTableState.pageSize, beansTableState.search, beansTableState.orderField, beansTableState.orderDir]);
 
   const navigate = useNavigate();
   
@@ -43,14 +43,8 @@ export default function ListBeansPage() {
           columns={defaultBeansTableColumns} 
           rows={rows} 
           totalCount={totalCount}
-          onPageChange={setPage} 
-          onRowsPerPageChange={setPageSize} 
-          onSearchChange={(e) => setSearch(e.target.value)}
-          onOrderingChange={handleOrderingChange}
-          orderField={orderField}
-          orderDir={orderDir}
+          tableState={beansTableState}
           viewRoute={"/coffeeLog/beans/view"} 
-          rowsPerPageDefault={10}
         />
     </Box>
   );

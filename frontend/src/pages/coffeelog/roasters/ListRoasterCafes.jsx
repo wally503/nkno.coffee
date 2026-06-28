@@ -9,20 +9,19 @@ import { defaultRoastersTableList } from "../../../api/roasterApi";
 import { defaultRoastersTableColumns } from "../../../constants/tables/roasterListConfig";
 
 
-export default function ListBeansPage() {
-  const { page, setPage, pageSize, setPageSize, search, setSearch, orderField, orderDir, orderingParam, handleOrderingChange } = useTableState('name');
+export default function ListRoasterCafesPage() {
+  const roasterTableState = useTableState('name');
   const [rows, setRows] = React.useState([]);
   const [totalCount, setTotalCount] = React.useState(0);
 
   React.useEffect(() => {
     const load = async () => {
-      const orderingParam = orderDir === 'desc' ? `-${orderField}` : orderField;
-      const roasterResult = await defaultRoastersTableList(page, pageSize, search, orderingParam);
+      const roasterResult = await defaultRoastersTableList(roasterTableState.page, roasterTableState.pageSize, roasterTableState.search, roasterTableState.orderingParam);
       setRows(roasterResult.results);
       setTotalCount(roasterResult.count);
     };
     load().catch(console.error);
-  }, [page, pageSize, search, orderField, orderDir]);
+  }, [roasterTableState.page, roasterTableState.pageSize, roasterTableState.search, roasterTableState.orderField, roasterTableState.orderDir]);
 
   const navigate = useNavigate();
   
@@ -44,14 +43,8 @@ export default function ListBeansPage() {
           columns={defaultRoastersTableColumns} 
           rows={rows} 
           totalCount={totalCount}
-          onPageChange={setPage} 
-          onRowsPerPageChange={setPageSize} 
-          onSearchChange={(e) => setSearch(e.target.value)}
-          onOrderingChange={handleOrderingChange}
-          orderField={orderField}
-          orderDir={orderDir}
+          tableState={roasterTableState}
           viewRoute={"/coffeeLog/roasters/view"} 
-          rowsPerPageDefault={10}
         />
     </Box>
   );

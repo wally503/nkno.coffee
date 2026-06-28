@@ -3,12 +3,13 @@
 import * as React from "react";
 import { getBeanCountryCount } from "../../../api/beansApi";
 import * as d3 from 'd3';
-import { Typography, Box, Tab, Divider, backdropClasses } from "@mui/material";
+import { Typography, Box, Tab, Divider, backdropClasses, Skeleton } from "@mui/material";
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import HeatmapDisplayPage from "../../../components/HeatmapDisplay";
 import BubblemapDisplayPage from "../../../components/BubblemapDisplay";
 import {HeatmapUSMapDisplay, HeatmapMercatorMapDisplay, HeatmapWorldMapDisplay}  from "../HeatmapTemplates";
 import { getZoneData } from "../../../api/mapZoneApi";
+import '../../../App.css';
 
 export default function BeansHeatmapPage(){
     const [map, setMap] = React.useState();
@@ -48,16 +49,21 @@ export default function BeansHeatmapPage(){
         }
     }
 
-
     React.useEffect(() => {
         if (!map) return;
     }, [map]);
 
-    if (!map || !results) return <div>Loading map...</div>;
+    if (!map || !results) return (
+        <>
+            <Box className="map-container">
+                <Skeleton variant="rectangular" width="100%" height={500} sx={{ bgcolor: 'background.paper' }} />
+            </Box>
+        </>
+    );
 
     return (
         <>
-            <Box sx={{ width: "90%", maxWidth: 1400, mx: "auto"}}>
+            <Box className="map-container">
                 <TabContext value={tabValue}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <TabList onChange={handleTabChange} aria-label="lab API tabs example">
