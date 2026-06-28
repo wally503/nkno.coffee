@@ -216,3 +216,51 @@ const beanExample = {
   ]
 };
 ```
+
+
+## Docker Reference
+
+### Starting & Stopping
+
+| Command | Description |
+|---|---|
+| `docker-compose up` | Start all services |
+| `docker-compose down` | Stop and remove containers |
+| `docker-compose up --build` | Rebuild images then start (after Dockerfile changes) |
+| `docker-compose up --build backend` | Rebuild only backend |
+| `docker-compose up --build frontend` | Rebuild only frontend |
+| `docker-compose up -d` | Start detached (background) |
+
+### Viewing Logs
+
+| Command | Description |
+|---|---|
+| `docker-compose logs -f` | Follow all services live |
+| `docker-compose logs -f backend` | Follow backend only |
+| `docker-compose logs -f frontend` | Follow frontend only |
+
+### Attaching to a Running Container
+
+| Command | Description |
+|---|---|
+| `docker-compose exec backend bash` | Shell into backend |
+| `docker-compose exec frontend sh` | Shell into frontend (slim uses `sh` not `bash`) |
+
+### After PC Sleep/Wake
+
+Containers resume automatically via `restart: unless-stopped`. If something dropped:
+
+```bash
+docker-compose ps       # check what's running
+docker-compose up -d    # restart detached if needed
+\```
+
+### Key Pointers
+
+| What | Where |
+|---|---|
+| Django API URL (Vite proxy) | `frontend/vite.config.js` → `proxy: { '/api': 'http://backend:8000' }` |
+| Vite host binding | `frontend/Dockerfile` → `CMD` flag `--host 0.0.0.0` |
+| Django bind address | `backend/Dockerfile` → `CMD` arg `0.0.0.0:8000` |
+| Port mappings | `docker-compose.yml` → `ports` under each service |
+```
