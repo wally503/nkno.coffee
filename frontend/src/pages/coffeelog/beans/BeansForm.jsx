@@ -5,6 +5,7 @@ import { BEANFORM_STATIC_OPTIONS, beansFieldConfig   } from "../../../constants/
 import { beansCountries, beansNotes, beansRoasters, submitBeans, getBeanById, updateBean } from "../../../api/beansApi";
 import DialogueBox from "../../../components/DialogueBox";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
+import DefaultBodyLayout from "../../../components/DefaultBodyLayout";
 
 export default function BeansFormPage() {
   const [formData, setFormData] = React.useState({});
@@ -80,24 +81,26 @@ export default function BeansFormPage() {
 
   return (
     <>
-      <CoffeeLogFormShell
-        title={titles[mode]}
-        hasBackButton={true}
-        backRoute={location.state?.backRoute ?? (shortid ? "/coffeeLog/beans/list" : "/coffeeLog")}
-        fields={resolvedFields}
-        formData={formData}
-        onFieldChange={handleFieldChange}
-        onSubmit={handleSubmit}
-        onEdit={() => navigate(`/coffeeLog/beans/edit/${shortid}`)}
-        errors={errors}
-        mode={mode}
-      />
-      <DialogueBox 
-        title={"Saving Beans"}
-        message={"Beans were successfully saved!"}
-        open={saveDialogue}
-        onCloseParent={() => { setSaveDialogue(false); navigate('/coffeeLog/beans/list') } }
-      />
+      <DefaultBodyLayout>
+        <CoffeeLogFormShell
+          title={titles[mode]}
+          hasBackButton={true}
+          backRoute={location.state?.backRoute ?? (shortid ? "/coffeeLog/beans/list" : "/coffeeLog")}
+          fields={resolvedFields}
+          formData={formData}
+          onFieldChange={handleFieldChange}
+          onSubmit={handleSubmit}
+          onEdit={() => navigate(`/coffeeLog/beans/edit/${shortid}`)}
+          errors={errors}
+          mode={mode}
+        />
+        <DialogueBox 
+          title={"Saving Beans"}
+          message={"Beans were successfully saved!"}
+          open={saveDialogue}
+          onCloseParent={() => { setSaveDialogue(false); navigate('/coffeeLog/beans/list') } }
+        />
+      </DefaultBodyLayout>
     </>
   );
 }

@@ -19,7 +19,7 @@ export default function PageHeaderTitle({ title, hasBackButton, backRoute }) {
       </Box>
       <Box sx={{ width: "100%", maxWidth: 1400, mb: "15px" }}>
         <Grid sx={{ display: "flex", alignItems: "center", justifyContent: "center", }} size={{ xs: 4 }}>
-          <Typography variant="h5">
+          <Typography variant="h4">
             {title}
           </Typography>
         </Grid>

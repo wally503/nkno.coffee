@@ -2,6 +2,7 @@ import { Grid, Card, CardActionArea, CardContent, Container, Typography, Box } f
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { coffeelogOptionsRow1, coffeelogOptionsRow2 } from '../../routes/coffeeLogRoutes';
+import CardPageBodyLayout from '../../components/CardPageBodyLayout';
 
 export default function CoffeeLogSelect(){
     const [selectedId, setSelectedId] = useState(null);
@@ -14,7 +15,7 @@ export default function CoffeeLogSelect(){
                     border: '1px solid rgba(180, 140, 100, 0.5)',
                     transition: '0.2s',
                     height: 320, 
-                    width: 275,
+                    width: 340,
                     display: 'flex'
             }}>
                 <CardActionArea onClick={() => navigate(option.path)} sx={{cursor:'pointer'}} >
@@ -32,22 +33,15 @@ export default function CoffeeLogSelect(){
     }
 
   return (
-  <Box
-    sx={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: 'calc(100vh - 69px)',
-      px: 4,
-      py: 4,
-      width: '100%',
-    }}
-  >
-    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3, justifyContent: 'center', maxWidth: 900 }}>
-      {[...coffeelogOptionsRow1, ...coffeelogOptionsRow2].map((option) => (
-        <LogTypeCard key={option.id} option={option} />
-      ))}
-    </Box>
-  </Box>
+    <>
+      <CardPageBodyLayout>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3, justifyContent: 'center', maxWidth: 1200 }}>
+          {[...coffeelogOptionsRow1, ...coffeelogOptionsRow2].map((option) => (
+            <LogTypeCard key={option.id} option={option} />
+          ))}
+        </Box>
+      </CardPageBodyLayout>
+    </>
+
 );
 }

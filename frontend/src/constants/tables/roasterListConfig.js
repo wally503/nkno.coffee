@@ -4,11 +4,6 @@ export const defaultRoastersTableColumns = [
     label: "Roaster", 
     minWidth: 150,
   },
-  {
-    id: "business_type",
-    label: "Business Type",
-    minWidth: 120,
-  },
   { 
     id: "country", 
     label: "Country", 
@@ -25,6 +20,11 @@ export const defaultRoastersTableColumns = [
     id: "city",
     label: "City",
     minWidth: 85,
+  },
+  {
+    id: "business_type",
+    label: "Business Type",
+    minWidth: 120,
   },
   {
     id: "total_beans",

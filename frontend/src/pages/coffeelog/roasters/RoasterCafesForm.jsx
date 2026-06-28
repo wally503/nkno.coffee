@@ -14,6 +14,7 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
+import DefaultBodyLayout from "../../../components/DefaultBodyLayout";
 
 export default function RoasterCafeFormPage() {
   const [formData, setFormData] = React.useState({});
@@ -107,25 +108,27 @@ export default function RoasterCafeFormPage() {
 
   return (
     <>
-      <CoffeeLogFormShell
-        title={titles[mode]}
-        hasBackButton={true}
-        backRoute={shortid ? "/coffeeLog/roasters/list": "/coffeeLog"}
-        fields={resolvedFields}
-        formData={formData}
-        onFieldChange={handleFieldChange}
-        onSubmit={handleSubmit}
-        onEdit={() => navigate(`/coffeeLog/roasters/edit/${shortid}`)}
-        errors={errors}
-        mode={mode}
-      />
-      <DialogueBox 
-        title={"Saving Roaster"}
-        message={"Roaster was successfully saved!"}
-        open={saveDialogue}
-        onCloseParent={() => { setSaveDialogue(false); navigate('/coffeeLog/roasters/list') } }
-      />
-      { mode === "view" && roasterViewTables() }
+      <DefaultBodyLayout>
+        <CoffeeLogFormShell
+          title={titles[mode]}
+          hasBackButton={true}
+          backRoute={shortid ? "/coffeeLog/roasters/list": "/coffeeLog"}
+          fields={resolvedFields}
+          formData={formData}
+          onFieldChange={handleFieldChange}
+          onSubmit={handleSubmit}
+          onEdit={() => navigate(`/coffeeLog/roasters/edit/${shortid}`)}
+          errors={errors}
+          mode={mode}
+        />
+        <DialogueBox 
+          title={"Saving Roaster"}
+          message={"Roaster was successfully saved!"}
+          open={saveDialogue}
+          onCloseParent={() => { setSaveDialogue(false); navigate('/coffeeLog/roasters/list') } }
+        />
+        { mode === "view" && roasterViewTables() }
+      </DefaultBodyLayout>
     </>
   );
 

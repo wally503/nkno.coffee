@@ -71,8 +71,8 @@ export default function NavDrawer() {
         <Box sx={{ }}>
           <List>
             <NavBarItem icon={<HomeIcon/>} route="/" label="Home" />
-            <NavBarItem icon={<AddLocationAltIcon/>} route="/maps" label="Maps" />
             <NavBarItem icon={<CoffeeIcon/>} route="/coffeeLog" label="Coffee Log" />
+            <NavBarItem icon={<AddLocationAltIcon/>} route="/maps" label="Maps" />
             <NavBarItem icon={<AssessmentIcon/>} route="/logHistory" label="Log History" />
           </List>    
         </Box>

@@ -25,18 +25,7 @@ export default function CoffeeLogFormShell({
   const navigate = useNavigate();
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-start",
-        alignItems: "center",
-        px: 4,
-        py: 4,
-        width: "100%",
-      }}
-    >
-      
+    <>
       <PageTitle title={title} hasBackButton={hasBackButton} backRoute={backRoute} />
       <Box sx={{ width: "90%", maxWidth: 1400 }}>
         <Grid container spacing={3} columns={12}>
@@ -64,9 +53,7 @@ export default function CoffeeLogFormShell({
           </Grid>
         </Grid>
       </Box>
-
-      
-    </Box>
+   </>
   );
 }
 

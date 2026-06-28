@@ -7,7 +7,7 @@ import CoffeeTable from "../../../components/CoffeeTable";
 // import { fetchBeansTableColumns, fetchBeansTableRows } from "../../../api/mockBeansTableApi";
 import { defaultRoastersTableList } from "../../../api/roasterApi";
 import { defaultRoastersTableColumns } from "../../../constants/tables/roasterListConfig";
-
+import DefaultBodyLayout from "../../../components/DefaultBodyLayout";
 
 export default function ListRoasterCafesPage() {
   const roasterTableState = useTableState('name');
@@ -26,26 +26,17 @@ export default function ListRoasterCafesPage() {
   const navigate = useNavigate();
   
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-start",
-        alignItems: "center",
-
-        px: 4,
-        py: 4,
-        width: "100%",
-      }}
-    >
-      <PageHeaderTitle title={"List Roasters"} hasBackButton={true} backRoute={"/CoffeeLog"}  />
-      <CoffeeTable 
+    <>
+      <DefaultBodyLayout>
+        <PageHeaderTitle title={"List Roasters"} hasBackButton={true} backRoute={"/CoffeeLog"}  />
+        <CoffeeTable 
           columns={defaultRoastersTableColumns} 
           rows={rows} 
           totalCount={totalCount}
           tableState={roasterTableState}
           viewRoute={"/coffeeLog/roasters/view"} 
         />
-    </Box>
+      </DefaultBodyLayout>
+    </>
   );
 }

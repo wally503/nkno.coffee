@@ -6,6 +6,7 @@ import CoffeeTable from "../../../components/CoffeeTable";
 import { defaultDrinkTableColumns } from "../../../constants/tables/drinkListConfig";
 import { defaultDrinksTableList } from "../../../api/drinkApi";
 import { useTableState } from "../../../hooks/useTableState";
+import DefaultBodyLayout from "../../../components/DefaultBodyLayout";
 
 export default function ListDrinksPage() {
   const drinksTableState = useTableState('name');
@@ -24,26 +25,17 @@ export default function ListDrinksPage() {
   const navigate = useNavigate();
   
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-start",
-        alignItems: "center",
-
-        px: 4,
-        py: 4,
-        width: "100%",
-      }}
-    >
-      <PageHeaderTitle title={"List Drinks"} hasBackButton={true} backRoute={"/CoffeeLog"}  />
-      <CoffeeTable 
-          columns={defaultDrinkTableColumns} 
-          rows={rows} 
-          totalCount={totalCount}
-          tableState={drinksTableState}
-          viewRoute={"/coffeeLog/drinks/view"}
-        />
-    </Box>
+    <>
+      <DefaultBodyLayout>
+        <PageHeaderTitle title={"List Drinks"} hasBackButton={true} backRoute={"/CoffeeLog"}  />
+        <CoffeeTable 
+            columns={defaultDrinkTableColumns} 
+            rows={rows} 
+            totalCount={totalCount}
+            tableState={drinksTableState}
+            viewRoute={"/coffeeLog/drinks/view"}
+          />
+        </DefaultBodyLayout>
+    </>
   );
 }

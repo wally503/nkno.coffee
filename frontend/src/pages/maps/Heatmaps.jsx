@@ -14,7 +14,7 @@ export default function HeatmapPage(){
 
     return (
         <>
-            <Box sx={{ width: "100%", maxWidth: 1400, mx: "auto", mt: 2}}>
+            <Box sx={{ width: "100%", maxWidth: 1350, mx: "auto", mt: 1}}>
                 <TabContext value={tabValue}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <TabList onChange={handleTabChange} aria-label="Maps by Category">

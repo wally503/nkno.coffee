@@ -7,6 +7,7 @@ import CoffeeTable from "../../../components/CoffeeTable";
 // import { fetchBeansTableColumns, fetchBeansTableRows } from "../../../api/mockBeansTableApi";
 import { defaultBeansTableList } from "../../../api/beansApi";
 import { defaultBeansTableColumns } from "../../../constants/tables/beansListConfig";
+import DefaultBodyLayout from "../../../components/DefaultBodyLayout";
 
 
 export default function ListBeansPage() {
@@ -26,26 +27,17 @@ export default function ListBeansPage() {
   const navigate = useNavigate();
   
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-start",
-        alignItems: "center",
-
-        px: 4,
-        py: 4,
-        width: "100%",
-      }}
-    >
-      <PageHeaderTitle title={"List Beans"} hasBackButton={true} backRoute={"/coffeeLog"}  />
-      <CoffeeTable 
-          columns={defaultBeansTableColumns} 
-          rows={rows} 
-          totalCount={totalCount}
-          tableState={beansTableState}
-          viewRoute={"/coffeeLog/beans/view"} 
-        />
-    </Box>
+    <>
+      <DefaultBodyLayout>
+        <PageHeaderTitle title={"List Beans"} hasBackButton={true} backRoute={"/coffeeLog"}  />
+        <CoffeeTable 
+            columns={defaultBeansTableColumns} 
+            rows={rows} 
+            totalCount={totalCount}
+            tableState={beansTableState}
+            viewRoute={"/coffeeLog/beans/view"} 
+          />
+        </DefaultBodyLayout>
+    </>
   );
 }
