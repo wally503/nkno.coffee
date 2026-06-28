@@ -253,7 +253,7 @@ Containers resume automatically via `restart: unless-stopped`. If something drop
 ```bash
 docker-compose ps       # check what's running
 docker-compose up -d    # restart detached if needed
-\```
+```
 
 ### Key Pointers
 
