@@ -6,9 +6,10 @@ import { drawerWidth } from './constants/layout'
 import AuthProvider from './context/AuthContext'
 import './App.css';
 
-const location = useLocation();
+
 
 export default function Layout() {
+    const location = useLocation();
     return (
         <>
             <AuthProvider>
