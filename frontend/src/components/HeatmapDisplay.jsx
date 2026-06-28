@@ -6,7 +6,7 @@ import * as topojson from 'topojson-client';
 import { Box, Skeleton } from "@mui/material";
 import '../App.css';
 
-export default function HeatmapDisplayPage({ mapType, mapData, projection, isoKey, mapKey, fitWorld=false }){
+export default function HeatmapDisplayPage({ mapType, mapData, projection, isoKey, mapKey, fitWorld=false, useQuantile=false }){
     const [map, setMap] = useState();
     const [data, setData] = useState([]);
     const svgRef = useRef(null);
@@ -20,8 +20,9 @@ export default function HeatmapDisplayPage({ mapType, mapData, projection, isoKe
     useEffect(() => {
         if (!map || !projection || !data.length) return;
         const mappeddata = Object.fromEntries(data.map((result) =>[result[isoKey], result.count]));
-        const maxCount = Math.max(...data.map((x) => x.count));
-        // const maxCount = d3.quantile(data.map(x => x.count).sort(d3.ascending), 0.85);
+        const maxCount = useQuantile 
+            ? d3.quantile(data.map(x => x.count).sort(d3.ascending), 0.85)
+            : Math.max(...data.map(x => x.count));
         
         const path = d3.geoPath(projection);
         const mapFeatures = topojson.feature(map, map.objects[mapKey]);
@@ -29,7 +30,9 @@ export default function HeatmapDisplayPage({ mapType, mapData, projection, isoKe
             projection.fitSize([1200, 600], mapFeatures);
         }
         // const scale = d3.scaleSequential([0, maxCount], d3.interpolateOrRd);
-        const scale = d3.scaleSequential([0, Math.sqrt(maxCount)], d3.interpolateOrRd);
+        const scale = useQuantile
+            ? d3.scaleSequential([0, maxCount], d3.interpolateOrRd)
+            : d3.scaleSequential([0, Math.sqrt(maxCount)], d3.interpolateOrRd);
         
         const svgTooltip = d3.select(svgHoverRef.current);
         const svg = d3.select(svgRef.current);

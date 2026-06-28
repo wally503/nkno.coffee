@@ -17,7 +17,8 @@ export function HeatmapWorldMapDisplay({map, data, title, subtitle, isoKey}){
                 isoKey={isoKey}
                 mapKey={"countries"}
                 fitWorld={true}
-                />
+                useQuantile={true}
+            />
         </>
     )
 }
@@ -37,7 +38,8 @@ export function HeatmapUSMapDisplay({map, data, title, subtitle}){
                 isoKey={"region__identifier_code"}
                 mapKey={"states"}
                 fitWorld={true}
-                />
+                useQuantile={true}
+            />
         </>
     )
 }
