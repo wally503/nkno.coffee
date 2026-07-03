@@ -12,4 +12,5 @@ router.register('countries', CountriesViewSet)
 router.register('notes', FlavorNotesViewSet)
 router.register('mapzone', MapzoneViewSet)
 
+
 urlpatterns = router.urls

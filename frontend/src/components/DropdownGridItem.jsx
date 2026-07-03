@@ -26,6 +26,13 @@ export default function DropdownGridItem({ dropdown, onChange, value, mode, depe
     load();
   }, [dependsOnFieldValue]); 
 
+  // watches for form-controlled field polling (eg. selecting a roaster polls for its beans)
+  useEffect(() => {
+    if (!dependsOn) {
+      setOptions(dropdown.options?.length ? dropdown.options : []);
+    }
+  }, [dropdown.options]);
+
   return (
     <>
       { mode === "view" 
@@ -46,6 +53,8 @@ function addEditMode(dropdown, onChange, value, mode, options, error){
         <Box sx={{ width: '100%' }}>
             <Autocomplete
               fullWidth
+              autoHighlight
+              autoSelect
               options={options}
               getOptionLabel={(option) => option.label}
               renderInput={(params) => (

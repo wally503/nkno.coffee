@@ -1,12 +1,14 @@
 from django.shortcuts import render
 from django.db.models import Count
-from django.db.models.functions import Coalesce
+from django.db.models.functions import Coalesce, Greatest
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter, SearchFilter
 from .serializers import *
 from .models import *
+from datetime import date
+import random
 
 class RoasterViewSet(viewsets.ModelViewSet):
     queryset = Roaster.objects.all()
@@ -56,7 +58,7 @@ class BeanViewSet(viewsets.ModelViewSet):
     search_fields = ['name', 'roaster__name', 'origin_country__name', 'roast_level', 'washing_style', 'flavor_notes__name']
     ordering_fields = ['name', 'roaster__name', 'origin_country__name', 'roast_level', 'washing_style', 'purchase_date']  # whitelist what's sortable
     ordering = ['name']  # default ordering
-
+    
     def create(self, request):
         flav_notes = request.data.get('flavor_notes')
         data = request.data.copy()
@@ -95,6 +97,28 @@ class BeanViewSet(viewsets.ModelViewSet):
             .values('origin_country__iso_code')
             .annotate(count=Count('id')))
         return Response(queryset.values('origin_country__iso_code', 'count'))
+
+    @action(detail=False, methods=['get'])
+    def latest(self, request):
+        fallback = date(2000,1,1)
+        queryset = (Bean.objects
+            .annotate(latest_date=Greatest(Coalesce('roast_date', fallback), Coalesce('purchase_date',fallback)))
+            .order_by('-latest_date')
+            .values('id', 'name', 'roaster__name', 'origin_country__name')
+            .first())
+        return Response(queryset)
+
+    @action(detail=False, methods=['get'])
+    def daily(self, request):
+        latest_id = self.latest(request).data['id']
+        seed = int(date.today().strftime("%Y%m%d"))
+        random.seed(seed)
+        ids = Bean.objects.exclude(id=latest_id).values_list('id', flat=True)
+        daily_id = random.choice(list(ids))
+        daily_bean = (Bean.objects.filter(id=daily_id)
+            .values('id', 'name', 'roaster__name', 'origin_country__name')
+            .first())
+        return Response(daily_bean)
 
     def get_queryset(self):
         queryset = super().get_queryset()

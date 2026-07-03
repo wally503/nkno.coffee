@@ -7,8 +7,8 @@ export function HeatmapWorldMapDisplay({map, data, title, subtitle, isoKey}){
         <>
             <Box sx= {{ width: 'fit-content' }}>
                 <Typography variant="h4" sx={{ ml: 1 }}>{title}</Typography>
-                <Typography sx={{ ml: 10, my: -.5 }}><i>{subtitle}</i></Typography>
-                <Divider sx={{ ml: 7, mr: -7, mb: 3, mt: 1.5, borderColor: '#6c4e4d8e'  }}/>
+                <Typography sx={{ ml: 10, my: -.5, color: '#bababa' }}><i>{subtitle}</i></Typography>
+                <Divider sx={{ ml: 7, mr: -7, mb: 3, mt: 0.5, borderColor: '#6c4e4d8e'  }}/>
             </Box>
             <HeatmapDisplayPage 
                 mapType={map} 
@@ -28,8 +28,8 @@ export function HeatmapUSMapDisplay({map, data, title, subtitle}){
         <>
             <Box sx= {{ width: 'fit-content' }}>
                 <Typography variant="h4" sx={{ ml: 1 }}>{title}</Typography>
-                <Typography sx={{ ml: 10, my: -.5 }}><i>{subtitle}</i></Typography>
-                <Divider sx={{ ml: 7, mr: -7, mb: 3, mt: 1.5, borderColor: '#6c4e4d8e'  }}/>
+                <Typography sx={{ ml: 10, my: -.5, color: '#bababa' }}><i>{subtitle}</i></Typography>
+                <Divider sx={{ ml: 7, mr: -7, mb: 3, mt: 0.5, borderColor: '#6c4e4d8e'  }}/>
             </Box>
             <HeatmapDisplayPage 
                 mapType={map} 
@@ -49,8 +49,8 @@ export function HeatmapMercatorMapDisplay({map, data, scale, longetude, latitude
         <>
             <Box sx= {{ width: 'fit-content' }}>
                 <Typography variant="h4" sx={{ ml: 1 }}>{title}</Typography>
-                <Typography sx={{ ml: 10, my: -.5 }}><i>{subtitle}</i></Typography>
-                <Divider sx={{ ml: 7, mr: -7, mb: 3, mt: 1.5, borderColor: '#6c4e4d8e'  }}/>
+                <Typography sx={{ ml: 10, my: -.5, color: '#bababa'}}><i>{subtitle}</i></Typography>
+                <Divider sx={{ ml: 7, mr: -7, mb: 3, mt: 0.5, borderColor: '#6c4e4d8e'  }}/>
             </Box>
             <HeatmapDisplayPage 
                 mapType={map} 

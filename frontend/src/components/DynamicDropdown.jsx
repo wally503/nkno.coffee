@@ -69,6 +69,8 @@ function addEditMode(item, mode, val, index, handleChange, handleAdd, handleRemo
         <Autocomplete
           fullWidth
           freeSolo
+          autoHighlight
+          autoSelect
           value={val}
           onChange={(_, newValue) => handleChange(index, newValue)}
           onInputChange={(_, newInput) => handleChange(index, newInput)}

@@ -1,5 +1,6 @@
 // src/api/drinkApi.js
 import axiosInstance from './axiosInstance'
+import { beansByRoaster } from "../api/beansApi";
 
 export async function defaultDrinksTableList(page = 0, pageSize = 10){
     try{
@@ -34,8 +35,18 @@ export async function submitDrink(formData) {
 
 export async function drinksRoasters(){
     try{
-        const { data } = await axiosInstance.get('coffee/roasters/')
-        return data.results.map(r => ({ label: r.name, value: r.id }))
+        const { data } = await axiosInstance.get('coffee/roasters/?page_size=500')
+        return data.results.map(r => ({ label: r.name, value: r.id, short_id: r.short_id }))
+    } catch (error) {
+        console.error(error.response.status)
+        console.error(error.response.data)
+    }
+}
+
+export async function drinksBeansForRoaster(id, page, size){
+    try{
+        const { data } = beansByRoaster(id,page,size);
+        return data.results.map(r => ({ label: r.name, value: r.id, short_id: r.short_id }))
     } catch (error) {
         console.error(error.response.status)
         console.error(error.response.data)

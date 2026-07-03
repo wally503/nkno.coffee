@@ -90,3 +90,21 @@ export async function getBeanCountryCount(){
         console.error(error.response.data);
     }
 }
+
+export async function getDailyBean(){
+    try {
+        return await axiosInstance.get('coffee/beans/daily')
+    } catch (error) {
+        console.error(error.response.status);
+        console.error(error.response.data);
+    }
+}
+
+export async function getLatestBean(){
+    try {
+        return await axiosInstance.get('coffee/beans/latest')
+    } catch (error) {
+        console.error(error.response.status);
+        console.error(error.response.data);
+    }
+}

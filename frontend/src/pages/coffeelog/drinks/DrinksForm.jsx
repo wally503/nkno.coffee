@@ -3,6 +3,7 @@ import * as React from "react";
 import CoffeeLogFormShell from "../shared/CoffeeLogFormShell";
 import { drinkFieldConfig } from "../../../constants/forms/drinkFormConfig";
 import { submitDrink, drinksRoasters, getDrinkById } from "../../../api/drinkApi";
+import { beansByRoaster } from "../../../api/beansApi";
 import DialogueBox from "../../../components/DialogueBox";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import DefaultBodyLayout from "../../../components/DefaultBodyLayout";
@@ -30,12 +31,15 @@ export default function DrinksFormPage() {
     add: "Add Drinks"
   } 
 
+  console.log("render!");
+
   React.useEffect(() => {
     const load = async () => {
       const [roasters] = await Promise.all([
           drinksRoasters(),
         ]);
-        // console.log(roasters)
+      console.log("roasters:");
+      console.log(roasters);
       setOptions({ roasters });
       if (shortid){
         const { data } = await getDrinkById(shortid);
@@ -46,7 +50,28 @@ export default function DrinksFormPage() {
     };
     load().catch(console.error);
   }, []);
-
+  
+  React.useEffect(() => {
+    if (!options) return;
+    if (!formData.roaster)
+    {
+      setOptions(prev => ({ ...prev, beans: [] }))
+    } else {
+      const roaster_short = options.roasters.find(r => r.value === formData.roaster)?.short_id;
+      const load = async () => {
+        const [beans] = await Promise.all([
+            beansByRoaster(roaster_short, 0, 100)
+          ]);
+        setOptions(prev => ({ ...prev, beans: beans.results.map(b => ({ label: b.name, value: b.id })) }))
+        console.log("beans results:");
+        console.log(beans.results);
+        console.log("setOptions:");
+        console.log(options);
+      };
+      
+      load().catch(console.error);
+    }
+  }, [formData.roaster]);
 
 
   const handleFieldChange = (name, value) => {
