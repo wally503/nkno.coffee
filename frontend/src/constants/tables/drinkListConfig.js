@@ -6,7 +6,7 @@ export const defaultDrinkTableColumns = [
   },
   { 
     id: "roaster", 
-    label: "Roaster", 
+    label: "Cafe / Roaster", 
     minWidth: 150 
   },
   {

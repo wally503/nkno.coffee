@@ -4,7 +4,7 @@ export const drinkFieldConfig = [
   {
     type: "dropdown",
     name: "roaster",
-    label: "Roaster",
+    label: "Cafe / Roaster",
     required: true,
     size: { xs: 12, sm: 6, md: 6},
     optionSource: "roasters", 

@@ -19,6 +19,8 @@ build/
 dist/
 pip-wheel-metadata/
 *.sqlite3
+*.sqlite3.backup
+*.sqlite3.bkup
 
 # Django specific
 staticfiles/
