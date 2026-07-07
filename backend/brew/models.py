@@ -64,7 +64,6 @@ class Grinder(models.Model):
         return f"{self.name} – {self.brand}"
 
 class GrinderSetting(models.Model):
-    name = models.CharField(max_length=200)
     setting_name = models.CharField(max_length=200)
     description = models.CharField(max_length=500)
     grinder = models.ForeignKey(
@@ -75,7 +74,7 @@ class GrinderSetting(models.Model):
     )
 
     def __str__(self):
-        return f"{self.name} – {self.setting_name}"
+        return f"Setting: {self.setting_name} - For: {self.grinder.name}"
 
 
 
@@ -83,7 +82,7 @@ class BrewRecipie(models.Model):
     dose_grams = models.IntegerField(null=False, blank=False)
     water_grams = models.IntegerField(null=False, blank=False)
     markup = models.TextField(max_length=200)
-    name = models.TextField(max_length=200)
+    name = models.CharField(max_length=350)
 
     grinder = models.ForeignKey(
         Grinder,

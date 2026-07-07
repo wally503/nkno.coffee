@@ -1,7 +1,6 @@
 from django.urls import path, include
-from .views import hello_world
 
 urlpatterns = [
-    path('hello/', hello_world),
     path('coffee/', include('coffee.urls')),
+    path('brew/', include('brew.urls')),
 ]
