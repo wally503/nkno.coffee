@@ -103,7 +103,7 @@ class BeanViewSet(viewsets.ModelViewSet):
         fallback = date(2000,1,1)
         queryset = (Bean.objects
             .annotate(latest_date=Greatest(Coalesce('roast_date', fallback), Coalesce('purchase_date',fallback)))
-            .order_by('-latest_date')
+            .order_by('-latest_date', '-id')
             .values('id', 'name', 'roaster__name', 'origin_country__name')
             .first())
         return Response(queryset)
@@ -118,7 +118,7 @@ class BeanViewSet(viewsets.ModelViewSet):
         daily_bean = (Bean.objects.filter(id=daily_id)
             .values('id', 'name', 'roaster__name', 'origin_country__name')
             .first())
-        return Response(daily_bean)
+        return Response({**daily_bean, '_count': len(ids),'_seed': seed})
 
     def get_queryset(self):
         queryset = super().get_queryset()

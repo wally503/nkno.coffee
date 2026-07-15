@@ -101,7 +101,7 @@ export async function getDailyBean(){
 }
 
 export async function getLatestBean(){
-    try {
+    try {   
         return await axiosInstance.get('coffee/beans/latest')
     } catch (error) {
         console.error(error.response.status);

@@ -420,3 +420,5 @@ Access in code: `ProcessMethod.WASHED` → `'washed'`. The second value is the h
 | Current user in viewset | `self.request.user` |
 | Query param in viewset | `self.request.query_params.get('key')` |
 | Custom URL action | `@action(detail=True/False, methods=['get'])` |
+
+
