@@ -53,7 +53,7 @@ class VesselSetting(models.Model):
     )
 
     def __str__(self):
-        return f"{self.name} – {self.setting_name}"
+        return f"{self.name} – Setting Name: {self.setting_name} - For Vessel: {self.vessel.name}"
 
 
 class Grinder(models.Model):
@@ -78,9 +78,7 @@ class GrinderSetting(models.Model):
 
 
 
-class BrewRecipie(models.Model):
-    dose_grams = models.IntegerField(null=False, blank=False)
-    water_grams = models.IntegerField(null=False, blank=False)
+class RecipieTemplate(models.Model):
     markup = models.TextField(max_length=200)
     name = models.CharField(max_length=350)
 
@@ -96,6 +94,23 @@ class BrewRecipie(models.Model):
         null=True,
         blank=True,
     )
+
+    def __str__(self):
+        return f"{self.id} – {self.name}: {self.grinder.name} + {self.vessel.name}"
+
+class Recipie(models.Model):
+    dose_grams = models.IntegerField(null=False, blank=False)
+    water_grams = models.IntegerField(null=False, blank=False)
+    water_temp = models.IntegerField(null=False, blank=False)
+    name = models.CharField(max_length=200)
+
+    template = models.ForeignKey(
+        RecipieTemplate,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+
     method = models.ForeignKey(
         BrewMethod,
         on_delete=models.SET_NULL,
@@ -108,15 +123,10 @@ class BrewRecipie(models.Model):
         null=True,
         blank=True,
     )
-    cup = models.ForeignKey(
-        Cup,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-    )
 
     def __str__(self):
-        return f"{self.id} – {self.name} - method: {self.method.name}"
+        return self.name
+    
 
 
 class BrewStep(models.Model):
@@ -126,15 +136,15 @@ class BrewStep(models.Model):
     amount = models.TextField(max_length=200)
     notes = models.TextField(max_length=1000)
 
-    recipie = models.ForeignKey(
-        BrewRecipie,
+    recipie_template = models.ForeignKey(
+        RecipieTemplate,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
 
     def __str__(self):
-        return f"{self.id} – recipie: {self.recipie.name} - steptype: {self.step_type}"
+        return f"{self.id} – recipie: {self.recipie_template.name} - steptype: {self.step_type}"
 
 
 class BrewSession(models.Model):
@@ -143,34 +153,25 @@ class BrewSession(models.Model):
     date = models.DateField(null=True, blank=True)
 
     recipie = models.ForeignKey(
-        BrewRecipie,
+        Recipie,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+
+    bean = models.ForeignKey(
+        "coffee.Bean",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
 
     def __str__(self):
-        return f"{self.id} – {self.recipie.name}"
+        bean = self.bean if self.bean else "—"
+        recipie = self.recipie.name if self.recipie else "—"
+        return f"{self.date} – {bean} – {recipie}"
 
-class SessionAdjustment(models.Model):
-    parameter_source = models.TextField(max_length=200)
-    display_token = models.TextField(max_length=200)
-    expected_value = models.TextField(max_length=200)
-    actual_value = models.TextField(max_length=200)
-    reason = models.TextField(max_length=1000)
-
-    session = models.ForeignKey(
-        BrewSession,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-    )
-
-    def __str__(self):
-        return f"{self.id} – {self.parameter_source} / {self.session.recipie.name}"
-
-
-class BrewRecipieVesselSetting(models.Model):
+class RecipieVesselSetting(models.Model):
     value = models.TextField(max_length=200)
     vessel_setting = models.ForeignKey(
         VesselSetting,
@@ -179,7 +180,7 @@ class BrewRecipieVesselSetting(models.Model):
         blank=True,
     )
     recipie = models.ForeignKey(
-        BrewRecipie,
+        Recipie,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
@@ -188,7 +189,7 @@ class BrewRecipieVesselSetting(models.Model):
     def __str__(self):
         return f"{self.id} – {self.recipie} - {self.value}"
 
-class BrewRecipieGrinderSetting(models.Model):
+class RecipieGrinderSetting(models.Model):
     value = models.TextField(max_length=200)
     grinder_setting = models.ForeignKey(
         GrinderSetting,
@@ -197,7 +198,7 @@ class BrewRecipieGrinderSetting(models.Model):
         blank=True,
     )
     recipie = models.ForeignKey(
-        BrewRecipie,
+        Recipie,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
@@ -207,10 +208,10 @@ class BrewRecipieGrinderSetting(models.Model):
         return f"{self.id} – {self.recipie} - {self.value}"
 
 
-class BrewRecipieBrewTool(models.Model):
+class RecipieBrewTool(models.Model):
     value = models.TextField(max_length=200)
     recipie = models.ForeignKey(
-        BrewRecipie,
+        Recipie,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
@@ -237,3 +238,5 @@ class BrewMethodDispatch(models.Model):
 
     def __str__(self):
         return f"{self.id} – {self.target_table}"
+
+
