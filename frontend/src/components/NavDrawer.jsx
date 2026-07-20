@@ -24,6 +24,9 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import IconButton from '@mui/material/IconButton';
+import LocalCafeIcon from '@mui/icons-material/LocalCafe'; 
+import Science from '@mui/icons-material/Science';
+import Tune from '@mui/icons-material/Tune';
 import { Divider } from '@mui/material';
 
 export default function NavDrawer() {
@@ -71,9 +74,18 @@ export default function NavDrawer() {
         <Box sx={{ }}>
           <List>
             <NavBarItem icon={<HomeIcon/>} route="/" label="Home" />
+
+            <Divider sx={{ mx: 2, my: 1, opacity: 0.4 }} />
+
             <NavBarItem icon={<CoffeeIcon/>} route="/coffeeLog" label="Coffee Log" />
             <NavBarItem icon={<AddLocationAltIcon/>} route="/maps" label="Maps" />
             <NavBarItem icon={<AssessmentIcon/>} route="/logHistory" label="Log History" />
+
+            <Divider sx={{ mx: 2, my: 1, opacity: 0.4 }} />
+
+            <NavBarItem icon={<Science/>} route="/brewSession" label="Brew Sessions" />
+            <NavBarItem icon={<Tune/>} route="/adjustments" label="Adjustments" />
+
           </List>    
         </Box>
         {/* bottom bar */}

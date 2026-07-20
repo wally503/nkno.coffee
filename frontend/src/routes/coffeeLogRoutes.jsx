@@ -50,51 +50,20 @@ export const coffeelogOptionsRow2 = [
   }
 ];
 
-export const coffeelogOptionsMasked = [
-  {
-    id: 'EditBeans',
-    title:'Edit Beans',
-    description: 'Edit an existing bean in system',
-    path: 'beans/edit/:shortid',
-    element: <BeansFormPage />
-  },
-  {
-    id: 'ViewBeans',
-    title:'View Beans',
-    description: 'View an existing bean in system',
-    path: 'beans/view/:shortid',
-    element: <BeansFormPage />
-  },
-  {
-    id: 'EditRoasters',
-    title:'Edit Roaster',
-    description: 'Edit an existing roaster in system',
-    path: 'roasters/edit/:shortid',
-    element: <RoasterCafeFormPage />
-  },
-  {
-    id: 'ViewRoasters',
-    title:'View Roaster',
-    description: 'View an existing roaster in system',
-    path: 'roasters/view/:shortid',
-    element: <RoasterCafeFormPage />
-  },
-  {
-    id: 'EditDrinks',
-    title:'Edit Drinks',
-    description: 'Edit an existing drink in system',
-    path: 'drinks/edit/:shortid',
-    element: <DrinksFormPage />
-  },
-  {
-    id: 'ViewDrinks',
-    title:'View Drinks',
-    description: 'View an existing drink in system',
-    path: 'drinks/view/:shortid',
-    element: <DrinksFormPage />
-  },
-];
+const detailModes = ['view', 'edit'];
 
+const makeDetailRoutes = (entity, Component) =>
+  detailModes.map(mode => ({
+    id: `${mode}${entity}`,
+    path: `${entity}/${mode}/:shortid`,
+    element: <Component mode={mode} />,
+  }));
+
+export const coffeelogOptionsMasked = [
+  ...makeDetailRoutes('beans', BeansFormPage),
+  ...makeDetailRoutes('roasters', RoasterCafeFormPage),
+  ...makeDetailRoutes('drinks', DrinksFormPage),
+];
 
 export const coffeelogOptions = [
   ...coffeelogOptionsRow1,
