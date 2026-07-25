@@ -29,6 +29,7 @@ class Roaster(models.Model):
     website = models.URLField(blank=True, null=True)
     social = models.CharField(max_length=200, blank=True)
     notes = models.CharField(max_length=2000, blank=True)
+    date_added = models.DateTimeField(auto_now_add=True)
 
     address = models.CharField(max_length=300, blank=True)
     city = models.CharField(max_length=200, blank=True)
@@ -49,6 +50,9 @@ class Roaster(models.Model):
         if not self.short_id:
             self.short_id = nanoid.generate(size=8)
         super().save(*args, **kwargs)
+
+    class Meta:
+        ordering = ['-date_added']
 
     def __str__(self):
         return self.name
@@ -83,11 +87,20 @@ class Bean(models.Model):
     flavor_notes = models.ManyToManyField(FlavorNotes, null=True, blank=True, related_name="beans")
     comments = models.TextField(blank=True, null=True)
     short_id = models.CharField(max_length=10, unique=True, blank=True)
+    date_added = models.DateTimeField(auto_now_add=True)
+    purchased = models.BooleanField(default=True)
+
+    @property
+    def had_as_drink(self):
+        return self.cafelog_set.exists()
 
     def save(self, *args, **kwargs):
         if not self.short_id:
             self.short_id = nanoid.generate(size=8)
         super().save(*args, **kwargs)
+
+    class Meta:
+        ordering = ['-date_added']
 
     def __str__(self):
         return f"{self.roaster} – {self.name}"
@@ -109,11 +122,15 @@ class Drink(models.Model):
     notes = models.CharField(max_length=2000, blank=True)
     drink_date = models.DateField()
     short_id = models.CharField(max_length=10, unique=True, blank=True)
+    date_added = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
         if not self.short_id:
             self.short_id = nanoid.generate(size=8)
         super().save(*args, **kwargs)
+
+    class Meta:
+        ordering = ['-date_added']
 
     def __str__(self):
         return f"{self.roaster} – {self.drink} ({self.drink_date})"

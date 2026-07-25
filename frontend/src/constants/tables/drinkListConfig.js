@@ -21,7 +21,11 @@ export const defaultDrinkTableColumns = [
   },
   {
     id: "drink_date",
-    label: "Drink Date",
+    label: "Date Purchased",
     minWidth: 85,
+    orderingField: "drink_date",
+    render: (value) => value
+      ? new Date(value).toLocaleDateString("en-CA")
+      : "-",
   }
 ];

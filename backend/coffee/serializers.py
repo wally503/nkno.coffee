@@ -41,7 +41,7 @@ class RoasterListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Roaster
-        fields = ['id', 'name', 'business_type', 'country', 'city', 'region', 'short_id', 'total_beans', 'total_drinks']
+        fields = ['id', 'name', 'business_type', 'country', 'city', 'region', 'short_id', 'total_beans', 'total_drinks', 'date_added']
 
 class BeanSerializer(serializers.ModelSerializer):
     # flavor_notes = serializers.ListField(
@@ -94,7 +94,7 @@ class BeanListSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Bean
-        fields = ['id', 'name', 'roaster', 'origin_country', 'roast_level', 'organic_or_not', 'washing_style', 'flavor_notes', 'elevation', 'short_id', 'purchase_date', 'comments']
+        fields = ['id', 'name', 'roaster', 'origin_country', 'roast_level', 'organic_or_not', 'washing_style', 'flavor_notes', 'elevation', 'short_id', 'purchase_date', 'date_added', 'comments', "purchased", "had_as_drink"]
 
 class DrinkSerializer(serializers.ModelSerializer):
     roaster = serializers.SerializerMethodField()
@@ -108,7 +108,7 @@ class DrinkSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Drink
-        fields = ['id', 'drink', 'rating', 'notes', 'roaster', 'bean', 'short_id', 'drink_date']
+        fields = ['id', 'drink', 'rating', 'notes', 'roaster', 'bean', 'short_id', 'drink_date', 'date_added']
 
 class DrinkCreateSerializer(serializers.ModelSerializer):
     roaster = serializers.PrimaryKeyRelatedField(

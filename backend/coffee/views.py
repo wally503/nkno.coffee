@@ -55,9 +55,9 @@ class BeanViewSet(viewsets.ModelViewSet):
     serializer_class = BeanSerializer
     lookup_field = 'short_id'
     filter_backends = [OrderingFilter, SearchFilter]
-    search_fields = ['name', 'roaster__name', 'origin_country__name', 'roast_level', 'washing_style', 'flavor_notes__name']
-    ordering_fields = ['name', 'roaster__name', 'origin_country__name', 'roast_level', 'washing_style', 'purchase_date']  # whitelist what's sortable
-    ordering = ['name']  # default ordering
+    search_fields = ['name', 'roaster__name', 'origin_country__name', 'roast_level', 'washing_style', 'flavor_notes__name', 'purchased']
+    ordering_fields = ['name', 'roaster__name', 'origin_country__name', 'roast_level', 'washing_style', 'date_added']  # whitelist what's sortable
+    ordering = ['date_added']  # default ordering
     
     def create(self, request):
         flav_notes = request.data.get('flavor_notes')
@@ -102,7 +102,7 @@ class BeanViewSet(viewsets.ModelViewSet):
     def latest(self, request):
         fallback = date(2000,1,1)
         queryset = (Bean.objects
-            .annotate(latest_date=Greatest(Coalesce('roast_date', fallback), Coalesce('purchase_date',fallback)))
+            .annotate(latest_date=Greatest(Coalesce('roast_date', fallback), Coalesce('purchase_date',fallback), Coalesce('date_added',fallback)))
             .order_by('-latest_date', '-id')
             .values('id', 'name', 'roaster__name', 'origin_country__name')
             .first())

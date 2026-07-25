@@ -101,7 +101,7 @@ export default function CoffeeTable({columns, rows, totalCount, tableState, view
                           const value = row[column.id];
                           return (
                             <TableCell key={column.id} align={column.align}>
-                              {renderCell(column, value)}
+                              {renderCell(column, value, row)}
                             </TableCell>
                           );
                         })}
@@ -124,11 +124,11 @@ export default function CoffeeTable({columns, rows, totalCount, tableState, view
       </Box>
   );
 
-  function renderCell(column, value) {
+  function renderCell(column, value, row) {
     if (column.id === "rating") 
       return ratingCustomIcons[value]?.icon ?? <span style={{ opacity: 0.3 }}>{ratingCustomIcons[3].icon}</span>;
     if (column.render) 
-      return column.render(value);
+      return column.render(value, row);
     if (column.format && typeof value === "number") 
       return column.format(value);
     return value || "-";
