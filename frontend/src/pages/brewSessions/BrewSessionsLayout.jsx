@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 
-const AdjustmentsLayout = () => {
+const BrewSessionsLayout = () => {
   return <Outlet />;
 };
 
-export default AdjustmentsLayout;
+export default BrewSessionsLayout;

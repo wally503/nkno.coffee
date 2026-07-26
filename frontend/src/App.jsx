@@ -1,24 +1,32 @@
 // src/App.jsx
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
-import {
-  CoffeeLogCardSelect,
-  AdjustmentCardSelect,
-  BrewSessionCardSelect,
-  HomePage,
-  MapsPage,
-  LogHistoryPage,
-} from './pages';
-import { ControlsCardSelect } from './pages'; // add to your pages/index barrel
 
-import { coffeelogOptions } from './constants/routes/coffeeLogRoutes';
-import { brewSessionOptions } from './constants/routes/brewSessionRoutes';
-import { adjustmentOptions } from './constants/routes/adjustmentRoutes';
+// --- top-level pages ---
+import { HomePage, MapsPage, LogHistoryPage, CoffeeLogCardSelect } from './pages';
 
+// --- coffeelog ---
 import CoffeeLogLayout from './pages/coffeelog/CoffeeLogLayout';
-import AdjustmentsLayout from './pages/adjustment/AdjustmentLayout';
-import BrewSessionLayout from './pages/brewSession/BrewSessionLayout';
+import { coffeelogOptions } from './constants/routes/coffeeLogRoutes';
 
+// --- brew: layouts ---
+import BrewAdjustmentsLayout from './pages/brewAdjustments/BrewAdjustmentsLayout';
+import BrewTemplatesLayout from './pages/brewAdjustments/templates/BrewTemplatesLayout';
+import BrewControlsLayout from './pages/brewAdjustments/controls/BrewControlsLayout';
+import BrewSessionsLayout from './pages/brewSessions/BrewSessionsLayout';
+
+// --- brew: card selects ---
+import BrewAdjustmentsCardSelect from './pages/brewAdjustments/BrewAdjustmentsCardSelect';
+import BrewTemplatesCardSelect from './pages/brewAdjustments/templates/BrewTemplatesCardSelect';
+import BrewControlsCardSelect from './pages/brewAdjustments/controls/BrewControlsCardSelect';
+import BrewSessionsCardSelect from './pages/brewSessions/BrewSessionsCardSelect';
+
+// --- brew: route lists ---
+import { brewTemplatesRouteList } from './constants/routes/brewTemplatesRoutes';
+import { brewControlsRouteList } from './constants/routes/brewControlsRoutes';
+import { brewSessionsRouteList } from './constants/routes/brewSessionsRoutes';
+
+// --- shell ---
 import LoginPage from './Login';
 import Layout from './Layout';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -40,18 +48,25 @@ function App() {
             ))}
           </Route>
 
-          <Route path="/brewSession" element={<BrewSessionLayout />}>
-            <Route index element={<BrewSessionCardSelect />} />
-            {brewSessionOptions.map(({ path, element }) => (
-              <Route key={path} path={path} element={element} />
-            ))}
+          <Route path="/adjustments" element={<BrewAdjustmentsLayout />}>
+            <Route index element={<BrewAdjustmentsCardSelect />} />   {/* Templates | Controls */}
+            <Route path="controls" element={<BrewControlsLayout />}>
+              <Route index element={<BrewControlsCardSelect />} />
+              {brewControlsRouteList.map(({ path, element }) => (
+                <Route key={path} path={path} element={element} />
+              ))}
+            </Route>
+            <Route path="templates" element={<BrewTemplatesLayout />}>
+              <Route index element={<BrewTemplatesCardSelect />} />
+              {brewTemplatesRouteList.map(({ path, element }) => (
+                <Route key={path} path={path} element={element} />
+              ))}
+            </Route>
           </Route>
 
-          <Route path="/adjustments" element={<AdjustmentsLayout />}>
-            <Route index element={<AdjustmentCardSelect />} />
-            {/* controls sub-menu index (the fork into catalog entities) */}
-            <Route path="controls" element={<ControlsCardSelect />} />
-            {adjustmentOptions.map(({ path, element }) => (
+          <Route path="/brewSession" element={<BrewSessionsLayout />}>
+            <Route index element={<BrewSessionsCardSelect />} />
+            {brewSessionsRouteList.map(({ path, element }) => (
               <Route key={path} path={path} element={element} />
             ))}
           </Route>
