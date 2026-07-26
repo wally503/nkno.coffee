@@ -64,7 +64,9 @@ export default function BeansFormPage() {
     try {
       const payload = { ...formData };  
       console.log("result formdate for beans:", formData)
-      const res = shortid ? await updateBean(shortid, payload) : await submitBeans(payload);
+      const res = shortid 
+        ? await updateBean(shortid, payload) 
+        : await submitBeans(payload);
       setSaveDialogue(true);
       console.log("Add beans result:", res);
     } catch(err){

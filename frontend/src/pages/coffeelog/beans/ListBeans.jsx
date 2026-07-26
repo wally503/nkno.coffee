@@ -11,7 +11,7 @@ import DefaultBodyLayout from "../../../components/DefaultBodyLayout";
 
 
 export default function ListBeansPage() {
-  const beansTableState = useTableState('name');
+  const beansTableState = useTableState('-date_added');
   const [rows, setRows] = React.useState([]);
   const [totalCount, setTotalCount] = React.useState(0);
 

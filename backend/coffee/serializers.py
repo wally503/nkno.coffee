@@ -61,6 +61,7 @@ class BeanListSerializer(serializers.ModelSerializer):
     washing_style = serializers.SerializerMethodField()
     organic_or_not = serializers.SerializerMethodField()
     roast_level = serializers.SerializerMethodField()
+    had_as_drink = serializers.SerializerMethodField()
 
     def get_flavor_notes(self, obj):
         notes = obj.flavor_notes.all()
@@ -92,6 +93,9 @@ class BeanListSerializer(serializers.ModelSerializer):
     def get_roast_level(self, obj):
         return obj.get_roast_level_display() if obj.roast_level else '-'
     
+    def get_had_as_drink(self, obj):
+        return obj.drink_set.exists()
+
     class Meta:
         model = Bean
         fields = ['id', 'name', 'roaster', 'origin_country', 'roast_level', 'organic_or_not', 'washing_style', 'flavor_notes', 'elevation', 'short_id', 'purchase_date', 'date_added', 'comments', "purchased", "had_as_drink"]

@@ -81,7 +81,9 @@ export default function DrinksFormPage() {
 
   const handleSubmit = async () => {
     try {
-      const res = await submitDrink(formData);
+      const res = shortid
+        ? await updateDrink(shortid, payload)
+        : await submitDrink(payload);
       setSaveDialogue(true);
       // console.log("Add drink result:", res);
     } catch(err){

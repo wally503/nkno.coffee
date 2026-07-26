@@ -33,6 +33,17 @@ export async function submitDrink(formData) {
     }
 }
 
+export async function updateDrink(id, formData) {
+    try {
+        return await axiosInstance.put('coffee/drinks/' + id + '/', formData);
+    } catch (error){
+        if (error.response?.status === 400){
+            throw error.response.data;
+        }
+        throw error;
+    }
+}
+
 export async function drinksRoasters(){
     try{
         const { data } = await axiosInstance.get('coffee/roasters/?page_size=500')

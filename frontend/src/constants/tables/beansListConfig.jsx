@@ -2,6 +2,11 @@ import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import LocalCafeIcon from '@mui/icons-material/LocalCafe';
 import Tooltip from '@mui/material/Tooltip'
 import Box from '@mui/material/Box';
+import CoffeeBean from '../../ass../../assets/icons/coffee-bean.svg?react';
+
+const ICON_SIZE = 24;
+const BEAN_COLOR = '#6f4e37';  
+const CUP_COLOR  = '#a67c52';  
 
 export const defaultBeansTableColumns = [
   { 
@@ -51,10 +56,10 @@ export const defaultBeansTableColumns = [
     render: (_, row) => (
       <Box sx={{ display: 'flex', gap: 0.5 }}>
         <Tooltip title={row.purchased ? "Owned a bag" : "Never bought"}>
-          <ShoppingBagIcon fontSize="small" sx={{ opacity: row.purchased ? 1 : 0.15 }} />
+          <CoffeeBean style={{ width: ICON_SIZE, height: ICON_SIZE, color: BEAN_COLOR, opacity: row.purchased ? 1 : 0.15 }} />
         </Tooltip>
         <Tooltip title={row.had_as_drink ? "Had as a drink" : "Never had as a drink"}>
-          <LocalCafeIcon fontSize="small" sx={{ opacity: row.had_as_drink ? 1 : 0.15 }} />
+          <LocalCafeIcon sx={{ fontSize: ICON_SIZE, color: CUP_COLOR, opacity: row.had_as_drink ? 1 : 0.15 }} />
         </Tooltip>
       </Box>
     ),

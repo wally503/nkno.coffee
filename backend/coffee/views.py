@@ -57,7 +57,7 @@ class BeanViewSet(viewsets.ModelViewSet):
     filter_backends = [OrderingFilter, SearchFilter]
     search_fields = ['name', 'roaster__name', 'origin_country__name', 'roast_level', 'washing_style', 'flavor_notes__name', 'purchased']
     ordering_fields = ['name', 'roaster__name', 'origin_country__name', 'roast_level', 'washing_style', 'date_added']  # whitelist what's sortable
-    ordering = ['date_added']  # default ordering
+    ordering = ['-date_added']  # default ordering
     
     def create(self, request):
         flav_notes = request.data.get('flavor_notes')
