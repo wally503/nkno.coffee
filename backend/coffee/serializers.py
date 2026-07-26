@@ -101,28 +101,25 @@ class BeanListSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'roaster', 'origin_country', 'roast_level', 'organic_or_not', 'washing_style', 'flavor_notes', 'elevation', 'short_id', 'purchase_date', 'date_added', 'comments', "purchased", "had_as_drink"]
 
 class DrinkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Drink
+        fields = '__all__'
+
+
+class DrinkListSerializer(serializers.ModelSerializer):
     roaster = serializers.SerializerMethodField()
     bean = serializers.SerializerMethodField()
 
-    def get_bean(self,obj):
+    def get_bean(self, obj):
         return obj.bean.name if obj.bean else '-'
-    
-    def get_roaster(self,obj):
+
+    def get_roaster(self, obj):
         return obj.roaster.name if obj.roaster else '-'
 
     class Meta:
         model = Drink
-        fields = ['id', 'drink', 'rating', 'notes', 'roaster', 'bean', 'short_id', 'drink_date', 'date_added']
-
-class DrinkCreateSerializer(serializers.ModelSerializer):
-    roaster = serializers.PrimaryKeyRelatedField(
-        queryset=Roaster.objects.all(),
-        required=True
-    )
-
-    class Meta:
-        model = Drink
-        fields = '__all__'
+        fields = ['id', 'drink', 'rating', 'notes', 'roaster', 'bean',
+                  'short_id', 'drink_date', 'date_added']
 
 class CountriesSerializer(serializers.ModelSerializer):
     class Meta:

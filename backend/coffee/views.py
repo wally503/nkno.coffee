@@ -148,10 +148,10 @@ class DrinkViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         match self.action:
-            case 'create' | 'retrieve' :
-                return DrinkCreateSerializer
+            case 'list':
+                return DrinkListSerializer
             case _:
-                return DrinkSerializer
+                return DrinkSerializer    
     
 class CountriesViewSet(viewsets.ModelViewSet):
     queryset = Countries.objects.all()

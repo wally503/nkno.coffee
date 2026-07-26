@@ -2,7 +2,7 @@
 import * as React from "react";
 import CoffeeLogFormShell from "../shared/CoffeeLogFormShell";
 import { drinkFieldConfig } from "../../../constants/forms/drinkFormConfig";
-import { submitDrink, drinksRoasters, getDrinkById } from "../../../api/drinkApi";
+import { submitDrink, updateDrink, drinksRoasters, getDrinkById } from "../../../api/drinkApi";
 import { beansByRoaster } from "../../../api/beansApi";
 import DialogueBox from "../../../components/DialogueBox";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
@@ -81,6 +81,7 @@ export default function DrinksFormPage() {
 
   const handleSubmit = async () => {
     try {
+      const payload = { ...formData };  
       const res = shortid
         ? await updateDrink(shortid, payload)
         : await submitDrink(payload);
