@@ -1,23 +1,24 @@
-import { BeansFormPage, ListBeansPage } from '../pages/coffeelog/beans/index';
-import { RoasterCafeFormPage ,ListRoasterCafesPage } from '../pages/coffeelog/roasters/index';
-import { ListDrinksPage, DrinksFormPage } from '../pages/coffeelog/drinks/index';
+// src/constants/routes/adjustmentRoutes.jsx
+import { BeansFormPage, ListBeansPage } from '../../pages/coffeelog/beans/index';
+import { RoasterCafeFormPage ,ListRoasterCafesPage } from '../../pages/coffeelog/roasters/index';
+import { ListDrinksPage, DrinksFormPage } from '../../pages/coffeelog/drinks/index';
 
 export const adjustmentOptionsRow1 = [
   {
-    id: 'AdjType1',
-    title:'Adjustments Add/Modify Adjustment Type 1',
-    description: 'Add/Modify Adjustment Category 1',
-    path: 'adjustments/type1',
+    id: 'Templates',
+    title:'Templates',
+    description: 'Add/Modify Templates for Sessions',
+    path: 'adjustments/templates',
     element: <BeansFormPage />
   }
 ];
 
 export const adjustmentOptionsRow2 = [
   {
-    id: 'AdjType2',
-    title:'Adjustments Add/Modify Adjustment Type 2',
-    description: 'Add/Modify Adjustment Category 2',
-    path: 'adjustments/type2',
+    id: 'Controls',
+    title:'Controls',
+    description: 'Add/Modify Controls for Templating',
+    path: 'adjustments/controls',
     element: <ListBeansPage />
   }
 ];

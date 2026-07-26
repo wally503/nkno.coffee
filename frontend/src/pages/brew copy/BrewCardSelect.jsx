@@ -1,13 +1,13 @@
 import { Grid, Card, CardActionArea, CardContent, Container, Typography, Box } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { adjustmentOptionsRow1, adjustmentOptionsRow2 } from '../../routes/adjustmentRoutes';
+import { coffeelogOptionsRow1, coffeelogOptionsRow2 } from '../../constants/routes/coffeeLogRoutes';
 import CardPageBodyLayout from '../../components/CardPageBodyLayout';
 
-export default function AdjustmentCardSelect(){
+export default function CoffeeLogSelect(){
     const [selectedId, setSelectedId] = useState(null);
     const navigate = useNavigate();
-    const adjustmentOptionRows = [adjustmentOptionsRow1, adjustmentOptionsRow2];
+    const coffeelogOptionRows = [coffeelogOptionsRow1, coffeelogOptionsRow2];
 
     const LogTypeCard = ({option}) => {
         return (
@@ -36,7 +36,7 @@ export default function AdjustmentCardSelect(){
     <>
       <CardPageBodyLayout>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3, justifyContent: 'center', maxWidth: 1200 }}>
-          {[...adjustmentOptionsRow1, ...adjustmentOptionsRow2].map((option) => (
+          {[...coffeelogOptionsRow1, ...coffeelogOptionsRow2].map((option) => (
             <LogTypeCard key={option.id} option={option} />
           ))}
         </Box>

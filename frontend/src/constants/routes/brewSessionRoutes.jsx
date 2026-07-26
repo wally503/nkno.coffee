@@ -1,6 +1,7 @@
-import { BeansFormPage, ListBeansPage } from '../pages/coffeelog/beans/index';
-import { RoasterCafeFormPage ,ListRoasterCafesPage } from '../pages/coffeelog/roasters/index';
-import { ListDrinksPage, DrinksFormPage } from '../pages/coffeelog/drinks/index';
+// src/constants/routes/brewSessionRoutes.jsx
+import { BeansFormPage, ListBeansPage } from '../../pages/coffeelog/beans/index';
+import { RoasterCafeFormPage ,ListRoasterCafesPage } from '../../pages/coffeelog/roasters/index';
+import { ListDrinksPage, DrinksFormPage } from '../../pages/coffeelog/drinks/index';
 
 export const brewSessionOptionsRow1 = [
   {

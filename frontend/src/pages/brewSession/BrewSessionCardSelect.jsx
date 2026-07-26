@@ -1,7 +1,7 @@
 import { Grid, Card, CardActionArea, CardContent, Container, Typography, Box } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { brewSessionOptionsRow1, brewSessionOptionsRow2 } from '../../routes/brewSessionRoutes';
+import { brewSessionOptionsRow1, brewSessionOptionsRow2 } from '../../constants/routes/brewSessionRoutes';
 import CardPageBodyLayout from '../../components/CardPageBodyLayout';
 
 export default function BrewSessionCardSelect(){

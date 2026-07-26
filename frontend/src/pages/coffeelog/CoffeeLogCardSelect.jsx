@@ -1,7 +1,7 @@
 import { Grid, Card, CardActionArea, CardContent, Container, Typography, Box } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { coffeelogOptionsRow1, coffeelogOptionsRow2 } from '../../routes/coffeeLogRoutes';
+import { coffeelogOptionsRow1, coffeelogOptionsRow2 } from '../../constants/routes/coffeeLogRoutes';
 import CardPageBodyLayout from '../../components/CardPageBodyLayout';
 
 export default function CoffeeLogSelect(){

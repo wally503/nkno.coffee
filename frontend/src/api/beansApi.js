@@ -41,7 +41,7 @@ export async function beansCountries(pageSize = 500){
     }
 }
 
-export async function beansNotes(pageSize = 500){
+export async function beansNotes(pageSize = 5000){
     try{
         const { data } = await axiosInstance.get(`coffee/notes/?page_size=${pageSize}`)
         return data.results.map(r => ({ label: r.name, value: r.id }))

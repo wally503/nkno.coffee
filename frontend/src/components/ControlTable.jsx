@@ -1,0 +1,136 @@
+// src/components/CoffeeTable.jsx
+
+import * as React from "react";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TablePagination from "@mui/material/TablePagination";
+import TableRow from "@mui/material/TableRow";
+import PageHeaderTitle from "./PageTitle";
+import TextField from "@mui/material/TextField";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Grid, FormControl, FormHelperText, Box, Rating, Typography, TableSortLabel } from "@mui/material";
+import { ratingCustomIcons } from "./RatingGridItem";
+
+export default function ControlTable({columns, rows, totalCount, tableState, viewRoute}) {
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(tableState.pageSize);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+    tableState.setPage(newPage);
+  };
+
+  const handleSearchChange = (event) => {
+    setSearch(event.target.value);
+  }
+
+  const handleOrderingChange = (event) => {
+    setOrdering(event.target.value);
+  }
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+    tableState.setPageSize(+event.target.value);
+    tableState.setPage(0);
+  };
+
+  if (!columns?.length) return null;
+  return (
+    <Box
+        sx={{
+          width: "90%", 
+          maxWidth: 1400, 
+          mx: "auto" 
+        }}
+      >
+        <Paper>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 2 }}>
+            <TextField placeholder="Search..." onChange={(e) => tableState.setSearch(e.target.value)} size="small" />
+          </Box>
+          <TableContainer sx={{ overflowX: "auto" }}>
+            <Table stickyHeader aria-label="sticky table" sx={{ tableLayout: 'fixed' }}>
+              <TableHead>
+                <TableRow>
+                  {columns.map((column) => (
+                    <TableCell
+                      key={column.id}
+                      align={column.align}
+                      style={{ top: 0, minWidth: column.minWidth, width: column.minWidth }}
+                      onClick={() => column.orderingField !== null && tableState.handleOrderingChange(column.orderingField ?? column.id)}
+                      sx={{ cursor: column.orderingField === null ? 'default' : 'pointer' }}
+                    >
+                      <TableSortLabel
+                        active={column.orderingField !== null && (column.orderingField ?? column.id) === tableState.orderField}
+                        direction={tableState.orderDir}
+                        hideSortIcon={column.orderingField === null}
+                        disabled={column.orderingField === null}
+                      >
+                          {column.label}
+                      </TableSortLabel>
+                    </TableCell>
+
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {!rows || rows.length === 0 ?
+                <TableRow
+                  tabIndex={-1}
+                  key={0}>
+                    <TableCell colSpan={columns.length} align="center" sx={{ fontStyle: 'italic' }}>- No data found -</TableCell>
+                </TableRow>
+                :
+                rows
+                  .map((row) => {
+                    return (
+                      <TableRow
+                        hover
+                        role="checkbox"
+                        tabIndex={-1}
+                        key={row.id}
+                        onClick={() => navigate(`${viewRoute}/${row.short_id}`, { state: { backRoute: location.pathname } })}
+                      >
+                        {columns.map((column) => {
+                          const value = row[column.id];
+                          return (
+                            <TableCell key={column.id} align={column.align}>
+                              {renderCell(column, value, row)}
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25, 100]}
+            component="div"
+            count={totalCount}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Paper>
+      </Box>
+  );
+
+  function renderCell(column, value, row) {
+    if (column.id === "rating") 
+      return ratingCustomIcons[value]?.icon ?? <span style={{ opacity: 0.3 }}>{ratingCustomIcons[3].icon}</span>;
+    if (column.render) 
+      return column.render(value, row);
+    if (column.format && typeof value === "number") 
+      return column.format(value);
+    return value || "-";
+  }
+}
