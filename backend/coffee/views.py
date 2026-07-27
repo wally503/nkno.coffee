@@ -7,8 +7,10 @@ from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter, SearchFilter
 from .serializers import *
 from .models import *
+from .pagination import LargeDynamicPageSizePagination, DynamicPageSizePagination
 from datetime import date
 import random
+
 
 class RoasterViewSet(viewsets.ModelViewSet):
     queryset = Roaster.objects.all()
@@ -156,14 +158,17 @@ class DrinkViewSet(viewsets.ModelViewSet):
 class CountriesViewSet(viewsets.ModelViewSet):
     queryset = Countries.objects.all()
     serializer_class = CountriesSerializer
+    pagination_class = LargeDynamicPageSizePagination
 
 class FlavorNotesViewSet(viewsets.ModelViewSet):
     queryset = FlavorNotes.objects.all()
     serializer_class = FlavorNotesSerializer
+    pagination_class = LargeDynamicPageSizePagination
 
 class RegionsViewSet(viewsets.ModelViewSet):
     queryset = Region.objects.all()
     serializer_class = RegionsSerializer
+    pagination_class = LargeDynamicPageSizePagination
 
     def get_queryset(self):
         queryset = super().get_queryset()

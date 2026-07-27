@@ -32,3 +32,12 @@ export async function updateDynamicForm(uriPath, id, formData) {
         throw error;
     }
 }
+
+export async function getDynamicById(uriPath, id){
+    try {
+        return await axiosInstance.get(uriPath + id + '/')
+    } catch (error) {
+        console.error(error.response?.status)
+        console.error(error.response?.data)
+    }
+}

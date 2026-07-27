@@ -6,6 +6,7 @@ import { beansCountries, beansNotes, beansRoasters, submitBeans, getBeanById, up
 import DialogueBox from "../../../components/DialogueBox";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import DefaultBodyLayout from "../../../components/DefaultBodyLayout";
+import Fade from '@mui/material/Fade';
 
 export default function BeansFormPage() {
   const [formData, setFormData] = React.useState({});
@@ -42,7 +43,8 @@ export default function BeansFormPage() {
       setOptions({...BEANFORM_STATIC_OPTIONS, roasters, countries, notes});
       if (shortid){
         const { data } = await getBeanById(shortid);
-        // console.log('testin data', data)
+        console.log('testin data', data);
+        console.log('allnotes', notes);
         if(data){
           const noteLabels = data.flavor_notes.map(id => 
           notes.find(n => n.value === id)?.label
@@ -83,26 +85,30 @@ export default function BeansFormPage() {
 
   return (
     <>
-      <DefaultBodyLayout>
-        <CoffeeLogFormShell
-          title={titles[mode]}
-          hasBackButton={true}
-          backRoute={location.state?.backRoute ?? (shortid ? "/coffeeLog/beans/list" : "/coffeeLog")}
-          fields={resolvedFields}
-          formData={formData}
-          onFieldChange={handleFieldChange}
-          onSubmit={handleSubmit}
-          onEdit={() => navigate(`/coffeeLog/beans/edit/${shortid}`)}
-          errors={errors}
-          mode={mode}
-        />
-        <DialogueBox 
-          title={"Saving Beans"}
-          message={"Beans were successfully saved!"}
-          open={saveDialogue}
-          onCloseParent={() => { setSaveDialogue(false); navigate('/coffeeLog/beans/list') } }
-        />
-      </DefaultBodyLayout>
+      <Fade in={!!options} timeout={400}>
+        <div>
+          <DefaultBodyLayout>
+            <CoffeeLogFormShell
+              title={titles[mode]}
+              hasBackButton={true}
+              backRoute={location.state?.backRoute ?? (shortid ? "/coffeeLog/beans/list" : "/coffeeLog")}
+              fields={resolvedFields}
+              formData={formData}
+              onFieldChange={handleFieldChange}
+              onSubmit={handleSubmit}
+              onEdit={() => navigate(`/coffeeLog/beans/edit/${shortid}`)}
+              errors={errors}
+              mode={mode}
+            />
+            <DialogueBox 
+              title={"Saving Beans"}
+              message={"Beans were successfully saved!"}
+              open={saveDialogue}
+              onCloseParent={() => { setSaveDialogue(false); navigate('/coffeeLog/beans/list') } }
+            />
+          </DefaultBodyLayout>
+        </div>
+      </Fade>
     </>
   );
 }

@@ -16,8 +16,8 @@ export const cardStyles = {
 
   // smaller card for dense menus (e.g. the 8-entity controls grid)
   compact: {
-    height: 200,
-    width: 220,
+    height: 270,
+    width: 290,
     bg: '#2f2e2e',
     border: 'rgba(180, 140, 100, 0.5)',
   },

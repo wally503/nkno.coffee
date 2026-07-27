@@ -7,6 +7,7 @@ import { beansByRoaster } from "../../../api/beansApi";
 import DialogueBox from "../../../components/DialogueBox";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import DefaultBodyLayout from "../../../components/DefaultBodyLayout";
+import Fade from '@mui/material/Fade';
 
 export default function DrinksFormPage() {
   const [formData, setFormData] = React.useState({});
@@ -101,26 +102,30 @@ export default function DrinksFormPage() {
 
   return (
     <>
-      <DefaultBodyLayout>
-        <CoffeeLogFormShell
-          title={titles[mode]}
-          hasBackButton={true}
-          backRoute={location.state?.backRoute ?? (shortid ? "/coffeeLog/drinks/list" : "/coffeeLog")}
-          fields={resolvedFields}
-          formData={formData}
-          onFieldChange={handleFieldChange}
-          onSubmit={handleSubmit}
-          onEdit={() => navigate(`/coffeeLog/drinks/edit/${shortid}`)}
-          errors={errors}
-          mode={mode}
-        />
-        <DialogueBox 
-          title={"Saving Drink"}
-          message={"Drink was successfully saved!"}
-          open={saveDialogue}
-          onCloseParent={() => { setSaveDialogue(false); navigate('/coffeeLog') } }
-        />
-      </DefaultBodyLayout>
+      <Fade in={!!options} timeout={400}>
+        <div>
+          <DefaultBodyLayout>
+            <CoffeeLogFormShell
+              title={titles[mode]}
+              hasBackButton={true}
+              backRoute={location.state?.backRoute ?? (shortid ? "/coffeeLog/drinks/list" : "/coffeeLog")}
+              fields={resolvedFields}
+              formData={formData}
+              onFieldChange={handleFieldChange}
+              onSubmit={handleSubmit}
+              onEdit={() => navigate(`/coffeeLog/drinks/edit/${shortid}`)}
+              errors={errors}
+              mode={mode}
+            />
+            <DialogueBox 
+              title={"Saving Drink"}
+              message={"Drink was successfully saved!"}
+              open={saveDialogue}
+              onCloseParent={() => { setSaveDialogue(false); navigate('/coffeeLog') } }
+            />
+          </DefaultBodyLayout>
+        </div>
+      </Fade>
     </>
   );
 }

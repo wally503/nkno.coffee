@@ -26,6 +26,10 @@ import { brewTemplatesRouteList } from './constants/routes/brewTemplatesRoutes';
 import { brewControlsRouteList } from './constants/routes/brewControlsRoutes';
 import { brewSessionsRouteList } from './constants/routes/brewSessionsRoutes';
 
+import DynamicList from './pages/brew/shared/DynamicList';
+import DynamicForm from './pages/brew/shared/DynamicForm';
+import { grinderConfig } from './constants/forms/brew/grinderConfig';
+
 // --- shell ---
 import LoginPage from './Login';
 import Layout from './Layout';
@@ -63,6 +67,13 @@ function App() {
               ))}
             </Route>
           </Route>
+
+          <Route path="/grinders-test" element={<DynamicList config={grinderConfig} />} />
+          
+          <Route path="grinders/list" element={<DynamicList config={grinderConfig} />} />
+          <Route path="grinders/add" element={<DynamicForm config={grinderConfig} />} />
+          <Route path="grinders/edit/:shortid" element={<DynamicForm config={grinderConfig} />} />
+          <Route path="grinders/view/:shortid" element={<DynamicForm config={grinderConfig} />} />
 
           <Route path="/brewSession" element={<BrewSessionsLayout />}>
             <Route index element={<BrewSessionsCardSelect />} />
