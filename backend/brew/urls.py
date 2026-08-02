@@ -1,9 +1,9 @@
-from rest_framework.routers import DefaultRouter   
-# from .views import RoasterViewSet, BeanViewSet, DrinkViewSet, CountriesViewSet, FlavorNotesViewSet, RegionsViewSet, MapzoneViewSet
+# brew/urls.py
+from rest_framework.routers import DefaultRouter
+from .views import GrinderViewSet, BrewVesselViewSet
 
 router = DefaultRouter()
-
-
-# router.register('roasters', RoasterViewSet)
+router.register('grinders', GrinderViewSet)
+router.register('vessels', BrewVesselViewSet)
 
 urlpatterns = router.urls

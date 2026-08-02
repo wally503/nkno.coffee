@@ -69,7 +69,7 @@ export default function DynamicForm({ config }) {
     }
   };
 
-  const listRoute = `${config.baseRoute}/list`;
+  const listRoute = `${config.base}/list`;
 
   return (
     <DefaultBodyLayout>
@@ -83,7 +83,7 @@ export default function DynamicForm({ config }) {
             formData={formData}
             onFieldChange={handleFieldChange}
             onSubmit={handleSubmit}
-            onEdit={() => navigate(`${config.baseRoute}/edit/${shortid}`)}
+            onEdit={() => navigate(`${config.base}/edit/${shortid}`)}
             errors={errors}
             mode={mode}
           />

@@ -51,7 +51,7 @@ export default function DynamicList({ config }) {
       <PageTitle title={config.labelPlural} hasBackButton backRoute="/adjustments/controls" />
 
       <Box sx={{ width: '90%', maxWidth: 1400, mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
-        <Button variant="contained" onClick={() => navigate(`${config.baseRoute}/add`)}>
+        <Button variant="contained" onClick={() => navigate(`${config.base}/add`)}>
           Add {config.label}
         </Button>
       </Box>
@@ -63,7 +63,7 @@ export default function DynamicList({ config }) {
             rows={rows}
             totalCount={totalCount}
             tableState={tableState}
-            viewRoute={`${config.baseRoute}/view`}
+            viewRoute={`${config.base}/view`}
           />
         </div>
       </Fade>

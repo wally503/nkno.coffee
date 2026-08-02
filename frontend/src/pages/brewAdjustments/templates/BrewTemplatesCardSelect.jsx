@@ -1,6 +1,6 @@
 import NavCardGrid from '../../../components/NavCardGrid';
 import { brewTemplateOptionsRow1, brewTemplateOptionsRow2, brewTemplatesIsNavRoot }
-  from '../../../constants/routes/brewTemplatesRoutes';
+  from '../../../constants/config/brew/templates/_routes';
 
 export default function BrewTemplatesCardSelect() {
   return (
