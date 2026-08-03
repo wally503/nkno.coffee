@@ -39,7 +39,7 @@ export const ratingCustomIcons = {
 
 function IconContainer(props) {
   const { value, ...other } = props;
-  return <span {...other}>{ratingCustomIcons[value].icon}</span>;
+  return <span {...other}>{ratingCustomIcons[value]?.icon ?? null}</span>;
 }
 
 IconContainer.propTypes = {
@@ -54,19 +54,12 @@ export default function RatingGridItem({ item, onChange, value, mode, error }) {
           <Typography component="legend">{item.label}</Typography>
           <StyledRating
             sx={{ pl: "10px", pt: "5px"}}
-            name="highlight-selected-only"
-            defaultValue={3}
-            slotProps={{ 
-              icon: { 
-                component: 
-                  IconContainer 
-                } 
-            }}
-            getLabelText={(value) => ratingCustomIcons[value].label}
+            name={item.name}
+            value={value ?? null}
+            slotProps={{ icon: { component: IconContainer } }}
+            getLabelText={(v) => ratingCustomIcons[v]?.label ?? ''}
             highlightSelectedOnly
-            onChange={(e) => onChange(item.name, parseInt(e.target.value))}
-            // error={!!error}
-            // helperText={error?.[0]}
+            onChange={(e, newValue) => onChange(item.name, newValue)}
             readOnly={mode === "view"}
           />
         </Box>

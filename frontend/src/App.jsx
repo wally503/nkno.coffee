@@ -7,7 +7,7 @@ import { HomePage, MapsPage, LogHistoryPage, CoffeeLogCardSelect } from './pages
 
 // --- coffeelog ---
 import CoffeeLogLayout from './pages/coffeelog/CoffeeLogLayout';
-import { coffeelogOptions } from './constants/routes/coffeeLogRoutes';
+import { coffeelogOptions } from './constants/config/coffeelog/_shared';
 
 // --- brew: layouts ---
 import BrewAdjustmentsLayout from './pages/brewAdjustments/BrewAdjustmentsLayout';

@@ -6,7 +6,7 @@ import { Grid, FormControl, FormHelperText, Box, Rating, Typography } from "@mui
 import CoffeeTable from "../../../components/CoffeeTable";
 // import { fetchBeansTableColumns, fetchBeansTableRows } from "../../../api/mockBeansTableApi";
 import { defaultBeansTableList } from "../../../api/beansApi";
-import { defaultBeansTableColumns } from "../../../constants/tables/beansListConfig";
+import { beansConfig } from "../../../constants/config/coffeelog/beans/beansConfig";
 import DefaultBodyLayout from "../../../components/DefaultBodyLayout";
 
 
@@ -31,7 +31,7 @@ export default function ListBeansPage() {
       <DefaultBodyLayout>
         <PageHeaderTitle title={"List Beans"} hasBackButton={true} backRoute={"/coffeeLog"}  />
         <CoffeeTable 
-            columns={defaultBeansTableColumns} 
+            columns={beansConfig.columns} 
             rows={rows} 
             totalCount={totalCount}
             tableState={beansTableState}

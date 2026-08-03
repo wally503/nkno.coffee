@@ -111,6 +111,13 @@ class Drink(models.Model):
         Roaster,
         on_delete=models.CASCADE,
     )
+    venue = models.ForeignKey(
+        Roaster,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name='drinks_hosted',
+    )
     bean = models.ForeignKey(
         Bean,
         on_delete=models.SET_NULL,

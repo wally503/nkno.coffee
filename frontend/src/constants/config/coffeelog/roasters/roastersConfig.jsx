@@ -1,0 +1,203 @@
+// src/constants/forms/roastersConfig.jsx
+import { COFFEELOG_BASE } from './_base';
+
+
+export const roastersConfig = {
+  key: 'roaster',
+  label: 'Roaster',
+  labelPlural: 'Roasters',
+  base: `${COFFEELOG_BASE}/roasters`,
+  uriPath: 'roasters/',
+
+  columns: [
+    { 
+      id: "name", 
+      label: "Roaster", 
+      minWidth: 150,
+    },
+    { 
+      id: "country", 
+      label: "Country", 
+      minWidth: 150,
+      orderingField: "country__name",
+    },
+    {
+      id: "region",
+      label: "State",
+      minWidth: 85,
+      orderingField: "region__name",
+    },
+    {
+      id: "city",
+      label: "City",
+      minWidth: 85,
+    },
+    {
+      id: "business_type",
+      label: "Business Type",
+      minWidth: 120,
+    },
+    {
+      id: "total_beans",
+      label: "Beans Purchased",
+      minWidth: 85,
+    },
+    {
+      id: "total_drinks",
+      label: "Drinks Purchased",
+      minWidth: 85,
+    },
+  ],
+  fields:  [
+    {
+      type: "text",
+      name: "name",
+      label: "Roaster / Cafe Name",
+      required: true,
+      size: { xs: 12, sm: 6, md: 6 },
+      placeholder: "Perkatory Coffee Roasters",
+    },
+    {
+      type: "dropdown",
+      name: "business_type",
+      label: "Business Type",
+      required: false,
+      size: { xs: 12, sm: 6, md: 6 },
+      optionSource: "businessTypes",
+    },
+    {
+      type: "text",
+      name: "address",
+      label: "Address",
+      required: false,
+      size: { xs: 12 },
+      placeholder: "123 Brew St",
+    },
+    {
+      type: "dropdown",
+      name: "country",
+      label: "Country",
+      required: true,
+      size: { xs: 12, sm: 4, md: 4 },
+      optionSource: "countries",
+    },
+    {
+      type: "dropdown",
+      name: "region",
+      label: "State / Region",
+      required: false,
+      size: { xs: 12, sm: 4, md: 4 },
+      placeholder: "Connecticut",
+      dependsOn: "country"
+    },
+    {
+      type: "text",
+      name: "city",
+      label: "City",
+      required: false ,
+      size: { xs: 12, sm: 4, md: 4 },
+      placeholder: "New Haven",
+    },
+    {
+      type: "text",
+      name: "website",
+      label: "Website",
+      required: false,
+      size: { xs: 12, sm: 6, md: 6 },
+      placeholder: "https://perkatorycoffee.com",
+    },
+    {
+      type: "text",
+      name: "social",
+      label: "Social Link",
+      required: false,
+      size: { xs: 12, sm: 6, md: 6 },
+      placeholder: "https://instagram.com/perkatorycoffee",
+    },
+    {
+      type: "long_text",
+      name: "notes",
+      label: "Notes",
+      required: false,
+      size: { xs: 12, sm: 12, md: 12 },
+      placeholder: "Personal notes about the roaster/cafe",
+    },
+  ],
+  beansTableColumns: [
+    { 
+      id: "name", 
+      label: "Bean Name", 
+      minWidth: 150,
+    },
+    {
+      id: "origin_country",
+      label: "Roast Origin",
+      minWidth: 120,
+      orderingField: "origin_country__name",
+    },
+    {
+      id: "roast_level",
+      label: "Roast",
+      minWidth: 85,
+    },
+    {
+      id: "washing_style",
+      label: "Process",
+      minWidth: 85,
+    },
+    {
+      id: "elevation",
+      label: "Elevation",
+      minWidth: 100,
+      orderingField: null,
+    },
+    {
+      id: "flavor_notes",
+      label: "Notes",
+      minWidth: 180,
+      orderingField: null,
+    },
+    {
+      id: "roast_date",
+      label: "Roast Date",
+      minWidth: 180,
+    },
+    {
+      id: "purchase_date",
+      label: "Purchase Date",
+      minWidth: 180,
+    }
+  ],
+  drinksTableColumns: [
+    { 
+      id: "drink", 
+      label: "Drink Name", 
+      minWidth: 150 
+    },
+    {
+      id: "bean",
+      label: "Bean",
+      minWidth: 85,
+    },
+    {
+      id: "rating",
+      label: "Rating",
+      minWidth: 120,
+      render: (value) => customIcons[value]?.icon ?? "-"
+    },
+    {
+      id: "drink_date",
+      label: "Drink Date",
+      minWidth: 85,
+    }
+  ],
+
+};
+
+export const ROASTERS_STATIC_OPTIONS = {
+  businessTypes: [
+    { label: "Roaster", value: "roaster" },
+    { label: "Cafe", value: "cafe" },
+    { label: "Roaster/Cafe", value: "roaster_cafe" },
+  ],
+};

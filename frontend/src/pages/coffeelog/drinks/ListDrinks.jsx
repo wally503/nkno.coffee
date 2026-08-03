@@ -3,7 +3,7 @@ import PageHeaderTitle from "../../../components/PageTitle";
 import { useNavigate } from "react-router-dom";
 import { Grid, FormControl, FormHelperText, Box, Rating, Typography } from "@mui/material";
 import CoffeeTable from "../../../components/CoffeeTable";
-import { defaultDrinkTableColumns } from "../../../constants/tables/drinkListConfig";
+import { drinksConfig } from "../../../constants/config/coffeelog/drinks/drinksConfig";
 import { defaultDrinksTableList } from "../../../api/drinkApi";
 import { useTableState } from "../../../hooks/useTableState";
 import DefaultBodyLayout from "../../../components/DefaultBodyLayout";
@@ -29,7 +29,7 @@ export default function ListDrinksPage() {
       <DefaultBodyLayout>
         <PageHeaderTitle title={"List Drinks"} hasBackButton={true} backRoute={"/CoffeeLog"}  />
         <CoffeeTable 
-            columns={defaultDrinkTableColumns} 
+            columns={drinksConfig.columns} 
             rows={rows} 
             totalCount={totalCount}
             tableState={drinksTableState}

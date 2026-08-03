@@ -3,9 +3,9 @@
 // Coffee Log section routes. Real pages (these exist), so elements are kept.
 // Paths normalized: plural entities, {entity}/add, {entity}/list, detail modes.
 
-import { BeansFormPage, ListBeansPage } from '../../pages/coffeelog/beans/index';
-import { RoasterCafeFormPage, ListRoasterCafesPage } from '../../pages/coffeelog/roasters/index';
-import { ListDrinksPage, DrinksFormPage } from '../../pages/coffeelog/drinks/index';
+import { BeansFormPage, ListBeansPage } from '../../../pages/coffeelog/beans/index';
+import { RoasterCafeFormPage, ListRoasterCafesPage } from '../../../pages/coffeelog/roasters/index';
+import { ListDrinksPage, DrinksFormPage } from '../../../pages/coffeelog/drinks/index';
 
 // Row 1 = "add" verbs
 export const coffeelogOptionsRow1 = [

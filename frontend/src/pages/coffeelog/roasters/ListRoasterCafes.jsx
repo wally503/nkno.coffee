@@ -6,7 +6,7 @@ import { Grid, FormControl, FormHelperText, Box, Rating, Typography } from "@mui
 import CoffeeTable from "../../../components/CoffeeTable";
 // import { fetchBeansTableColumns, fetchBeansTableRows } from "../../../api/mockBeansTableApi";
 import { defaultRoastersTableList } from "../../../api/roasterApi";
-import { defaultRoastersTableColumns } from "../../../constants/tables/roasterListConfig";
+import { roastersConfig } from "../../../constants/config/coffeelog/roasters/roastersConfig";
 import DefaultBodyLayout from "../../../components/DefaultBodyLayout";
 
 export default function ListRoasterCafesPage() {
@@ -30,7 +30,7 @@ export default function ListRoasterCafesPage() {
       <DefaultBodyLayout>
         <PageHeaderTitle title={"List Roasters"} hasBackButton={true} backRoute={"/CoffeeLog"}  />
         <CoffeeTable 
-          columns={defaultRoastersTableColumns} 
+          columns={roastersConfig.columns} 
           rows={rows} 
           totalCount={totalCount}
           tableState={roasterTableState}

@@ -1,11 +1,11 @@
 import NavCardGrid from '../../components/NavCardGrid';
-import { adjustmentOptionsRow1, adjustmentOptionsRow2, adjustmentIsNavRoot }
-  from '../../constants/routes/adjustmentRoutes';
+import { adjustmentOptionsRow, adjustmentIsNavRoot }
+  from '../../constants/config/brew/_index';
 
 export default function BrewAdjustmentsCardSelect() {
   return (
     <NavCardGrid
-      options={[...adjustmentOptionsRow1, ...adjustmentOptionsRow2]}
+      options={adjustmentOptionsRow}
       isNavRoot={adjustmentIsNavRoot}
     />
   );

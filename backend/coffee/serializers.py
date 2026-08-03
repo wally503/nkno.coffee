@@ -108,6 +108,7 @@ class DrinkSerializer(serializers.ModelSerializer):
 
 class DrinkListSerializer(serializers.ModelSerializer):
     roaster = serializers.SerializerMethodField()
+    venue = serializers.SerializerMethodField()
     bean = serializers.SerializerMethodField()
 
     def get_bean(self, obj):
@@ -115,10 +116,13 @@ class DrinkListSerializer(serializers.ModelSerializer):
 
     def get_roaster(self, obj):
         return obj.roaster.name if obj.roaster else '-'
+    
+    def get_venue(self, obj):
+        return obj.venue.name if obj.venue else '-'
 
     class Meta:
         model = Drink
-        fields = ['id', 'drink', 'rating', 'notes', 'roaster', 'bean',
+        fields = ['id', 'drink', 'rating', 'notes', 'roaster', 'bean', 'venue',
                   'short_id', 'drink_date', 'date_added']
 
 class CountriesSerializer(serializers.ModelSerializer):

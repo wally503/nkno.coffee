@@ -1,7 +1,7 @@
 // src/pages/coffeelog/drinks/AddDrinkReport.jsx
 import * as React from "react";
 import CoffeeLogFormShell from "../shared/CoffeeLogFormShell";
-import { drinkFieldConfig } from "../../../constants/forms/drinkFormConfig";
+import { drinksConfig } from "../../../constants/config/coffeelog/drinks/drinksConfig";
 import { submitDrink, updateDrink, drinksRoasters, getDrinkById } from "../../../api/drinkApi";
 import { beansByRoaster } from "../../../api/beansApi";
 import DialogueBox from "../../../components/DialogueBox";
@@ -96,7 +96,7 @@ export default function DrinksFormPage() {
 
   if (!options) return null;
 
-  const resolvedFields = drinkFieldConfig.map((field) =>
+  const resolvedFields = drinksConfig.fields.map((field) =>
     field.optionSource ? { ...field, options: options[field.optionSource] } : field
   );
 

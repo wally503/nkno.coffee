@@ -1,7 +1,7 @@
 // src/pages/coffeelog/beans/AddBeans.jsx
 import * as React from "react";
 import CoffeeLogFormShell from "../shared/CoffeeLogFormShell";
-import { BEANFORM_STATIC_OPTIONS, beansFieldConfig   } from "../../../constants/forms/beansFormConfig";
+import { BEANS_STATIC_OPTIONS, beansConfig   } from "../../../constants/config/coffeelog/beans/beansConfig";
 import { beansCountries, beansNotes, beansRoasters, submitBeans, getBeanById, updateBean } from "../../../api/beansApi";
 import DialogueBox from "../../../components/DialogueBox";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
@@ -40,7 +40,7 @@ export default function BeansFormPage() {
           beansCountries(),
           beansNotes()
         ]);
-      setOptions({...BEANFORM_STATIC_OPTIONS, roasters, countries, notes});
+      setOptions({...BEANS_STATIC_OPTIONS, roasters, countries, notes});
       if (shortid){
         const { data } = await getBeanById(shortid);
         console.log('testin data', data);
@@ -79,7 +79,7 @@ export default function BeansFormPage() {
 
   if (!options) return null;
 
-  const resolvedFields = beansFieldConfig.map((field) =>
+  const resolvedFields = beansConfig.fields.map((field) =>
     field.optionSource ? { ...field, options: options[field.optionSource] } : field
   );
 

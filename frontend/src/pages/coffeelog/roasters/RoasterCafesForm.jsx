@@ -1,7 +1,7 @@
 // src/pages/coffeelog/roasters/AddRoasterCafe.jsx
 import * as React from "react";
 import CoffeeLogFormShell from "../shared/CoffeeLogFormShell";
-import { roasterFieldConfig, ROASTERFORM_STATIC_OPTIONS, roasterFormBeansTableFieldsConfig, roasterFormDrinkTableFieldsConfig } from "../../../constants/forms/roasterFormConfig";
+import { roastersConfig, ROASTERS_STATIC_OPTIONS } from "../../../constants/config/coffeelog/roasters/roastersConfig";
 import { roastersCountries, submitRoaster, getRoasterById, updateRoaster } from "../../../api/roasterApi";
 import DialogueBox from "../../../components/DialogueBox";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
@@ -54,7 +54,7 @@ export default function RoasterCafeFormPage() {
         const [countries] = await Promise.all([
             roastersCountries()
           ]);
-        setOptions({...ROASTERFORM_STATIC_OPTIONS, countries});
+        setOptions({...ROASTERS_STATIC_OPTIONS, countries});
         if (shortid){
           const { data } = await getRoasterById(shortid);
           if(data){
@@ -101,7 +101,7 @@ export default function RoasterCafeFormPage() {
     return null;
   }
 
-  const resolvedFields = roasterFieldConfig.map((field) =>
+  const resolvedFields = roastersConfig.fields.map((field) =>
     field.optionSource
       ? { ...field, options: options[field.optionSource] }
       : field
@@ -150,7 +150,7 @@ export default function RoasterCafeFormPage() {
             </Box>
             <TabPanel value="1">
               <CoffeeTable 
-                  columns={roasterFormBeansTableFieldsConfig} 
+                  columns={roastersConfig.beansTableColumns} 
                   rows={beanRows} 
                   totalCount={beanTotalCount}
                   tableState={beansTableState}
@@ -159,7 +159,7 @@ export default function RoasterCafeFormPage() {
           </TabPanel>
           <TabPanel value="2">
             <CoffeeTable 
-                columns={roasterFormDrinkTableFieldsConfig} 
+                columns={roastersConfig.drinksTableColumns} 
                   rows={drinkRows} 
                   totalCount={drinkTotalCount}
                   tableState={drinksTableState}
