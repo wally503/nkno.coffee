@@ -20,12 +20,27 @@ export const beansConfig = {
     { 
       id: "name", 
       label: "Bean Name", 
-      minWidth: 220 
+      minWidth: 180 
+    },
+    {
+      id: "status_icons",
+      label: "",
+      minWidth: 70,
+      render: (_, row) => (
+        <Box sx={{ display: 'flex', gap: 0.5 }}>
+          <Tooltip title={row.purchased ? "Owned a bag" : "Never bought"}>
+            <CoffeeBean style={{ width: ICON_SIZE, height: ICON_SIZE, color: BEAN_COLOR, opacity: row.purchased ? 1 : 0.15 }} />
+          </Tooltip>
+          <Tooltip title={row.had_as_drink ? "Had as a drink" : "Never had as a drink"}>
+            <LocalCafeIcon sx={{ fontSize: ICON_SIZE, color: CUP_COLOR, opacity: row.had_as_drink ? 1 : 0.08 }} />
+          </Tooltip>
+        </Box>
+      ),
     },
     { 
       id: "roaster", 
       label: "Roaster", 
-      minWidth: 120,
+      minWidth: 150,
       orderingField: "roaster__name"
     },
     {
@@ -54,28 +69,13 @@ export const beansConfig = {
     {
       id: "flavor_notes",
       label: "Flavor / Body Notes",
-      minWidth: 200,
+      minWidth: 180,
       orderingField: null
-    },
-    {
-      id: "status_icons",
-      label: "",
-      minWidth: 70,
-      render: (_, row) => (
-        <Box sx={{ display: 'flex', gap: 0.5 }}>
-          <Tooltip title={row.purchased ? "Owned a bag" : "Never bought"}>
-            <CoffeeBean style={{ width: ICON_SIZE, height: ICON_SIZE, color: BEAN_COLOR, opacity: row.purchased ? 1 : 0.15 }} />
-          </Tooltip>
-          <Tooltip title={row.had_as_drink ? "Had as a drink" : "Never had as a drink"}>
-            <LocalCafeIcon sx={{ fontSize: ICON_SIZE, color: CUP_COLOR, opacity: row.had_as_drink ? 1 : 0.08 }} />
-          </Tooltip>
-        </Box>
-      ),
     },
     {
       id: "date_added",
       label: "Date Added",
-      minWidth: 130,
+      minWidth: 110,
       orderingField: "date_added",
       render: (value) => value
         ? new Date(value).toLocaleDateString("en-CA")
