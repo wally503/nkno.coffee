@@ -14,6 +14,7 @@ import {
   submitDynamicForm,
   updateDynamicForm,
   getDynamicById,
+  getDynamicOptions,
 } from '../../../api/dynamicApi';
 
 export default function DynamicForm({ config }) {
@@ -21,6 +22,7 @@ export default function DynamicForm({ config }) {
   const [errors, setErrors] = React.useState({});
   const [saveDialogue, setSaveDialogue] = React.useState(false);
   const [loaded, setLoaded] = React.useState(false);
+  const [options, setOptions] = React.useState({});
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -34,6 +36,26 @@ export default function DynamicForm({ config }) {
     }
   };
   const mode = getMode(location.pathname, shortid);
+
+  React.useEffect(() => {
+    const load = async () => {
+      const sources = [...new Set(
+        config.fields.filter(f => f.optionSource).map(f => f.optionSource)
+      )];
+
+      if (sources.length) {
+        const results = await Promise.all(sources.map(s => getDynamicOptions(s)));
+        setOptions(Object.fromEntries(sources.map((s, i) => [s, results[i]])));
+      }
+
+      if (shortid) {
+        const res = await getDynamicById(config.uriPath, shortid);
+        if (res?.data) setFormData(res.data);
+      }
+      setLoaded(true);
+    };
+    load().catch(console.error);
+  }, [config, shortid]);
 
   const titles = {
     view: `View ${config.label}`,
@@ -69,35 +91,41 @@ export default function DynamicForm({ config }) {
     }
   };
 
+  const resolvedFields = config.fields.map((field) =>
+    field.optionSource ? { ...field, options: options[field.optionSource] } : field
+  );
   const listRoute = `${config.base}/list`;
 
+  if (!loaded) return null;
   return (
-    <DefaultBodyLayout>
-      <Fade in={loaded} timeout={400}>
+    <>
+      <Fade in={!!options} timeout={400}>
         <div>
-          <CoffeeLogFormShell
-            title={titles[mode]}
-            hasBackButton
-            backRoute={location.state?.backRoute ?? listRoute}
-            fields={config.fields}
-            formData={formData}
-            onFieldChange={handleFieldChange}
-            onSubmit={handleSubmit}
-            onEdit={() => navigate(`${config.base}/edit/${shortid}`)}
-            errors={errors}
-            mode={mode}
-          />
-          <DialogueBox
-            title={`Saving ${config.label}`}
-            message={`${config.label} was successfully saved!`}
-            open={saveDialogue}
-            onCloseParent={() => {
-              setSaveDialogue(false);
-              navigate(listRoute);
-            }}
-          />
+          <DefaultBodyLayout>
+            <CoffeeLogFormShell
+              title={titles[mode]}
+              hasBackButton
+              backRoute={location.state?.backRoute ?? listRoute}
+              fields={resolvedFields}
+              formData={formData}
+              onFieldChange={handleFieldChange}
+              onSubmit={handleSubmit}
+              onEdit={() => navigate(`${config.base}/edit/${shortid}`)}
+              errors={errors}
+              mode={mode}
+            />
+            <DialogueBox
+              title={`Saving ${config.label}`}
+              message={`${config.label} was successfully saved!`}
+              open={saveDialogue}
+              onCloseParent={() => {
+                setSaveDialogue(false);
+                navigate(listRoute);
+              }}
+            />
+          </DefaultBodyLayout>
         </div>
       </Fade>
-    </DefaultBodyLayout>
+    </>
   );
 }

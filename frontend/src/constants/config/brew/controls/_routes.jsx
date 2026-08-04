@@ -12,85 +12,98 @@ import { makeControlRoutes, makeControlCard } from '../_shared';
 
 import { grinderConfig } from './grinderConfig';
 import { vesselConfig } from './vesselConfig';
+import { cupConfig } from './cupConfig';
+import { grinderSettingConfig } from './grinderSettingConfig';
+import { methodConfig } from './methodConfig';
+import { toolConfig } from './toolConfig';
+import { vesselSettingConfig } from './vesselSettingConfig';
+import { waterConfig } from './waterConfig';
 
 // entities that have real dynamic pages
 const dynamicConfigs = [
   grinderConfig,
+  grinderSettingConfig,
   vesselConfig,
+  vesselSettingConfig,
+  methodConfig,
+  waterConfig,
+  toolConfig,
+  cupConfig,
 ];
 
 // stub cards for entities not yet built (display only, no dynamic routes)
-const stubCards = [
-  {
-    id: 'grindersetting',
-    title: 'Grinder Settings',
-    description: 'Manage grinder settings',
-    path: 'grindersettings/list',
-    cardStyle: 'compact',
-    stub: true,
-  },
-  {
-    id: 'vesselsetting',
-    title: 'Vessel Settings',
-    description: 'Manage vessel settings (caps, filters)',
-    path: 'vesselsettings/list',
-    cardStyle: 'compact',
-    stub: true,
-  },
-  {
-    id: 'method',
-    title: 'Methods',
-    description: 'Manage brew methods',
-    path: 'methods/list',
-    cardStyle: 'compact',
-    stub: true,
-  },
-  {
-    id: 'water',
-    title: 'Waters',
-    description: 'Manage waters',
-    path: 'waters/list',
-    cardStyle: 'compact',
-    stub: true,
-  },
-  {
-    id: 'cup',
-    title: 'Cups',
-    description: 'Manage cups',
-    path: 'cups/list',
-    cardStyle: 'compact',
-    stub: true,
-  },
-  {
-    id: 'tool',
-    title: 'Tools',
-    description: 'Manage brew tools',
-    path: 'tools/list',
-    cardStyle: 'compact',
-    stub: true,
-  },
-];
+// const stubCards = [
+//   {
+//     id: 'grindersetting',
+//     title: 'Grinder Settings',
+//     description: 'Manage grinder settings',
+//     path: 'grindersettings/list',
+//     cardStyle: 'compact',
+//     stub: true,
+//   },
+//   {
+//     id: 'vesselsetting',
+//     title: 'Vessel Settings',
+//     description: 'Manage vessel settings (caps, filters)',
+//     path: 'vesselsettings/list',
+//     cardStyle: 'compact',
+//     stub: true,
+//   },
+//   {
+//     id: 'method',
+//     title: 'Methods',
+//     description: 'Manage brew methods',
+//     path: 'methods/list',
+//     cardStyle: 'compact',
+//     stub: true,
+//   },
+//   {
+//     id: 'water',
+//     title: 'Waters',
+//     description: 'Manage waters',
+//     path: 'waters/list',
+//     cardStyle: 'compact',
+//     stub: true,
+//   },
+//   {
+//     id: 'cup',
+//     title: 'Cups',
+//     description: 'Manage cups',
+//     path: 'cups/list',
+//     cardStyle: 'compact',
+//     stub: true,
+//   },
+//   {
+//     id: 'tool',
+//     title: 'Tools',
+//     description: 'Manage brew tools',
+//     path: 'tools/list',
+//     cardStyle: 'compact',
+//     stub: true,
+//   },
+// ];
 
 // --- cards for the menu -----------------------------------------------------
 // generated cards (from real configs) + stub cards, in display order
 const generatedCards = dynamicConfigs.map(makeControlCard);
 
 // keep your two-row layout: split however you like; here first 4 / rest
-const allCards = [...generatedCards, ...stubCards];
+// const allCards = [...generatedCards, ...stubCards];
+const allCards = [...generatedCards];
 export const brewControlOptionsRow1 = allCards.slice(0, 4);
 export const brewControlOptionsRow2 = allCards.slice(4);
 
 // --- routes for the router --------------------------------------------------
 // real entities -> 4 routes each; stubs -> a single stub list route
 const dynamicRoutes = dynamicConfigs.flatMap(makeControlRoutes);
-const stubRoutes = stubCards.map((c) => ({
-  path: c.path,
-  element: <StubPage label={c.title} />,
-}));
+// const stubRoutes = stubCards.map((c) => ({
+//   path: c.path,
+//   element: <StubPage label={c.title} />,
+// }));
 
 export const brewControlsRouteList = [
   ...dynamicRoutes,
-  ...stubRoutes,
+  // ...stubRoutes,
 ];
 
 // /adjustments/controls is a sub-page under adjustments -> show back card

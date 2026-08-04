@@ -27,7 +27,7 @@ export default function CoffeeLogFormShell({
   return (
     <>
       <PageTitle title={title} hasBackButton={hasBackButton} backRoute={backRoute} />
-      <Box sx={{ width: "90%", maxWidth: 1400 }}>
+      <Box sx={{ width: "80%", maxWidth: 1400 }}>
         <Grid container spacing={3} columns={12}>
           {fields.map((field, index) => {
             switch(field.type) {

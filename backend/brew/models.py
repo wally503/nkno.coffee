@@ -1,4 +1,4 @@
-# brew/serializers.py
+# brew/models.py
 
 from django.db import models
 # from .choices import CaffOrDecaf, WashingStyle, OrganicOrNot, BusinessType, RoastLevel

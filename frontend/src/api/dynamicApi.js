@@ -41,3 +41,15 @@ export async function getDynamicById(uriPath, id){
         console.error(error.response?.data)
     }
 }
+
+export async function getDynamicOptions(uriPath, labelField = 'name') {
+    try {
+        const { data } = await axiosInstance.get(uriPath + '?page_size=500')
+        const rows = data.results ?? data
+        return rows.map(row => ({ label: row[labelField], value: row.id }))
+    } catch (error) {
+        console.error(error.response?.status)
+        console.error(error.response?.data)
+        return []
+    }
+}
