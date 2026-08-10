@@ -9,7 +9,8 @@ export const cupConfig = {
   labelPlural: 'Cups',
   base: `${CONTROLS_BASE}/cups`,   
   uriPath: 'brew/cups/',           
-
+  cardStyle: 'compact',
+  hub: CONTROLS_BASE,
   // --- table ---
   columns: [
     { 

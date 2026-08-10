@@ -9,7 +9,8 @@ export const waterConfig = {
   labelPlural: 'Waters',
   base: `${CONTROLS_BASE}/waters`,   
   uriPath: 'brew/waters/',           
-
+  cardStyle: 'compact',
+  hub: CONTROLS_BASE,
   // --- table ---
   columns: [
     { 

@@ -1,4 +1,4 @@
-// src/constants/config/brew/controls/_base.js
+// src/constants/config/coffeelog/roasters/_base.js
 //
 // Base path for the controls section. Each entity config appends its segment.
 

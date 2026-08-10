@@ -9,7 +9,8 @@ export const toolConfig = {
   labelPlural: 'Tools',
   base: `${CONTROLS_BASE}/tools`,   
   uriPath: 'brew/tools/',           
-
+  cardStyle: 'compact',
+  hub: CONTROLS_BASE,
   // --- table ---
   columns: [
     { 

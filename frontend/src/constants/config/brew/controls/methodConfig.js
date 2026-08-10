@@ -9,7 +9,8 @@ export const methodConfig = {
   labelPlural: 'Brew Methods',
   base: `${CONTROLS_BASE}/methods`,   
   uriPath: 'brew/methods/',           
-
+  cardStyle: 'compact',
+  hub: CONTROLS_BASE,
   // --- table ---
   columns: [
     { 

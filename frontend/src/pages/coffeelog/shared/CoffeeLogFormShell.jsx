@@ -32,6 +32,7 @@ export default function CoffeeLogFormShell({
           {fields.map((field, index) => {
             switch(field.type) {
               case "text":              return buildTextField(field, formData, onFieldChange, mode, errors)
+              case "text_numeric":      return buildTextFieldNumeric(field, formData, onFieldChange, mode, errors)
               case "date":              return buildDateField(field, formData, onFieldChange, mode, errors)
               case "long_text":         return buildMultilineTextField(field, formData, onFieldChange, mode, errors)
               case "rating":            return buildRatingField(field, formData, onFieldChange, mode, errors)
@@ -65,6 +66,19 @@ function buildTextField(field, formData, onFieldChange, mode, errors){
             onChange={onFieldChange}
             error={errors[field.name]}
             mode={mode}
+            inputStyle="default"
+          />
+}
+
+function buildTextFieldNumeric(field, formData, onFieldChange, mode, errors){
+  return <TextFieldGridItem
+            key={field.name}
+            item={field}
+            value={formData[field.name] ?? ""}
+            onChange={onFieldChange}
+            error={errors[field.name]}
+            mode={mode}
+            inputStyle="numeric"
           />
 }
 

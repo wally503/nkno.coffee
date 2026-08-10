@@ -48,7 +48,7 @@ export default function DynamicList({ config }) {
 
   return (
     <DefaultBodyLayout>
-      <PageTitle title={config.labelPlural} hasBackButton backRoute="/adjustments/controls" />
+      <PageTitle title={config.labelPlural} hasBackButton backRoute={config.hub} />
 
       <Box sx={{ width: '90%', maxWidth: 1400, mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
         <Button variant="contained" onClick={() => navigate(`${config.base}/add`)}>

@@ -47,6 +47,6 @@ export const makeControlCard = (config) => {
     title: config.labelPlural,
     description: `Manage ${config.labelPlural.toLowerCase()}`,
     path: `${seg}/list`,
-    cardStyle: 'compact',
+    cardStyle: config.cardStyle,
   };
 };

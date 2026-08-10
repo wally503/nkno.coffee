@@ -9,7 +9,8 @@ export const vesselSettingConfig = {
   labelPlural: 'Vessel Settings',
   base: `${CONTROLS_BASE}/vesselsettings`,   
   uriPath: 'brew/vesselsettings/',           
-
+  cardStyle: 'compact',
+  hub: CONTROLS_BASE,
   // --- table ---
   columns: [
     { 

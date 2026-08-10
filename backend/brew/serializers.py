@@ -4,6 +4,7 @@ from rest_framework import serializers
 from .models import (
     Grinder, BrewVessel, Water, Cup,
     BrewMethod, BrewTool, GrinderSetting, VesselSetting,
+    RecipieTemplate, Recipie
 )
 
 class GrinderSerializer(serializers.ModelSerializer):
@@ -74,3 +75,15 @@ class VesselSettingListSerializer(serializers.ModelSerializer):
 
     def get_vessel(self, obj):
         return obj.vessel.name if obj.vessel else '-'
+
+class RecipieTemplateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RecipieTemplate
+        fields = '__all__'
+        read_only_fields = ['short_id']
+
+class RecipieSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recipie
+        fields = '__all__'
+        read_only_fields = ['short_id']

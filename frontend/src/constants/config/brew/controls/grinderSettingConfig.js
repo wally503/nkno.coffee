@@ -10,7 +10,8 @@ export const grinderSettingConfig = {
   uriPath: 'brew/grindersettings/',
   segment: 'grindersettings',
   maxWidth: 'sm',
-
+  cardStyle: 'compact',
+  hub: CONTROLS_BASE,
   columns: [
     {
       id: 'setting_name',

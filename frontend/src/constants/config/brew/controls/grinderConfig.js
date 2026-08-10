@@ -9,7 +9,8 @@ export const grinderConfig = {
   labelPlural: 'Grinders',
   base: `${CONTROLS_BASE}/grinders`,   
   uriPath: 'brew/grinders/',           
-
+  cardStyle: 'compact',
+  hub: CONTROLS_BASE,
   // --- table ---
   columns: [
     { 

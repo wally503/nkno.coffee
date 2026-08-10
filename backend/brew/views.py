@@ -5,7 +5,8 @@ from rest_framework import viewsets
 from rest_framework.filters import OrderingFilter, SearchFilter
 from .models import (
     Grinder, BrewVessel, Water, Cup,
-    BrewMethod, BrewTool, GrinderSetting, VesselSetting,
+    BrewMethod, BrewTool, GrinderSetting, VesselSetting, 
+    Recipie, RecipieTemplate
 )
 from .serializers import (
     GrinderSerializer,
@@ -18,6 +19,8 @@ from .serializers import (
     GrinderSettingListSerializer,
     VesselSettingSerializer,
     VesselSettingListSerializer,
+    RecipieSerializer,
+    RecipieTemplateSerializer
 )
 
 class GrinderViewSet(viewsets.ModelViewSet):
@@ -83,3 +86,15 @@ class VesselSettingViewSet(CatalogViewSet):
         if self.action == 'list':
             return VesselSettingListSerializer
         return VesselSettingSerializer
+
+class RecipieTemplateViewSet(CatalogViewSet):
+    queryset = RecipieTemplate.objects.all()
+    serializer_class = RecipieTemplateSerializer
+    search_fields = ['name']
+    ordering_fields = ['name']
+
+class RecipieViewSet(CatalogViewSet):
+    queryset = Recipie.objects.all()
+    serializer_class = RecipieSerializer
+    search_fields = ['name', 'template']
+    ordering_fields = ['name', 'template']

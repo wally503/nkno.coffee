@@ -40,7 +40,9 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/maps" element={<MapsPage />} />
+          <Route path="/logHistory" element={<LogHistoryPage />} />
 
+          {/* CoffeeLog */}
           <Route path="/coffeeLog" element={<CoffeeLogLayout />}>
             <Route index element={<CoffeeLogCardSelect />} />
             {coffeelogOptions.map(({ path, element }) => (
@@ -48,6 +50,7 @@ function App() {
             ))}
           </Route>
 
+          {/* Adjustments */}
           <Route path="/adjustments" element={<BrewAdjustmentsLayout />}>
             <Route index element={<BrewAdjustmentsCardSelect />} />
 
@@ -66,14 +69,13 @@ function App() {
             </Route>
           </Route>
 
+          {/* Sesssions */}
           <Route path="/brewSession" element={<BrewSessionsLayout />}>
             <Route index element={<BrewSessionsCardSelect />} />
             {brewSessionsRouteList.map(({ path, element }) => (
               <Route key={path} path={path} element={element} />
             ))}
           </Route>
-
-          <Route path="/logHistory" element={<LogHistoryPage />} />
         </Route>
       </Route>
     </Routes>

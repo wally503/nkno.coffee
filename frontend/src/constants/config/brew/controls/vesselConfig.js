@@ -11,7 +11,8 @@ export const vesselConfig = {
   labelPlural: 'Vessels',
   base: `${CONTROLS_BASE}/vessels`,
   uriPath: 'brew/vessels/',
- 
+  cardStyle: 'compact',
+  hub: CONTROLS_BASE,
   // --- table ---
   columns: [
     {
