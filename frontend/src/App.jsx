@@ -10,21 +10,16 @@ import CoffeeLogLayout from './pages/coffeelog/CoffeeLogLayout';
 import { coffeelogOptions } from './constants/config/coffeelog/_shared';
 
 // --- brew: layouts ---
-import BrewAdjustmentsLayout from './pages/brewAdjustments/BrewAdjustmentsLayout';
-import BrewTemplatesLayout from './pages/brewAdjustments/templates/BrewTemplatesLayout';
-import BrewControlsLayout from './pages/brewAdjustments/controls/BrewControlsLayout';
-import BrewSessionsLayout from './pages/brewSessions/BrewSessionsLayout';
+import BrewNewLayout from './pages/brew/newBrew/BrewNewLayout';
+import BrewHistoryLayout from './pages/brewHistory/BrewHistoryLayout';
 
 // --- brew: card selects ---
-import BrewAdjustmentsCardSelect from './pages/brewAdjustments/BrewAdjustmentsCardSelect';
-import BrewTemplatesCardSelect from './pages/brewAdjustments/templates/BrewTemplatesCardSelect';
-import BrewControlsCardSelect from './pages/brewAdjustments/controls/BrewControlsCardSelect';
-import BrewSessionsCardSelect from './pages/brewSessions/BrewSessionsCardSelect';
+import PickBrewStyle from './pages/brew/newBrew/PickBrewStyle';
+import BrewHistoryCardSelect from './pages/brewHistory/BrewHistoryCardSelect';
 
 // --- brew: generated route lists (NAMED exports) ---
-import { brewControlsRouteList } from './constants/config/brew/controls/_routes';
-import { brewSessionsRouteList } from './constants/config/brew/sessions/_routes';
-import { brewTemplatesRouteList } from './constants/config/brew/templates/_routes';
+import { newBrewRouteList } from './constants/config/brew/newBrew/_routes';
+import { historyRouteList } from './constants/config/brew/history/_routes';
 
 // --- shell ---
 import LoginPage from './Login';
@@ -50,29 +45,18 @@ function App() {
             ))}
           </Route>
 
-          {/* Adjustments */}
-          <Route path="/adjustments" element={<BrewAdjustmentsLayout />}>
-            <Route index element={<BrewAdjustmentsCardSelect />} />
-
-            <Route path="controls" element={<BrewControlsLayout />}>
-              <Route index element={<BrewControlsCardSelect />} />
-              {brewControlsRouteList.map(({ path, element }) => (
-                <Route key={path} path={path} element={element} />
-              ))}
-            </Route>
-
-            <Route path="templates" element={<BrewTemplatesLayout />}>
-              <Route index element={<BrewTemplatesCardSelect />} />
-              {brewTemplatesRouteList.map(({ path, element }) => (
-                <Route key={path} path={path} element={element} />
-              ))}
-            </Route>
+          {/* New Brew */}
+          <Route path="/brew" element={<BrewNewLayout />}>
+            <Route index element={<PickBrewStyle />} />
+            {newBrewRouteList.map(({ path, element }) => (
+              <Route key={path} path={path} element={element} />
+            ))}
           </Route>
 
-          {/* Sesssions */}
-          <Route path="/brewSession" element={<BrewSessionsLayout />}>
-            <Route index element={<BrewSessionsCardSelect />} />
-            {brewSessionsRouteList.map(({ path, element }) => (
+          {/* Brew History */}
+          <Route path="/history" element={<BrewHistoryLayout />}>
+            <Route index element={<BrewHistoryCardSelect />} />
+            {historyRouteList.map(({ path, element }) => (
               <Route key={path} path={path} element={element} />
             ))}
           </Route>

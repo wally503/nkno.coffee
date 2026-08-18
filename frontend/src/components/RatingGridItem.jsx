@@ -63,7 +63,11 @@ export default function RatingGridItem({ item, onChange, value, mode, error }) {
             readOnly={mode === "view"}
           />
         </Box>
-        {mode !== "view" && item.required && (error ? null : <FormHelperText>Required</FormHelperText>)}
+        {mode !== "view" && item.required && (
+          error
+            ? <FormHelperText error>{Array.isArray(error) ? error[0] : error}</FormHelperText>
+            : <FormHelperText>Required</FormHelperText>
+        )}
       </FormControl>
     </Grid>
   );

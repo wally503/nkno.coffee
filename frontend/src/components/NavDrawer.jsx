@@ -25,8 +25,8 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import IconButton from '@mui/material/IconButton';
 import LocalCafeIcon from '@mui/icons-material/LocalCafe'; 
-import Science from '@mui/icons-material/Science';
-import Tune from '@mui/icons-material/Tune';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import HistoryIcon from '@mui/icons-material/History';
 import { Divider } from '@mui/material';
 
 export default function NavDrawer() {
@@ -83,8 +83,8 @@ export default function NavDrawer() {
 
             <Divider sx={{ mx: 2, my: 1, opacity: 0.4 }} />
 
-            <NavBarItem icon={<Science/>} route="/brewSession" label="Brew Sessions" />
-            <NavBarItem icon={<Tune/>} route="/adjustments" label="Adjustments" />
+            <NavBarItem icon={<AddCircleOutlineIcon/>} route="/brew" label="New Brew" />
+            <NavBarItem icon={<HistoryIcon/>} route="/history" label="Brew History" />
 
           </List>    
         </Box>

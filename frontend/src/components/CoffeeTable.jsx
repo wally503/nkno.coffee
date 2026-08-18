@@ -94,8 +94,14 @@ export default function CoffeeTable({columns, rows, totalCount, tableState, view
                         hover
                         role="checkbox"
                         tabIndex={-1}
-                        key={row.id}
-                        onClick={() => navigate(`${viewRoute}/${row.short_id}`, { state: { backRoute: location.pathname } })}
+                        key={row.short_id}
+                        onClick={() => {
+                          const path = typeof viewRoute === 'function'
+                            ? viewRoute(row)
+                            : `${viewRoute}/${row.short_id}`;
+                          if (!path) return;
+                          navigate(path, { state: { backRoute: location.pathname } });
+                        }}
                       >
                         {columns.map((column) => {
                           const value = row[column.id];

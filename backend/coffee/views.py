@@ -127,6 +127,13 @@ class BeanViewSet(viewsets.ModelViewSet):
         roaster = self.request.query_params.get('roaster')
         if roaster:
             queryset = queryset.filter(roaster__short_id=roaster)
+
+        finished = self.request.query_params.get('finished')
+        if finished is not None:
+            # query params arrive as strings — 'false' would otherwise be truthy
+            is_finished = finished.lower() in ('true', '1')
+            queryset = queryset.filter(finished=is_finished)
+
         return queryset
 
     def get_serializer_class(self):

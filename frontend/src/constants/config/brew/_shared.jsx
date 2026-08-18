@@ -5,8 +5,8 @@
 // The route/card generators live here so every entity produces its four routes
 // and its menu card from a single config object — no hand-written per-entity routes.
 
-import DynamicList from '../../../pages/brew/shared/DynamicList';
-import DynamicForm from '../../../pages/brew/shared/DynamicForm';
+import DynamicList from '../../../pages/depricated/DynamicList';
+import DynamicForm from '../../../pages/depricated/DynamicForm';
 
 export const CONTROLS_BASE = '/adjustments/controls';
 

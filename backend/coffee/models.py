@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from .choices import CaffOrDecaf, WashingStyle, OrganicOrNot, BusinessType, RoastLevel
 import nanoid
 # Create your models here.
@@ -82,6 +83,8 @@ class Bean(models.Model):
     caff_or_decaf = models.CharField(max_length=20, choices=CaffOrDecaf.choices)
     purchase_date = models.DateField(null=True, blank=True)
     roast_date = models.DateField(null=True, blank=True)
+    opened_date = models.DateField(null=True, blank=True)
+    finished = models.BooleanField(default=False)
     min_elevation = models.IntegerField(null=True, blank=True)
     max_elevation = models.IntegerField(null=True, blank=True)
     flavor_notes = models.ManyToManyField(FlavorNotes, null=True, blank=True, related_name="beans")
@@ -97,7 +100,22 @@ class Bean(models.Model):
     def save(self, *args, **kwargs):
         if not self.short_id:
             self.short_id = nanoid.generate(size=8)
+
+        if self.pk:
+            was_finished = Bean.objects.filter(pk=self.pk).values_list('finished', flat=True).first()
+            just_finished = self.finished and not was_finished
+        else:
+            just_finished = False
+
         super().save(*args, **kwargs)
+
+        if just_finished:
+            from brew.models import BagLifecycleEvent
+            BagLifecycleEvent.objects.create(
+                bean=self,
+                event_type=BagLifecycleEvent.EventType.FINISHED,
+                date=timezone.now().date(),
+            )
 
     class Meta:
         ordering = ['-date_added']
