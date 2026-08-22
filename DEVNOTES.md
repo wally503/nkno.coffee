@@ -117,7 +117,7 @@ PRAGMA table_info(coffee_beans);
 ```sql
 .headers on
 .mode column
-```
+```AeropressDetailSerializer
 
 ### Example insert
 ```sql

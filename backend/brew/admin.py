@@ -6,7 +6,7 @@ from .models import (
     BrewLog,
     AeropressDetail, HoffmannEvent,
     PouroverDetail, PouroverPourEvent,
-    ColdBrewDetail, BagLifecycleEvent,
+    ColdBrewDetail, BagLifecycleEvent, EspressoDetail
 )
 
 
@@ -45,3 +45,4 @@ admin.site.register(AeropressDetail, AeropressDetailAdmin)
 admin.site.register(PouroverDetail, PouroverDetailAdmin)
 admin.site.register(ColdBrewDetail)
 admin.site.register(BagLifecycleEvent)
+admin.site.register(EspressoDetail)

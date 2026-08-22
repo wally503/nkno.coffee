@@ -4,7 +4,7 @@ import PageHeaderTitle from "../../../components/PageTitle";
 import { useTableState } from "../../../hooks/useTableState";
 import CoffeeTable from "../../../components/CoffeeTable";
 import { defaultBrewLogsTableList } from "../../../api/brewApi";
-import { logColumns, STYLE_ROUTE_SEGMENT } from "../../../constants/config/brew/history/logConfig";
+import { logColumns, STYLE_ROUTE_SEGMENT, BAG_EVENT_ROW_SX } from "../../../constants/config/brew/history/logConfig";
 import DefaultBodyLayout from "../../../components/DefaultBodyLayout";
 
 export default function ListBrewLogsPage() {
@@ -34,13 +34,17 @@ export default function ListBrewLogsPage() {
     return `/brew/${segment}/view/${row.detail_id}`;
   };
 
+  const decoratedRows = rows.map((row) =>
+    row.style === 'bag_event' ? { ...row, rowSx: BAG_EVENT_ROW_SX } : row
+  );
+
   return (
     <>
       <DefaultBodyLayout>
         <PageHeaderTitle title={"Brew Log"} hasBackButton={true} backRoute={"/history"} />
         <CoffeeTable
           columns={logColumns}
-          rows={rows}
+          rows={decoratedRows}
           totalCount={totalCount}
           tableState={logTableState}
           viewRoute={viewRoute}

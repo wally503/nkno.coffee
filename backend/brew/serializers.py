@@ -6,7 +6,7 @@ from .models import (
     BrewLog,
     AeropressDetail, HoffmannEvent,
     PouroverDetail, PouroverPourEvent,
-    ColdBrewDetail,
+    ColdBrewDetail, EspressoDetail
 )
 
 
@@ -53,10 +53,12 @@ class BrewLogListSerializer(serializers.ModelSerializer):
     bean_name = serializers.SerializerMethodField()
     style_display = serializers.CharField(source='get_style_display', read_only=True)
     detail_id = serializers.SerializerMethodField()
+    days_since_roast = serializers.ReadOnlyField()
+    days_since_opened = serializers.ReadOnlyField()
 
     class Meta:
         model = BrewLog
-        fields = ['short_id', 'bean_name', 'style', 'style_display', 'date', 'extraction_rating', 'pull_number', 'detail_id']
+        fields = ['short_id', 'bean_name', 'style', 'style_display', 'date', 'extraction_rating', 'pull_number', 'detail_id', 'days_since_roast', 'days_since_opened']
 
     def get_bean_name(self, obj):
         return obj.bean.name if obj.bean else '-'
@@ -64,7 +66,6 @@ class BrewLogListSerializer(serializers.ModelSerializer):
     def get_detail_id(self, obj):
         detail = getattr(obj, f'{obj.style}_detail', None)
         return detail.id if detail else None
-
 
 # ---------------------------------------------------------------------------
 # Aeropress
@@ -168,4 +169,14 @@ class PouroverDetailSerializer(serializers.ModelSerializer):
 class ColdBrewDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = ColdBrewDetail
+        fields = '__all__'
+
+
+# ---------------------------------------------------------------------------
+# Espresso
+# ---------------------------------------------------------------------------
+
+class EspressoDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EspressoDetail
         fields = '__all__'

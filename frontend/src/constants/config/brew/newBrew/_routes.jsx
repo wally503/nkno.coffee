@@ -8,11 +8,25 @@
 // components (AeropressFormPage, etc.) rather than config-driven DynamicForm —
 // see aeropressConfig.js comments for why.
 
+import EspressoFormPage from '../../../../pages/brew/espresso/AddEspresso';
 import AeropressFormPage from '../../../../pages/brew/aeropress/AddAeropress';
 import PouroverFormPage from '../../../../pages/brew/pourover/AddPourover';
 // import ColdBrewFormPage from '../../../../pages/brew/coldBrew/AddColdBrew';
 
 export const newBrewRouteList = [
+  {
+    path: 'espresso/add',
+    element: <EspressoFormPage />,
+  },
+  {
+    path: 'espresso/edit/:shortid',
+    element: <EspressoFormPage />,
+  },
+  {
+    path: 'espresso/view/:shortid',
+    element: <EspressoFormPage />,
+  },
+  
   {
     path: 'aeropress/add',
     element: <AeropressFormPage />,

@@ -139,3 +139,39 @@ export async function updatePourover(id, formData) {
         throw error;
     }
 }
+
+
+// --- Espresso CRUD ------------------------------------------------------------
+
+export async function submitEspresso(formData) {
+    try {
+        const { data } = await axiosInstance.post('brew/espresso/', formData);
+        return data;
+    } catch (error) {
+        if (error.response?.status === 400) {
+            throw error.response.data;
+        }
+        throw error;
+    }
+}
+
+export async function getEspressoById(id) {
+    try {
+        return await axiosInstance.get('brew/espresso/' + id)
+    } catch (error) {
+        console.error(error.response?.status);
+        console.error(error.response?.data);
+    }
+}
+
+export async function updateEspresso(id, formData) {
+    try {
+        const { data } = await axiosInstance.put('brew/espresso/' + id + '/', formData);
+        return data;
+    } catch (error) {
+        if (error.response?.status === 400) {
+            throw error.response.data;
+        }
+        throw error;
+    }
+}

@@ -95,6 +95,7 @@ export default function CoffeeTable({columns, rows, totalCount, tableState, view
                         role="checkbox"
                         tabIndex={-1}
                         key={row.short_id}
+                        sx={row.rowSx}
                         onClick={() => {
                           const path = typeof viewRoute === 'function'
                             ? viewRoute(row)
@@ -106,7 +107,11 @@ export default function CoffeeTable({columns, rows, totalCount, tableState, view
                         {columns.map((column) => {
                           const value = row[column.id];
                           return (
-                            <TableCell key={column.id} align={column.align}>
+                            <TableCell
+                              key={column.id}
+                              align={column.align}
+                              sx={row.rowSx?.color ? { color: row.rowSx.color } : undefined}
+                            >
                               {renderCell(column, value, row)}
                             </TableCell>
                           );

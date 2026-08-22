@@ -57,6 +57,27 @@ class DripperChoice(models.TextChoices):
     ORIGAMI = 'origami', 'Origami'
     V60 = 'v60', 'V60'
 
+class EspressoMakerChoice(models.TextChoices):
+    GAGGIA_UNMOD = 'gaggia_unmod', 'Gaggia Classic Pro E24 (Unmodded)'
+
+class PuckScreenChoice(models.TextChoices):
+    NONE = 'none', 'None'
+    NORMCORE_316_SS = 'normcore_316_ss', 'Normcore Puck Screen - 316 Stainless Steel'
+
+class BasketChoice(models.TextChoices):
+    NC_HIGH_EXT = 'nc_high_ext', 'Normcore High Extraction Basket'
+    NC_PREC = 'nc_prec', 'Normcore Precision Basket'
+
+class TamperChoice(models.TextChoices):
+    NC_41_FLAT = 'nc_41_flat', 'Normcore V4.1 Spring Loaded Tamper (Flat Base)'
+
+class PreWetChoice(models.TextChoices):
+    WET = "wet", "Wet"
+    DRY = "dry", "Dry"
+
+class WdtUsedChoice(models.TextChoices):
+    USED = "used", "Used"
+    NOT_USED = "not_used", "Not Used"
 
 class ColdBrewFilterStyle(models.TextChoices):
     PAPER = 'paper', 'Paper Filter'
@@ -196,7 +217,7 @@ class AeropressDetail(BrewBaseMixin, models.Model):
     brew_log = models.OneToOneField(BrewLog, on_delete=models.CASCADE, related_name="aeropress_detail")
     base = models.CharField(max_length=20, choices=AeropressBase.choices)
     filter = models.CharField(max_length=20, choices=AeropressFilter.choices)
-    pre_wet = models.BooleanField()
+    pre_wet = models.CharField(max_length=3, choices=PreWetChoice.choices)
     orientation = models.CharField(max_length=20, choices=AeropressOrientation.choices)
     pour_direction = models.CharField(max_length=20, choices=PourDirection.choices)
     cup = models.CharField(max_length=20, choices=CupChoice.choices)
@@ -233,7 +254,7 @@ class PouroverDetail(BrewBaseMixin, models.Model):
     filter_type = models.CharField(max_length=20, choices=PouroverFilterType.choices)
     filter_brand = models.CharField(max_length=200)
     filter_count = models.PositiveSmallIntegerField()
-    pre_wet = models.BooleanField()
+    pre_wet = models.CharField(max_length=3, choices=PreWetChoice.choices)
     dripper = models.CharField(max_length=20, choices=DripperChoice.choices, default=DripperChoice.ORIGAMI)
     cup = models.CharField(max_length=20, choices=CupChoice.choices)
     kettle = models.ForeignKey(Kettle, on_delete=models.PROTECT)
@@ -287,15 +308,19 @@ class ColdBrewDetail(BrewBaseMixin, models.Model):
 # Espresso / Milk drinks — shelved pending mod kit
 # ---------------------------------------------------------------------------
 
-# class EspressoDetail(BrewBaseMixin, models.Model):
-#     brew_log = models.OneToOneField(BrewLog, on_delete=models.CASCADE, related_name="espresso_detail")
-#     ...  # TBD once the Gaggia mod kit is in hand
+class EspressoDetail(BrewBaseMixin, models.Model):
+    brew_log = models.OneToOneField(BrewLog, on_delete=models.CASCADE, related_name="espresso_detail")
+    wdt_used = models.CharField(max_length=10, choices=WdtUsedChoice.choices)
+    wdt_rotations = models.PositiveSmallIntegerField(default=0)
+    pull_time = models.DurationField()
+    machine = models.CharField(max_length=70, choices=EspressoMakerChoice.choices, default=EspressoMakerChoice.GAGGIA_UNMOD)
+    puck_screen = models.CharField(max_length=50, choices=PuckScreenChoice.choices, default=PuckScreenChoice.NONE)
+    cup = models.CharField(max_length=20, choices=CupChoice.choices)
+    tamper = models.CharField(max_length=50, choices=TamperChoice.choices, default=TamperChoice.NC_41_FLAT)
+    basket = models.CharField(max_length=50, choices=BasketChoice.choices, default=BasketChoice.NC_PREC)
 
-# class MilkDrinkDetail(BrewBaseMixin, models.Model):
-#     brew_log = models.OneToOneField(BrewLog, on_delete=models.CASCADE, related_name="milk_drink_detail")
-#     espresso_detail = models.OneToOneField('EspressoDetail', on_delete=models.CASCADE)
-#     milk_type = models.CharField(...)
-
+    def __str__(self):
+        return f"Espresso – {self.brew_log}"
 
 # -----------------------------------------------------------------------------
 # Lifecycle Event - standalone open/close bag event tracker for full log view
