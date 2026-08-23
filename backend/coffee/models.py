@@ -92,6 +92,8 @@ class Bean(models.Model):
     short_id = models.CharField(max_length=10, unique=True, blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
     purchased = models.BooleanField(default=True)
+    bag_weight = models.IntegerField(null=True, blank=True)
+    used_weight = models.IntegerField(null=True, blank=True)
 
     @property
     def had_as_drink(self):

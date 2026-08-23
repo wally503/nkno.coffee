@@ -41,7 +41,7 @@ def logout(request):
 @api_view(['GET'])
 def valid(request):
     raw_access_token = request.COOKIES.get('access_token')
-
+    print("COOKIES:", request.COOKIES, flush=True)
     if not raw_access_token:
         return Response({"detail": "BAD"}, status=status.HTTP_401_UNAUTHORIZED)
     try:

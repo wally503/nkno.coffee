@@ -70,11 +70,12 @@ export const aeropressConfig = {
       color: "rgba(180, 140, 100, 0.5)",
     },
     {
-      type: "date",
+      type: "date_time",
       name: "date",
-      label: "Date",
+      label: "Date & Time",
       required: true,
       size: { xs: 12, sm: 5, md: 5 },
+      defaultNow: true,
     },
 
 

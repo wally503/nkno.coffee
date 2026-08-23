@@ -144,6 +144,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'coffee.pagination.DynamicPageSizePagination',
     'PAGE_SIZE': 20,
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'nkno_backend.authentication.CookieJWTAuthentication',
     ],
 }

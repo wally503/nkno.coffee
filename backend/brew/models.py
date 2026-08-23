@@ -79,6 +79,14 @@ class WdtUsedChoice(models.TextChoices):
     USED = "used", "Used"
     NOT_USED = "not_used", "Not Used"
 
+class EspressoPaperFilterUsedChoice(models.TextChoices):
+    USED = "used", "Used"
+    NOT_USED = "not_used", "Not Used"
+
+class EspressoPaperFilterTypeChoice(models.TextChoices):
+    NONE = "none", "None"
+    NORMCORE = "normcore", "Normcore Filter"
+
 class ColdBrewFilterStyle(models.TextChoices):
     PAPER = 'paper', 'Paper Filter'
     MESH_BAG = 'mesh_bag', 'Mesh / Nut-Milk Bag'
@@ -318,6 +326,10 @@ class EspressoDetail(BrewBaseMixin, models.Model):
     cup = models.CharField(max_length=20, choices=CupChoice.choices)
     tamper = models.CharField(max_length=50, choices=TamperChoice.choices, default=TamperChoice.NC_41_FLAT)
     basket = models.CharField(max_length=50, choices=BasketChoice.choices, default=BasketChoice.NC_PREC)
+    paper_filter_used = models.CharField(max_length=10, choices=EspressoPaperFilterUsedChoice.choices, default=EspressoPaperFilterUsedChoice.NOT_USED)
+    paper_filter_type = models.CharField(max_length=10, choices=EspressoPaperFilterTypeChoice.choices, default=EspressoPaperFilterTypeChoice.NONE)
+    paper_filter_count = models.PositiveSmallIntegerField(default=0)
+
 
     def __str__(self):
         return f"Espresso – {self.brew_log}"

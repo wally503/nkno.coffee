@@ -3,6 +3,7 @@ import { Box, Grid, Divider, Button } from "@mui/material";
 import DropdownGridItem from "../../../components/DropdownGridItem";
 import TextFieldGridItem from "../../../components/TextFieldGridItem";
 import DateFieldGridItem from "../../../components/DateFieldGridItem";
+import DateTimeFieldGridItem from "../../../components/DateTimeFieldGridItem";
 import MultilineTextFieldGridItem from "../../../components/MultilineTextFieldGridItem";
 import RatingGridItem from "../../../components/RatingGridItem";
 import HoffmannEventList from "../../../components/HoffmannEventList";
@@ -28,7 +29,7 @@ export default function BrewLogFormShell({
 
   return (
     <>
-      <PageTitle title={title} hasBackButton={hasBackButton} backRoute={backRoute} />
+      <PageTitle title={title} hasBackButton={hasBackButton} backRoute={backRoute}/>
       <Box sx={{ width: "80%", maxWidth: 1400 }}>
         <Grid container spacing={3} columns={12}>
           {fields.map((field, index) => {
@@ -36,6 +37,7 @@ export default function BrewLogFormShell({
               case "text":         return buildTextField(field, formData, onFieldChange, mode, errors);
               case "text_numeric": return buildTextFieldNumeric(field, formData, onFieldChange, mode, errors);
               case "date":         return buildDateField(field, formData, onFieldChange, mode, errors);
+              case "date_time":    return buildDateTimeField(field, formData, onFieldChange, mode, errors);
               case "long_text":    return buildMultilineTextField(field, formData, onFieldChange, mode, errors);
               case "rating":       return buildRatingField(field, formData, onFieldChange, mode, errors);
               case "dropdown":     return buildDropdownField(field, formData, onFieldChange, mode, errors);
@@ -87,6 +89,17 @@ function buildTextFieldNumeric(field, formData, onFieldChange, mode, errors) {
 
 function buildDateField(field, formData, onFieldChange, mode, errors) {
   return <DateFieldGridItem
+            key={field.name}
+            item={field}
+            value={formData[field.name] ?? ""}
+            onChange={onFieldChange}
+            error={errors[field.name]}
+            mode={mode}
+          />;
+}
+
+function buildDateTimeField(field, formData, onFieldChange, mode, errors) {
+  return <DateTimeFieldGridItem
             key={field.name}
             item={field}
             value={formData[field.name] ?? ""}

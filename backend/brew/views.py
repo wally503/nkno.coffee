@@ -20,13 +20,15 @@ from .serializers import (
     BrewLogSerializer,
     BrewLogListSerializer,
     AeropressDetailSerializer,
+    AeropressDetailListSerializer,
     PouroverDetailSerializer,
     ColdBrewDetailSerializer,
     EspressoDetailSerializer
 )
+from .permissions import SuperUserDestroyMixin
 
 
-class CatalogViewSet(viewsets.ModelViewSet):
+class CatalogViewSet(viewsets.GenericViewSet):
     lookup_field = 'short_id'
     filter_backends = [OrderingFilter, SearchFilter]
 
@@ -60,7 +62,7 @@ class KettleViewSet(CatalogViewSet):
 # BrewLog
 # ---------------------------------------------------------------------------
 
-class BrewLogViewSet(viewsets.ModelViewSet):
+class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
     queryset = BrewLog.objects.select_related('bean').all()
     lookup_field = 'short_id'
     filter_backends = [OrderingFilter, SearchFilter]
@@ -131,7 +133,7 @@ class BrewLogViewSet(viewsets.ModelViewSet):
 # Style detail tables
 # ---------------------------------------------------------------------------
 
-class AeropressDetailViewSet(viewsets.ModelViewSet):
+class AeropressDetailViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
     queryset = AeropressDetail.objects.select_related('brew_log', 'grinder', 'scale', 'kettle').prefetch_related('hoffmann_events').all()
     filter_backends = [OrderingFilter, SearchFilter]
 
@@ -141,19 +143,19 @@ class AeropressDetailViewSet(viewsets.ModelViewSet):
         return AeropressDetailSerializer
 
 
-class PouroverDetailViewSet(viewsets.ModelViewSet):
+class PouroverDetailViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
     queryset = PouroverDetail.objects.select_related('brew_log', 'grinder', 'scale', 'kettle').prefetch_related('pour_events').all()
     serializer_class = PouroverDetailSerializer
     filter_backends = [OrderingFilter, SearchFilter]
 
 
-class ColdBrewDetailViewSet(viewsets.ModelViewSet):
+class ColdBrewDetailViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
     queryset = ColdBrewDetail.objects.select_related('brew_log', 'grinder', 'scale').all()
     serializer_class = ColdBrewDetailSerializer
     filter_backends = [OrderingFilter, SearchFilter]
 
 
-class EspressoDetailViewSet(viewsets.ModelViewSet):
+class EspressoDetailViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
     queryset = EspressoDetail.objects.select_related('brew_log', 'grinder', 'scale', 'kettle').all()
     filter_backends = [OrderingFilter, SearchFilter]
 

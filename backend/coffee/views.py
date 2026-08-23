@@ -9,10 +9,11 @@ from .serializers import *
 from .models import *
 from .pagination import LargeDynamicPageSizePagination, DynamicPageSizePagination
 from datetime import date
+from .permissions import SuperUserDestroyMixin
 import random
 
 
-class RoasterViewSet(viewsets.ModelViewSet):
+class RoasterViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
     queryset = Roaster.objects.all()
     serializer_class = RoasterSerializer
     lookup_field = 'short_id'
@@ -52,7 +53,7 @@ class RoasterViewSet(viewsets.ModelViewSet):
             total_drinks=Count('drink', distinct=True)
         )
     
-class BeanViewSet(viewsets.ModelViewSet):
+class BeanViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
     queryset = Bean.objects.all().distinct()
     serializer_class = BeanSerializer
     lookup_field = 'short_id'
@@ -142,8 +143,38 @@ class BeanViewSet(viewsets.ModelViewSet):
                 return BeanListSerializer
             case _:
                 return BeanSerializer
+
+class BeanLifecycleViewSet(viewsets.GenericViewSet):
+    queryset = Bean.objects.all()
+    serializer_class = BeanSerializer
+    lookup_field = 'short_id'
+
+    @action(detail=True, methods=['post'])
+    def record_usage(self, request):
+        bean = self.get_object()
+
+        serializer = BeanLifecycleSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        grams = serializer.validated_data['grams']
+
+        bean.used_grams += grams
+        bean.save()
+
+        if(bean.bag_weight - bean.used_grams < 10):
+            return Response({'bean_low': True})
+        else:
+            return Response({'bean_low': False})
+
+    @action(detail=True, methods=['post'])
+    def bag_close(self, request):
+        bean = self.get_object()
+        bean.finished = True
+        bean.save()
+        return Response({'closed': True})
+            
+
     
-class DrinkViewSet(viewsets.ModelViewSet):
+class DrinkViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
     queryset = Drink.objects.all()
     serializer_class = DrinkSerializer
     lookup_field = 'short_id'
@@ -162,17 +193,17 @@ class DrinkViewSet(viewsets.ModelViewSet):
             case _:
                 return DrinkSerializer    
     
-class CountriesViewSet(viewsets.ModelViewSet):
+class CountriesViewSet(viewsets.GenericViewSet):
     queryset = Countries.objects.all()
     serializer_class = CountriesSerializer
     pagination_class = LargeDynamicPageSizePagination
 
-class FlavorNotesViewSet(viewsets.ModelViewSet):
+class FlavorNotesViewSet(viewsets.GenericViewSet):
     queryset = FlavorNotes.objects.all()
     serializer_class = FlavorNotesSerializer
     pagination_class = LargeDynamicPageSizePagination
 
-class RegionsViewSet(viewsets.ModelViewSet):
+class RegionsViewSet(viewsets.GenericViewSet):
     queryset = Region.objects.all()
     serializer_class = RegionsSerializer
     pagination_class = LargeDynamicPageSizePagination
@@ -189,7 +220,7 @@ class RegionsViewSet(viewsets.ModelViewSet):
             case _:
                 return RegionsSerializer
 
-class MapzoneViewSet(viewsets.ModelViewSet):
+class MapzoneViewSet(viewsets.GenericViewSet):
     queryset = MapZone.objects.all()
     serializer_class = MapZoneSerializer
 

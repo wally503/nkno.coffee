@@ -35,7 +35,9 @@ export default function ListBrewLogsPage() {
   };
 
   const decoratedRows = rows.map((row) =>
-    row.style === 'bag_event' ? { ...row, rowSx: BAG_EVENT_ROW_SX } : row
+    row.style === 'bag_event' 
+      ? row.event_type === 'opened' ? { ...row, rowSx: BAG_EVENT_ROW_SX_OPEN } : { ...row, rowSx: BAG_EVENT_ROW_SX_CLOSE }
+      : row
   );
 
   return (

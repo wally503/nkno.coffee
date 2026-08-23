@@ -38,6 +38,7 @@ export default function CoffeeLogFormShell({
               case "rating":            return buildRatingField(field, formData, onFieldChange, mode, errors)
               case "dropdown":          return buildDropdownField(field, formData, onFieldChange, mode, errors)
               case "divider":           return buildDivider(index)
+              case "spacer":            return buildSpacer(field, index);
               case "dynamic_dropdown":  return buildDynamicMultiselectField(field, formData, onFieldChange, mode, errors)
             }
           })}
@@ -148,4 +149,22 @@ function buildDynamicMultiselectField(field, formData, onFieldChange, mode, erro
             dependsOn={field.dependsOn}
           />
         </Grid>
+}
+
+function buildSpacer(field, key) {
+  return (
+    <Grid
+      key={key}
+      size={field.size ?? { xs: 12, sm: 4, md: 4 }}
+      sx={{ display: "flex", alignItems: "center", ...(field.gridSx ?? {}) }}
+    >
+      <Divider
+        sx={{
+          width: "100%",
+          borderColor: field.color ?? "divider",
+          ...(field.sx ?? {}),
+        }}
+      />
+    </Grid>
+  );
 }

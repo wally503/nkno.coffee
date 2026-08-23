@@ -149,3 +149,6 @@ class MapZoneSerializer(serializers.ModelSerializer):
     class Meta:
         model = MapZone
         fields = '__all__'
+
+class BeanLifecycleSerializer(serializers.ModelSerializer):
+    grams = serializers.DecimalField(max_digits=6, decimal_places=2)

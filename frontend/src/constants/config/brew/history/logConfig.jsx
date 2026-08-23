@@ -11,8 +11,14 @@ export const STYLE_ROUTE_SEGMENT = {
   milk_drink: 'milk-drink',  // no route yet — mod kit pending
 };
 
-export const BAG_EVENT_ROW_SX = {
-  backgroundColor: 'rgba(81, 81, 81, 0.43) !important',
+export const BAG_EVENT_ROW_SX_OPEN = {
+  backgroundColor: 'rgba(47, 102, 11, 0.22) !important',
+  color: 'rgba(255, 252, 238, 0.97) !important',
+  fontStyle: 'italic',
+};
+
+export const BAG_EVENT_ROW_SX_CLOSE = {
+  backgroundColor: 'rgba(102, 17, 11, 0.22) !important',
   color: 'rgba(255, 252, 238, 0.97) !important',
   fontStyle: 'italic',
 };

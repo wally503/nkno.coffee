@@ -35,6 +35,14 @@ export const ESPRESSO_STATIC_OPTIONS = {
     { label: 'TWW Low Acid', value: 'tww_low_acid' },
     { label: 'Tap Water', value: 'tap' },
   ],
+  paper_filter_type: [
+    { label: 'None', value: 'none' },
+    { label: 'Normcore Filter', value: 'normcore' },
+  ],
+  paper_filter_used: [
+    { label: 'Used', value: 'used' },
+    { label: 'Not Used', value: 'not_used' },
+  ],
 };
 
 export const espressoConfig = {
@@ -61,21 +69,22 @@ export const espressoConfig = {
       name: "bean",
       label: "Bean",
       required: true,
-      size: { xs: 12, sm: 5, md: 5 },
+      size: { xs: 12, sm: 6, md: 6 },
       optionSource: "beans",
     },
+    // {
+    //   type: "spacer",
+    //   size: { xs: 0, sm: 3, md: 3 },
+    //   gridSx: { mt: -2 },
+    //   color: "rgba(180, 140, 100, 0)",
+    // },
     {
-      type: "spacer",
-      size: { xs: 0, sm: 2, md: 2 },
-      gridSx: { mt: -2 },  // negative = pushes the line up; adjust the number to taste
-      color: "rgba(180, 140, 100, 0.5)",
-    },
-    {
-      type: "date",
+      type: "date_time",
       name: "date",
-      label: "Date",
+      label: "Date & Time",
       required: true,
-      size: { xs: 12, sm: 5, md: 5 },
+      size: { xs: 12, sm: 4, md: 4 },
+      defaultNow: true,
     },
 
 
@@ -194,6 +203,31 @@ export const espressoConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
     },
+
+    {
+      type: "dropdown",
+      name: "paper_filter_used",
+      label: "Paper Filter Used",
+      required: true,
+      size: { xs: 12, sm: 4, md: 4 },
+      options: ESPRESSO_STATIC_OPTIONS.paper_filter_used,
+    },
+    {
+      type: "dropdown",
+      name: "paper_filter_type",
+      label: "Paper Filter Type",
+      required: true,
+      size: { xs: 12, sm: 4, md: 4 },
+      options: ESPRESSO_STATIC_OPTIONS.paper_filter_type,
+    },
+    {
+      type: "text_numeric",
+      name: "paper_filter_count",
+      label: "Number of Paper Filters Used",
+      required: true,
+      size: { xs: 12, sm: 4, md: 4 },
+    },
+
 
     {
       type: "text_numeric",

@@ -62,16 +62,17 @@ export const pouroverConfig = {
     },
     {
       type: "spacer",
-      size: { xs: 0, sm: 2, md: 2 },
+      size: { xs: 0, sm: 3, md: 3 },
       gridSx: { mt: -2 },
-      color: "rgba(180, 140, 100, 0.5)",
+      color: "rgba(180, 140, 100, 0)",
     },
     {
-      type: "date",
+      type: "date_time",
       name: "date",
-      label: "Date",
+      label: "Date & Time",
       required: true,
-      size: { xs: 12, sm: 5, md: 5 },
+      size: { xs: 12, sm: 4, md: 4 },
+      defaultNow: true,
     },
 
     { type: "divider" },
