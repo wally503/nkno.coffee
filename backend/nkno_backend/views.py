@@ -1,4 +1,5 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,permission_classes
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
@@ -7,6 +8,7 @@ from rest_framework import status
 from django.contrib.auth.models import User
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def login(request):
     username = request.data.get('username')
     password = request.data.get('password')
@@ -41,7 +43,6 @@ def logout(request):
 @api_view(['GET'])
 def valid(request):
     raw_access_token = request.COOKIES.get('access_token')
-    print("COOKIES:", request.COOKIES, flush=True)
     if not raw_access_token:
         return Response({"detail": "BAD"}, status=status.HTTP_401_UNAUTHORIZED)
     try:
@@ -51,3 +52,18 @@ def valid(request):
     except Exception:
         return Response({"detail": "BAD"}, status=status.HTTP_401_UNAUTHORIZED)
     
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def refresh(request):
+    raw_refresh_token = request.COOKIES.get('refresh_token')
+    if not raw_refresh_token:
+        return Response({"detail": "BAD"}, status=status.HTTP_401_UNAUTHORIZED)
+    try:
+        token = RefreshToken(raw_refresh_token)
+        new_access_token = str(token.access_token)
+        response = Response({"detail": "OK"})
+        response.set_cookie(key="access_token", value=new_access_token, httponly=True)
+        return response
+    except Exception as e:
+        print("REFRESH FAILED:", type(e).__name__, str(e), flush=True)
+        return Response({"detail": "BAD"}, status=status.HTTP_401_UNAUTHORIZED)

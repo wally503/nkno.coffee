@@ -6,7 +6,7 @@ class IsSuperUser(BasePermission):
 
 class SuperUserDestroyMixin:
     def get_permissions(self):
-        print("Hit Coffee Mixin", flush=True)
+        # print("Hit Coffee Mixin", flush=True)
         if self.action == 'destroy':
             return [IsSuperUser()]
         return super().get_permissions()

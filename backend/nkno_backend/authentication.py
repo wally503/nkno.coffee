@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 class CookieJWTAuthentication(JWTAuthentication):
     def authenticate(self, request):
-        print("COOKIES:", request.COOKIES, flush=True)
+        # print("COOKIES:", request.COOKIES, flush=True)
         raw_access_token = request.COOKIES.get('access_token')
 
         if not raw_access_token:
@@ -16,4 +16,4 @@ class CookieJWTAuthentication(JWTAuthentication):
             user = User.objects.get(id=token["user_id"])
             return (user, token)
         except Exception:
-            raise AuthenticationFailed("Invalid or expired token")
+            return None

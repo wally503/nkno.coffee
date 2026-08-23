@@ -19,6 +19,10 @@ export const AEROPRESS_STATIC_OPTIONS = {
     { label: 'Spin', value: 'spin' },
     { label: 'Center', value: 'center' },
   ],
+  pre_wet: [
+    { label: 'Yes', value: 'wet' },
+    { label: 'No', value: 'dry' },
+  ],
   cup: [
     { label: 'Ceramic', value: 'ceramic' },
     { label: 'Glass', value: 'glass' },
@@ -176,9 +180,12 @@ export const aeropressConfig = {
       options: AEROPRESS_STATIC_OPTIONS.pour_direction,
     },
     {
-      type: "spacer",
-      size: { xs: 0, sm: 4, md: 4 },
-      color: "rgba(180, 140, 100, 0)",
+      type: "dropdown",
+      name: "pre_wet",
+      label: "Pre-wet Filter",
+      required: true,
+      size: { xs: 12, sm: 4, md: 4 },
+      options: AEROPRESS_STATIC_OPTIONS.pre_wet,
     },
     {
       type: "text_numeric",

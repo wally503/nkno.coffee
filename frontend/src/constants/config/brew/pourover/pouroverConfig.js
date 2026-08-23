@@ -29,8 +29,8 @@ export const POUROVER_STATIC_OPTIONS = {
     { label: 'Classic', value: 'classic' },
   ],
   pre_wet: [
-    { label: 'Yes', value: true },
-    { label: 'No', value: false },
+    { label: 'Yes', value: 'wet' },
+    { label: 'No', value: 'dry' },
   ],
 };
 

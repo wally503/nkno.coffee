@@ -47,7 +47,7 @@ export default function AeropressFormPage() {
       if (shortid) {
         const { data } = await getAeropressById(shortid);
         if (data) {
-          setFormData(prev => ({ ...prev, ...data }));
+          setFormData(prev => ({ ...prev, ...normalizeAeropressData(data) }));
         }
       }
     };
@@ -58,6 +58,17 @@ export default function AeropressFormPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: undefined }));
   };
+
+  const normalizeAeropressData = (data) => ({
+    ...data,
+    bean: data.brew_log?.bean?.id ?? data.brew_log?.bean,
+    date: data.brew_log?.date,
+    extraction_rating: data.brew_log?.extraction_rating,
+    grinder: data.grinder?.short_id ?? data.grinder,
+    scale: data.scale?.short_id ?? data.scale,
+    kettle: data.kettle?.short_id ?? data.kettle,
+    brew_log: data.brew_log?.id ?? data.brew_log,
+  });
 
   const handleSubmit = async () => {
     try {
@@ -71,10 +82,10 @@ export default function AeropressFormPage() {
         const brewLog = await submitBrewLog({
           bean, date, extraction_rating, notes, style: 'aeropress',
         });
-        if (!brewLog?.id) {
+        if (!brewLog?.short_id) {
           throw new Error('BrewLog creation did not return an id — aborting before creating AeropressDetail.');
         }
-        brewLogId = brewLog.id;
+        brewLogId = brewLog.short_id;
       }
 
       const payload = { ...detailFields, brew_log: brewLogId, hoffmann_events };

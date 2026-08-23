@@ -19,7 +19,7 @@ export async function brewBeans(pageSize = 500) {
 export async function brewGrinders(pageSize = 500) {
     try {
         const { data } = await axiosInstance.get(`brew/grinders/?page_size=${pageSize}`)
-        return data.results.map(g => ({ label: `${g.name} – ${g.brand}`, value: g.id }))
+        return data.results.map(g => ({ label: `${g.name} – ${g.brand}`, value: g.short_id }))
     } catch (error) {
         console.error(error.response?.status)
         console.error(error.response?.data)
@@ -29,7 +29,7 @@ export async function brewGrinders(pageSize = 500) {
 export async function brewScales(pageSize = 500) {
     try {
         const { data } = await axiosInstance.get(`brew/scales/?page_size=${pageSize}`)
-        return data.results.map(s => ({ label: s.name, value: s.id }))
+        return data.results.map(s => ({ label: s.name, value: s.short_id }))
     } catch (error) {
         console.error(error.response?.status)
         console.error(error.response?.data)
@@ -39,7 +39,7 @@ export async function brewScales(pageSize = 500) {
 export async function brewKettles(pageSize = 500) {
     try {
         const { data } = await axiosInstance.get(`brew/kettles/?page_size=${pageSize}`)
-        return data.results.map(k => ({ label: `${k.name} – ${k.brand}`, value: k.id }))
+        return data.results.map(k => ({ label: `${k.name} – ${k.brand}`, value: k.short_id }))
     } catch (error) {
         console.error(error.response?.status)
         console.error(error.response?.data)

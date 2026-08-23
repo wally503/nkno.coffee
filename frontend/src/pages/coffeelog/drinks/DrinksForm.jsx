@@ -32,21 +32,16 @@ export default function DrinksFormPage() {
     add: "Add Drinks"
   } 
 
-  console.log("render!");
-
   React.useEffect(() => {
     const load = async () => {
       const [roasters] = await Promise.all([
           drinksRoasters(),
         ]);
-      console.log("roasters:");
-      console.log(roasters);
       setOptions({ roasters });
       if (shortid){
         const { data } = await getDrinkById(shortid);
         if(data){
           setFormData(data);
-          // console.log(data);
         }}
     };
     load().catch(console.error);
@@ -64,10 +59,6 @@ export default function DrinksFormPage() {
             beansByRoaster(roaster_short, 0, 100)
           ]);
         setOptions(prev => ({ ...prev, beans: beans.results.map(b => ({ label: b.name, value: b.id })) }))
-        console.log("beans results:");
-        console.log(beans.results);
-        console.log("setOptions:");
-        console.log(options);
       };
       
       load().catch(console.error);

@@ -48,6 +48,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('swagger.json', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     
     path('admin/', admin.site.urls),
@@ -56,5 +57,6 @@ urlpatterns = [
 
     path('api/auth/login/', views.login, name='login'),
     path('api/auth/logout/', views.logout, name='logout'),
-    path('api/auth/valid/', views.valid, name='valid')
+    path('api/auth/valid/', views.valid, name='valid'),
+    path('api/auth/refresh/', views.refresh, name='refresh'),
 ]

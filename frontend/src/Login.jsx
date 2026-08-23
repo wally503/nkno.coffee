@@ -51,10 +51,15 @@ export default function LoginPage() {
     )
 
     async function LogIntoApp() {
-        if (!username) setErrors(prev => ({ ...prev, username: 'Username is required' }))
-        if (!password) setErrors(prev => ({ ...prev, password: 'Password is required' }))
-        await login(username, password)
-        navigate('/')
+        if (!username) setErrors((prev) => ({ ...prev, username: "Username is required" }));
+        if (!password) setErrors((prev) => ({ ...prev, password: "Password is required" }));
+        try {
+            await login(username, password);
+            navigate("/");
+        } catch (err) {
+            console.error("Login failed:", err)
+            setErrors((prev) => ({ ...prev, general: "Login failed" }))
+        }
     }
 
     async function Register() {

@@ -5,11 +5,13 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from .serializers import *
 from .models import *
 from .pagination import LargeDynamicPageSizePagination, DynamicPageSizePagination
 from datetime import date
 from .permissions import SuperUserDestroyMixin
+from drf_yasg.utils import swagger_auto_schema
 import random
 
 
@@ -52,7 +54,7 @@ class RoasterViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
             total_beans=Count('beans', distinct=True),
             total_drinks=Count('drink', distinct=True)
         )
-    
+
 class BeanViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
     queryset = Bean.objects.all().distinct()
     serializer_class = BeanSerializer
@@ -149,6 +151,7 @@ class BeanLifecycleViewSet(viewsets.GenericViewSet):
     serializer_class = BeanSerializer
     lookup_field = 'short_id'
 
+    # @swagger_auto_schema(tags=['coffee/beans'])
     @action(detail=True, methods=['post'])
     def record_usage(self, request):
         bean = self.get_object()
@@ -193,17 +196,17 @@ class DrinkViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
             case _:
                 return DrinkSerializer    
     
-class CountriesViewSet(viewsets.GenericViewSet):
+class CountriesViewSet(ListModelMixin, RetrieveModelMixin, viewsets.GenericViewSet):
     queryset = Countries.objects.all()
     serializer_class = CountriesSerializer
     pagination_class = LargeDynamicPageSizePagination
 
-class FlavorNotesViewSet(viewsets.GenericViewSet):
+class FlavorNotesViewSet(ListModelMixin, RetrieveModelMixin, viewsets.GenericViewSet):
     queryset = FlavorNotes.objects.all()
     serializer_class = FlavorNotesSerializer
     pagination_class = LargeDynamicPageSizePagination
 
-class RegionsViewSet(viewsets.GenericViewSet):
+class RegionsViewSet(ListModelMixin, RetrieveModelMixin, viewsets.GenericViewSet):
     queryset = Region.objects.all()
     serializer_class = RegionsSerializer
     pagination_class = LargeDynamicPageSizePagination
@@ -220,7 +223,7 @@ class RegionsViewSet(viewsets.GenericViewSet):
             case _:
                 return RegionsSerializer
 
-class MapzoneViewSet(viewsets.GenericViewSet):
+class MapzoneViewSet(ListModelMixin, RetrieveModelMixin, viewsets.GenericViewSet):
     queryset = MapZone.objects.all()
     serializer_class = MapZoneSerializer
 

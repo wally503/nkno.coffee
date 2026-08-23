@@ -4,31 +4,13 @@ from rest_framework import viewsets
 from django.db.models import Q
 from .pagination import DynamicPageSizePagination
 from rest_framework.filters import OrderingFilter, SearchFilter
-from .models import (
-    Grinder, Scale, Kettle,
-    BrewLog,
-    AeropressDetail,
-    PouroverDetail,
-    ColdBrewDetail,
-    BagLifecycleEvent,
-    EspressoDetail
-)
-from .serializers import (
-    GrinderSerializer,
-    ScaleSerializer,
-    KettleSerializer,
-    BrewLogSerializer,
-    BrewLogListSerializer,
-    AeropressDetailSerializer,
-    AeropressDetailListSerializer,
-    PouroverDetailSerializer,
-    ColdBrewDetailSerializer,
-    EspressoDetailSerializer
-)
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
+from .models import *
+from .serializers import *
 from .permissions import SuperUserDestroyMixin
 
 
-class CatalogViewSet(viewsets.GenericViewSet):
+class CatalogViewSet(ListModelMixin, RetrieveModelMixin, viewsets.GenericViewSet):
     lookup_field = 'short_id'
     filter_backends = [OrderingFilter, SearchFilter]
 
@@ -135,31 +117,49 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
 
 class AeropressDetailViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
     queryset = AeropressDetail.objects.select_related('brew_log', 'grinder', 'scale', 'kettle').prefetch_related('hoffmann_events').all()
+    lookup_field = 'brew_log__short_id'
+    lookup_url_kwarg = 'short_id' 
     filter_backends = [OrderingFilter, SearchFilter]
 
     def get_serializer_class(self):
         if self.action == 'list':
             return AeropressDetailListSerializer
+        if self.action == 'retrieve':
+            return AeropressDetailReadSerializer
         return AeropressDetailSerializer
-
 
 class PouroverDetailViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
     queryset = PouroverDetail.objects.select_related('brew_log', 'grinder', 'scale', 'kettle').prefetch_related('pour_events').all()
+    lookup_field = 'brew_log__short_id'
+    lookup_url_kwarg = 'short_id' 
     serializer_class = PouroverDetailSerializer
     filter_backends = [OrderingFilter, SearchFilter]
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return PouroverDetailListSerializer  # if you have one; else reuse read
+        if self.action == 'retrieve':
+            return PouroverDetailReadSerializer
+        return PouroverDetailSerializer
 
 
 class ColdBrewDetailViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
     queryset = ColdBrewDetail.objects.select_related('brew_log', 'grinder', 'scale').all()
+    lookup_field = 'brew_log__short_id'
+    lookup_url_kwarg = 'short_id' 
     serializer_class = ColdBrewDetailSerializer
     filter_backends = [OrderingFilter, SearchFilter]
 
 
 class EspressoDetailViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
-    queryset = EspressoDetail.objects.select_related('brew_log', 'grinder', 'scale', 'kettle').all()
+    queryset = EspressoDetail.objects.select_related('brew_log', 'grinder', 'scale').all()
+    lookup_field = 'brew_log__short_id'
+    lookup_url_kwarg = 'short_id' 
     filter_backends = [OrderingFilter, SearchFilter]
 
     def get_serializer_class(self):
         if self.action == 'list':
-            return EspressoDetailSerializer
+            return EspressoDetailListSerializer  # if you have one; else reuse read
+        if self.action == 'retrieve':
+            return EspressoDetailReadSerializer
         return EspressoDetailSerializer

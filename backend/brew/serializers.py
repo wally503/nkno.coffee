@@ -20,6 +20,10 @@ class GrinderSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['short_id']
 
+class GrinderNestedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Grinder
+        exclude = ['id']
 
 class ScaleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -27,6 +31,10 @@ class ScaleSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['short_id']
 
+class ScaleNestedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Scale
+        exclude = ['id']
 
 class KettleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,6 +42,10 @@ class KettleSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['short_id']
 
+class KettleNestedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Kettle
+        exclude = ['id']
 
 # ---------------------------------------------------------------------------
 # BrewLog
@@ -80,10 +92,32 @@ class HoffmannEventSerializer(serializers.ModelSerializer):
 
 class AeropressDetailSerializer(serializers.ModelSerializer):
     hoffmann_events = HoffmannEventSerializer(many=True, required=False)
+    grinder = serializers.SlugRelatedField(slug_field='short_id', queryset=Grinder.objects.all())
+    scale = serializers.SlugRelatedField(slug_field='short_id', queryset=Scale.objects.all())
+    kettle = serializers.SlugRelatedField(slug_field='short_id', queryset=Kettle.objects.all())
+    brew_log = serializers.SlugRelatedField(slug_field='short_id', queryset=BrewLog.objects.all())
 
     class Meta:
         model = AeropressDetail
-        fields = '__all__'
+        fields = [
+            'hoffmann_events',
+            'brew_log',
+            'grind_rotations',
+            'grind_position',
+            'water_type',
+            'weight',
+            'base',
+            'filter',
+            'pre_wet',
+            'orientation',
+            'pour_direction',
+            'cup',
+            'temp',
+            'water',
+            'grinder',
+            'scale',
+            'kettle',
+        ]
 
     def create(self, validated_data):
         events_data = validated_data.pop('hoffmann_events', [])
@@ -104,6 +138,37 @@ class AeropressDetailSerializer(serializers.ModelSerializer):
                 HoffmannEvent.objects.create(aeropress_detail=instance, **event_data)
 
         return instance
+
+
+class AeropressDetailReadSerializer(serializers.ModelSerializer):
+    """View mode — expanded/nested, no id, read-only."""
+    hoffmann_events = HoffmannEventSerializer(many=True, read_only=True)
+    brew_log = BrewLogSerializer(read_only=True)
+    grinder = GrinderNestedSerializer(read_only=True)
+    scale = ScaleNestedSerializer(read_only=True)
+    kettle = KettleNestedSerializer(read_only=True)
+
+    class Meta:
+        model = AeropressDetail
+        fields = [
+            'hoffmann_events',
+            'brew_log',
+            'grind_rotations',
+            'grind_position',
+            'water_type',
+            'weight',
+            'base',
+            'filter',
+            'pre_wet',
+            'orientation',
+            'pour_direction',
+            'cup',
+            'temp',
+            'water',
+            'grinder',
+            'scale',
+            'kettle',
+        ]
 
 
 class AeropressDetailListSerializer(serializers.ModelSerializer):
@@ -136,6 +201,10 @@ class PouroverDetailSerializer(serializers.ModelSerializer):
     pour_events = PouroverPourEventSerializer(many=True, required=False)
     total_poured = serializers.ReadOnlyField()
     is_balanced = serializers.ReadOnlyField()
+    brew_log = serializers.SlugRelatedField(slug_field='short_id', queryset=BrewLog.objects.all())
+    grinder = serializers.SlugRelatedField(slug_field='short_id', queryset=Grinder.objects.all())
+    scale = serializers.SlugRelatedField(slug_field='short_id', queryset=Scale.objects.all())
+    kettle = serializers.SlugRelatedField(slug_field='short_id', queryset=Kettle.objects.all())
 
     class Meta:
         model = PouroverDetail
@@ -161,6 +230,37 @@ class PouroverDetailSerializer(serializers.ModelSerializer):
 
         return instance
 
+class PouroverDetailReadSerializer(serializers.ModelSerializer):
+    brew_log = BrewLogSerializer(read_only=True)
+    grinder = GrinderNestedSerializer(read_only=True)
+    scale = ScaleNestedSerializer(read_only=True)
+    kettle = KettleNestedSerializer(read_only=True)
+    pour_events = PouroverPourEventSerializer(many=True, read_only=True)  # confirm actual serializer name
+
+    class Meta:
+        model = PouroverDetail
+        fields = [
+            'brew_log',
+            'dripper',
+            'filter_brand',
+            'filter_count',
+            'filter_type',
+            'pre_wet',
+            'kettle',
+            'scale',
+            'cup',
+            'grinder',
+            'grind_rotations',
+            'grind_position',
+            'water_type',
+            'temp',
+            'water',
+            'weight',
+            'pour_events',
+            'total_poured',
+            'is_balanced',
+        ]
+
 
 # ---------------------------------------------------------------------------
 # Cold Brew
@@ -177,6 +277,38 @@ class ColdBrewDetailSerializer(serializers.ModelSerializer):
 # ---------------------------------------------------------------------------
 
 class EspressoDetailSerializer(serializers.ModelSerializer):
+    grinder = serializers.SlugRelatedField(slug_field='short_id', queryset=Grinder.objects.all())
+    scale = serializers.SlugRelatedField(slug_field='short_id', queryset=Scale.objects.all())
+    brew_log = serializers.SlugRelatedField(slug_field='short_id', queryset=BrewLog.objects.all())
+
     class Meta:
         model = EspressoDetail
         fields = '__all__'
+
+class EspressoDetailReadSerializer(serializers.ModelSerializer):
+    brew_log = BrewLogSerializer(read_only=True)
+    grinder = GrinderNestedSerializer(read_only=True)
+    scale = ScaleNestedSerializer(read_only=True)
+
+    class Meta:
+        model = EspressoDetail
+        fields = [
+            'brew_log',
+            'machine',
+            'basket',
+            'puck_screen',
+            'grinder',
+            'grind_rotations',
+            'grind_position',
+            'water_type',
+            'weight',
+            'scale',
+            'cup',
+            'tamper',
+            'wdt_used',
+            'wdt_rotations',
+            'paper_filter_used',
+            'paper_filter_type',
+            'paper_filter_count',
+            'pull_time',
+        ]
