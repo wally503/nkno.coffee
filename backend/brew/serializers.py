@@ -1,14 +1,9 @@
 # brew/serializers.py
 
+from django.db import transaction
 from rest_framework import serializers
-from .models import (
-    Grinder, Scale, Kettle,
-    BrewLog,
-    AeropressDetail, HoffmannEvent,
-    PouroverDetail, PouroverPourEvent,
-    ColdBrewDetail, EspressoDetail
-)
-
+from .models import *
+from coffee.models import Bean
 
 # ---------------------------------------------------------------------------
 # Equipment lookups
@@ -52,6 +47,7 @@ class KettleNestedSerializer(serializers.ModelSerializer):
 # ---------------------------------------------------------------------------
 
 class BrewLogSerializer(serializers.ModelSerializer):
+    bean = serializers.SlugRelatedField(slug_field='short_id', queryset=Bean.objects.all())
     days_since_roast = serializers.ReadOnlyField()
     days_since_opened = serializers.ReadOnlyField()
 
@@ -79,6 +75,67 @@ class BrewLogListSerializer(serializers.ModelSerializer):
         detail = getattr(obj, f'{obj.style}_detail', None)
         return detail.id if detail else None
 
+
+# ---------------------------------------------------------------------------
+# Shared mixin — atomic BrewLog + Detail creation
+# ---------------------------------------------------------------------------
+
+class AtomicDetailCreateMixin:
+    """
+    Shared create()/update() for OneToOne brew-detail serializers
+    (Aeropress/Pourover/Espresso/ColdBrew). `brew_log` is a nested
+    writable BrewLogSerializer on create only — both rows are created
+    in one transaction, so a failure on either side rolls back both,
+    preventing orphaned BrewLog rows (the old two-step frontend flow
+    could leave a BrewLog with no matching detail if the second POST
+    failed).
+
+    On update, brew_log is immutable (it's a OneToOne set at creation)
+    and is dropped from the payload rather than allowing a rebind.
+
+    Subclasses set `detail_model` and, if they have a nested many-field
+    (hoffmann_events / pour_events), override pop_nested/create_nested/
+    update_nested. Styles with no nested many-field (espresso, cold brew)
+    can leave those as the no-op defaults below.
+    """
+    detail_model = None  # set by subclass
+
+    def create(self, validated_data):
+        brew_log_data = validated_data.pop('brew_log')
+        nested_data = self.pop_nested(validated_data)
+
+        with transaction.atomic():
+            brew_log_serializer = BrewLogSerializer(data=brew_log_data)
+            brew_log_serializer.is_valid(raise_exception=True)
+            brew_log = brew_log_serializer.save()
+
+            detail = self.detail_model.objects.create(brew_log=brew_log, **validated_data)
+            self.create_nested(detail, nested_data)
+
+        return detail
+
+    def update(self, instance, validated_data):
+        validated_data.pop('brew_log', None)  # immutable post-create
+        nested_data = self.pop_nested(validated_data, for_update=True)
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        self.update_nested(instance, nested_data)
+        return instance
+
+    # Hooks for the one nested many-field each style has, if any.
+    def pop_nested(self, validated_data, for_update=False):
+        return None
+
+    def create_nested(self, detail, nested_data):
+        pass
+
+    def update_nested(self, instance, nested_data):
+        pass
+
+
 # ---------------------------------------------------------------------------
 # Aeropress
 # ---------------------------------------------------------------------------
@@ -89,13 +146,15 @@ class HoffmannEventSerializer(serializers.ModelSerializer):
         fields = ['id', 'rotation_time', 'rotation_count']
 
 
-
-class AeropressDetailSerializer(serializers.ModelSerializer):
+class AeropressDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSerializer):
     hoffmann_events = HoffmannEventSerializer(many=True, required=False)
     grinder = serializers.SlugRelatedField(slug_field='short_id', queryset=Grinder.objects.all())
     scale = serializers.SlugRelatedField(slug_field='short_id', queryset=Scale.objects.all())
     kettle = serializers.SlugRelatedField(slug_field='short_id', queryset=Kettle.objects.all())
-    brew_log = serializers.SlugRelatedField(slug_field='short_id', queryset=BrewLog.objects.all())
+    brew_log = BrewLogSerializer()
+    needs_bag_close_prompt = serializers.SerializerMethodField()
+
+    detail_model = AeropressDetail
 
     class Meta:
         model = AeropressDetail
@@ -117,27 +176,24 @@ class AeropressDetailSerializer(serializers.ModelSerializer):
             'grinder',
             'scale',
             'kettle',
+            'needs_bag_close_prompt',
         ]
 
-    def create(self, validated_data):
-        events_data = validated_data.pop('hoffmann_events', [])
-        detail = AeropressDetail.objects.create(**validated_data)
+    def get_needs_bag_close_prompt(self, obj):
+        return getattr(obj, '_bag_close_prompt', False)
+
+    def pop_nested(self, validated_data, for_update=False):
+        return validated_data.pop('hoffmann_events', [] if not for_update else None)
+
+    def create_nested(self, detail, events_data):
         for event_data in events_data:
             HoffmannEvent.objects.create(aeropress_detail=detail, **event_data)
-        return detail
 
-    def update(self, instance, validated_data):
-        events_data = validated_data.pop('hoffmann_events', None)
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-        instance.save()
-
+    def update_nested(self, instance, events_data):
         if events_data is not None:
             instance.hoffmann_events.all().delete()
             for event_data in events_data:
                 HoffmannEvent.objects.create(aeropress_detail=instance, **event_data)
-
-        return instance
 
 
 class AeropressDetailReadSerializer(serializers.ModelSerializer):
@@ -197,45 +253,64 @@ class PouroverPourEventSerializer(serializers.ModelSerializer):
         fields = ['id', 'pour_time', 'pour_amount', 'pour_style']
 
 
-class PouroverDetailSerializer(serializers.ModelSerializer):
+class PouroverDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSerializer):
     pour_events = PouroverPourEventSerializer(many=True, required=False)
-    total_poured = serializers.ReadOnlyField()
-    is_balanced = serializers.ReadOnlyField()
-    brew_log = serializers.SlugRelatedField(slug_field='short_id', queryset=BrewLog.objects.all())
     grinder = serializers.SlugRelatedField(slug_field='short_id', queryset=Grinder.objects.all())
     scale = serializers.SlugRelatedField(slug_field='short_id', queryset=Scale.objects.all())
     kettle = serializers.SlugRelatedField(slug_field='short_id', queryset=Kettle.objects.all())
+    brew_log = BrewLogSerializer()
+    needs_bag_close_prompt = serializers.SerializerMethodField()
+
+    dripper = serializers.ChoiceField(choices=DripperChoice.choices, required=True)
+
+    detail_model = PouroverDetail
 
     class Meta:
         model = PouroverDetail
-        fields = '__all__'
+        fields = [
+            'pour_events',
+            'brew_log',
+            'grind_rotations',
+            'grind_position',
+            'water_type',
+            'weight',
+            'filter_type',
+            'filter_brand',
+            'filter_count',
+            'pre_wet',
+            'dripper',
+            'cup',
+            'kettle',
+            'water',
+            'temp',
+            'grinder',
+            'scale',
+            'needs_bag_close_prompt',
+        ]
 
-    def create(self, validated_data):
-        events_data = validated_data.pop('pour_events', [])
-        detail = PouroverDetail.objects.create(**validated_data)
+    def get_needs_bag_close_prompt(self, obj):
+        return getattr(obj, '_bag_close_prompt', False)
+
+    def pop_nested(self, validated_data, for_update=False):
+        return validated_data.pop('pour_events', [] if not for_update else None)
+
+    def create_nested(self, detail, events_data):
         for event_data in events_data:
             PouroverPourEvent.objects.create(pourover_detail=detail, **event_data)
-        return detail
 
-    def update(self, instance, validated_data):
-        events_data = validated_data.pop('pour_events', None)
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-        instance.save()
-
+    def update_nested(self, instance, events_data):
         if events_data is not None:
             instance.pour_events.all().delete()
             for event_data in events_data:
                 PouroverPourEvent.objects.create(pourover_detail=instance, **event_data)
 
-        return instance
 
 class PouroverDetailReadSerializer(serializers.ModelSerializer):
     brew_log = BrewLogSerializer(read_only=True)
     grinder = GrinderNestedSerializer(read_only=True)
     scale = ScaleNestedSerializer(read_only=True)
     kettle = KettleNestedSerializer(read_only=True)
-    pour_events = PouroverPourEventSerializer(many=True, read_only=True)  # confirm actual serializer name
+    pour_events = PouroverPourEventSerializer(many=True, read_only=True)
 
     class Meta:
         model = PouroverDetail
@@ -262,28 +337,91 @@ class PouroverDetailReadSerializer(serializers.ModelSerializer):
         ]
 
 
+class PouroverDetailListSerializer(serializers.ModelSerializer):
+    date = serializers.DateField(source='brew_log.date', read_only=True)
+    bean_name = serializers.SerializerMethodField()
+    extraction_rating = serializers.IntegerField(source='brew_log.extraction_rating', read_only=True)
+    grinder_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = PouroverDetail
+        fields = ['id', 'date', 'bean_name', 'extraction_rating', 'dripper', 'grinder_name']
+
+    def get_bean_name(self, obj):
+        return obj.brew_log.bean.name if obj.brew_log and obj.brew_log.bean else '-'
+
+    def get_grinder_name(self, obj):
+        return obj.grinder.name if obj.grinder else '-'
+
+
 # ---------------------------------------------------------------------------
 # Cold Brew
 # ---------------------------------------------------------------------------
 
-class ColdBrewDetailSerializer(serializers.ModelSerializer):
+class ColdBrewDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSerializer):
+    brew_log = BrewLogSerializer()
+    grinder = serializers.SlugRelatedField(slug_field='short_id', queryset=Grinder.objects.all())
+    scale = serializers.SlugRelatedField(slug_field='short_id', queryset=Scale.objects.all())
+    needs_bag_close_prompt = serializers.SerializerMethodField()
+
+    detail_model = ColdBrewDetail
+
     class Meta:
         model = ColdBrewDetail
         fields = '__all__'
+
+    def get_needs_bag_close_prompt(self, obj):
+        return getattr(obj, '_bag_close_prompt', False)
 
 
 # ---------------------------------------------------------------------------
 # Espresso
 # ---------------------------------------------------------------------------
 
-class EspressoDetailSerializer(serializers.ModelSerializer):
+class EspressoDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSerializer):
     grinder = serializers.SlugRelatedField(slug_field='short_id', queryset=Grinder.objects.all())
     scale = serializers.SlugRelatedField(slug_field='short_id', queryset=Scale.objects.all())
-    brew_log = serializers.SlugRelatedField(slug_field='short_id', queryset=BrewLog.objects.all())
+    brew_log = BrewLogSerializer()
+    needs_bag_close_prompt = serializers.SerializerMethodField()
+
+    machine = serializers.ChoiceField(choices=EspressoMakerChoice.choices, required=True)
+    basket = serializers.ChoiceField(choices=BasketChoice.choices, required=True)
+    puck_screen = serializers.ChoiceField(choices=PuckScreenChoice.choices, required=True)
+    tamper = serializers.ChoiceField(choices=TamperChoice.choices, required=True)
+    wdt_rotations = serializers.IntegerField(required=True)
+    paper_filter_used = serializers.ChoiceField(choices=EspressoPaperFilterUsedChoice.choices, required=True)
+    paper_filter_type = serializers.ChoiceField(choices=EspressoPaperFilterTypeChoice.choices, required=True)
+    paper_filter_count = serializers.IntegerField(required=True)
+
+    detail_model = EspressoDetail
 
     class Meta:
         model = EspressoDetail
-        fields = '__all__'
+        fields = [
+            'brew_log',
+            'machine',
+            'basket',
+            'puck_screen',
+            'grinder',
+            'grind_rotations',
+            'grind_position',
+            'water_type',
+            'weight',
+            'scale',
+            'cup',
+            'tamper',
+            'wdt_used',
+            'wdt_rotations',
+            'paper_filter_used',
+            'paper_filter_type',
+            'paper_filter_count',
+            'pull_time',
+            'needs_bag_close_prompt',
+        ]
+
+    def get_needs_bag_close_prompt(self, obj):
+        return getattr(obj, '_bag_close_prompt', False)
+
 
 class EspressoDetailReadSerializer(serializers.ModelSerializer):
     brew_log = BrewLogSerializer(read_only=True)
@@ -312,3 +450,20 @@ class EspressoDetailReadSerializer(serializers.ModelSerializer):
             'paper_filter_count',
             'pull_time',
         ]
+
+
+class EspressoDetailListSerializer(serializers.ModelSerializer):
+    date = serializers.DateField(source='brew_log.date', read_only=True)
+    bean_name = serializers.SerializerMethodField()
+    extraction_rating = serializers.IntegerField(source='brew_log.extraction_rating', read_only=True)
+    grinder_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = EspressoDetail
+        fields = ['id', 'date', 'bean_name', 'extraction_rating', 'basket', 'grinder_name']
+
+    def get_bean_name(self, obj):
+        return obj.brew_log.bean.name if obj.brew_log and obj.brew_log.bean else '-'
+
+    def get_grinder_name(self, obj):
+        return obj.grinder.name if obj.grinder else '-'

@@ -7,7 +7,7 @@ export const ESPRESSO_STATIC_OPTIONS = {
   ],
   puck_screen: [
     { label: 'None', value: 'none' },
-    { label: 'Normcore Puck Screen - 316 Stainless Steel', value: 'normcore_316_ss' },
+    { label: 'Normcore Puck Screen - 316 Stainless', value: 'normcore_316_ss' },
   ],
   basket: [
     { label: 'Normcore High Extraction Basket', value: 'nc_high_ext' },
@@ -18,7 +18,7 @@ export const ESPRESSO_STATIC_OPTIONS = {
     { label: 'Not Used', value: 'not_used' },
   ],
   tamper: [
-    { label: 'Normcore V4.1 Spring Loaded Tamper (Flat Base)', value: 'nc_41_flat' },
+    { label: 'Normcore V4.1 Spring Tamper (Flat)', value: 'nc_41_flat' },
   ],
   cup: [
     { label: 'Ceramic', value: 'ceramic' },
@@ -64,29 +64,22 @@ export const espressoConfig = {
 
   fields: [
     // brew log fields — locks the bean, sets the date/rating for this session
-    {
-      type: "dropdown",
-      name: "bean",
-      label: "Bean",
-      required: true,
-      size: { xs: 12, sm: 6, md: 6 },
-      optionSource: "beans",
-    },
-    // {
-    //   type: "spacer",
-    //   size: { xs: 0, sm: 3, md: 3 },
-    //   gridSx: { mt: -2 },
-    //   color: "rgba(180, 140, 100, 0)",
-    // },
-    {
-      type: "date_time",
-      name: "date",
-      label: "Date & Time",
-      required: true,
-      size: { xs: 12, sm: 4, md: 4 },
-      defaultNow: true,
-    },
-
+  {
+    type: "dropdown",
+    name: "bean",
+    label: "Bean",
+    required: true,
+    size: { xs: 12, sm: 8, md: 8 },
+    optionSource: "beans",
+  },
+  {
+    type: "date_time",
+    name: "date",
+    label: "Date & Time",
+    required: true,
+    size: { xs: 12, sm: 4, md: 4 },
+    defaultNow: true,
+  },
 
 
     { type: "divider" },

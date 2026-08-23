@@ -4,8 +4,9 @@ import BrewLogFormShell from "../shared/BrewLogFormShell";
 import { AEROPRESS_STATIC_OPTIONS, aeropressConfig } from "../../../constants/config/brew/aeropress/aeropressConfig";
 import {
   brewBeans, brewGrinders, brewScales, brewKettles,
-  submitBrewLog, submitAeropress, getAeropressById, updateAeropress
+  submitAeropress, getAeropressById, updateAeropress
 } from "../../../api/brewApi";
+import { markBeanFinished } from "../../../api/beansApi";
 import DialogueBox from "../../../components/DialogueBox";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import DefaultBodyLayout from "../../../components/DefaultBodyLayout";
@@ -16,6 +17,8 @@ export default function AeropressFormPage() {
   const [options, setOptions] = React.useState(null);
   const [errors, setErrors] = React.useState({});
   const [saveDialogue, setSaveDialogue] = React.useState(false);
+  const [bagCloseDialogue, setBagCloseDialogue] = React.useState(false);
+  const [pendingBeanShortId, setPendingBeanShortId] = React.useState(null);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -61,7 +64,7 @@ export default function AeropressFormPage() {
 
   const normalizeAeropressData = (data) => ({
     ...data,
-    bean: data.brew_log?.bean?.id ?? data.brew_log?.bean,
+    bean: data.brew_log?.bean,
     date: data.brew_log?.date,
     extraction_rating: data.brew_log?.extraction_rating,
     grinder: data.grinder?.short_id ?? data.grinder,
@@ -72,33 +75,32 @@ export default function AeropressFormPage() {
 
   const handleSubmit = async () => {
     try {
-      // Split formData into BrewLog fields vs AeropressDetail fields —
-      // the API needs BrewLog to exist first so AeropressDetail can FK to it.
       const { bean, date, extraction_rating, notes, hoffmann_events, ...detailFields } = formData;
 
-      let brewLogId = formData.brew_log;
-
-      if (!shortid) {
-        const brewLog = await submitBrewLog({
-          bean, date, extraction_rating, notes, style: 'aeropress',
-        });
-        if (!brewLog?.short_id) {
-          throw new Error('BrewLog creation did not return an id — aborting before creating AeropressDetail.');
-        }
-        brewLogId = brewLog.short_id;
-      }
-
-      const payload = { ...detailFields, brew_log: brewLogId, hoffmann_events };
+      const payload = shortid
+        ? { ...detailFields, hoffmann_events }
+        : {
+            ...detailFields,
+            hoffmann_events,
+            brew_log: { bean, date, extraction_rating, notes, style: 'aeropress' },
+          };
 
       const res = shortid
         ? await updateAeropress(shortid, payload)
         : await submitAeropress(payload);
 
       setSaveDialogue(true);
+
+      if (res?.needs_bag_close_prompt) {
+        setPendingBeanShortId(bean);
+        setBagCloseDialogue(true);
+      }
+
       console.log("Aeropress save result:", res);
     } catch (err) {
       console.log(err);
-      setErrors(err);
+      const { brew_log: brewLogErrors, ...detailErrors } = err;
+      setErrors({ ...detailErrors, ...brewLogErrors });
     }
   };
 
@@ -130,6 +132,15 @@ export default function AeropressFormPage() {
               message={"Aeropress brew was successfully saved!"}
               open={saveDialogue}
               onCloseParent={() => { setSaveDialogue(false); navigate('/history/by-style'); }}
+            />
+            <DialogueBox
+              title={"Bag Almost Empty"}
+              message={"This bag is nearly out — want to mark it as finished?"}
+              open={bagCloseDialogue}
+              onCloseParent={() => setBagCloseDialogue(false)}
+              onConfirm={() => markBeanFinished(pendingBeanShortId)} 
+              confirmLabel="Yes, Close Bag"
+              cancelLabel="No, Not yet"
             />
           </DefaultBodyLayout>
         </div>

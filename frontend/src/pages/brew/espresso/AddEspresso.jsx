@@ -4,8 +4,9 @@ import BrewLogFormShell from "../shared/BrewLogFormShell";
 import { ESPRESSO_STATIC_OPTIONS, espressoConfig } from "../../../constants/config/brew/espresso/espressoConfig";
 import {
   brewBeans, brewGrinders, brewScales, brewKettles,
-  submitBrewLog, submitEspresso, getEspressoById, updateEspresso
+  submitEspresso, getEspressoById, updateEspresso
 } from "../../../api/brewApi";
+import { markBeanFinished } from "../../../api/beansApi";
 import DialogueBox from "../../../components/DialogueBox";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import DefaultBodyLayout from "../../../components/DefaultBodyLayout";
@@ -16,6 +17,8 @@ export default function EspressoFormPage() {
   const [options, setOptions] = React.useState(null);
   const [errors, setErrors] = React.useState({});
   const [saveDialogue, setSaveDialogue] = React.useState(false);
+  const [bagCloseDialogue, setBagCloseDialogue] = React.useState(false);
+  const [pendingBeanShortId, setPendingBeanShortId] = React.useState(null);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -61,7 +64,7 @@ export default function EspressoFormPage() {
 
   const normalizeEspressoData = (data) => ({
     ...data,
-    bean: data.brew_log?.bean?.id ?? data.brew_log?.bean,
+    bean: data.brew_log?.bean,
     date: data.brew_log?.date,
     extraction_rating: data.brew_log?.extraction_rating,
     notes: data.brew_log?.notes,
@@ -72,33 +75,31 @@ export default function EspressoFormPage() {
 
   const handleSubmit = async () => {
     try {
-      // Split formData into BrewLog fields vs AeropressDetail fields —
-      // the API needs BrewLog to exist first so AeropressDetail can FK to it.
       const { bean, date, extraction_rating, notes, ...detailFields } = formData;
 
-      let brewLogId = formData.brew_log;
-
-      if (!shortid) {
-        const brewLog = await submitBrewLog({
-          bean, date, extraction_rating, notes, style: 'espresso',
-        });
-        if (!brewLog?.short_id) {
-          throw new Error('BrewLog creation did not return an id — aborting before creating EspressoDetail.');
-        }
-        brewLogId = brewLog.short_id;
-      }
-
-      const payload = { ...detailFields, brew_log: brewLogId };
+      const payload = shortid
+        ? { ...detailFields }
+        : {
+            ...detailFields,
+            brew_log: { bean, date, extraction_rating, notes, style: 'espresso' },
+          };
 
       const res = shortid
         ? await updateEspresso(shortid, payload)
         : await submitEspresso(payload);
 
       setSaveDialogue(true);
+
+      if (res?.needs_bag_close_prompt) {
+        setPendingBeanShortId(bean);
+        setBagCloseDialogue(true);
+      }
+
       console.log("Espresso save result:", res);
     } catch (err) {
       console.log(err);
-      setErrors(err);
+      const { brew_log: brewLogErrors, ...detailErrors } = err;
+      setErrors({ ...detailErrors, ...brewLogErrors });
     }
   };
 
@@ -130,6 +131,15 @@ export default function EspressoFormPage() {
               message={"Espresso brew was successfully saved!"}
               open={saveDialogue}
               onCloseParent={() => { setSaveDialogue(false); navigate('/history/by-style'); }}
+            />
+            <DialogueBox
+              title={"Bag Almost Empty"}
+              message={"This bag is nearly out — want to mark it as finished?"}
+              open={bagCloseDialogue}
+              onCloseParent={() => setBagCloseDialogue(false)}
+              onConfirm={() => markBeanFinished(pendingBeanShortId)} 
+              confirmLabel="Yes, Close Bag"
+              cancelLabel="No, Not yet"
             />
           </DefaultBodyLayout>
         </div>

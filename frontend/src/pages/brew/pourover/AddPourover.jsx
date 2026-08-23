@@ -4,8 +4,9 @@ import BrewLogFormShell from "../shared/BrewLogFormShell";
 import { POUROVER_STATIC_OPTIONS, pouroverConfig } from "../../../constants/config/brew/pourover/pouroverConfig";
 import {
   brewBeans, brewGrinders, brewScales, brewKettles,
-  submitBrewLog, submitPourover, getPouroverById, updatePourover
+  submitPourover, getPouroverById, updatePourover
 } from "../../../api/brewApi";
+import { markBeanFinished } from "../../../api/beansApi";
 import DialogueBox from "../../../components/DialogueBox";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import DefaultBodyLayout from "../../../components/DefaultBodyLayout";
@@ -16,6 +17,8 @@ export default function PouroverFormPage() {
   const [options, setOptions] = React.useState(null);
   const [errors, setErrors] = React.useState({});
   const [saveDialogue, setSaveDialogue] = React.useState(false);
+  const [bagCloseDialogue, setBagCloseDialogue] = React.useState(false);
+  const [pendingBeanShortId, setPendingBeanShortId] = React.useState(null);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -61,7 +64,7 @@ export default function PouroverFormPage() {
 
   const normalizePouroverData = (data) => ({
     ...data,
-    bean: data.brew_log?.bean?.id ?? data.brew_log?.bean,
+    bean: data.brew_log?.bean,
     date: data.brew_log?.date,
     extraction_rating: data.brew_log?.extraction_rating,
     notes: data.brew_log?.notes,
@@ -73,33 +76,32 @@ export default function PouroverFormPage() {
 
   const handleSubmit = async () => {
     try {
-      // Split formData into BrewLog fields vs PouroverDetail fields —
-      // the API needs BrewLog to exist first so PouroverDetail can FK to it.
       const { bean, date, extraction_rating, notes, pour_events, ...detailFields } = formData;
 
-      let brewLogId = formData.brew_log;
-
-      if (!shortid) {
-        const brewLog = await submitBrewLog({
-          bean, date, extraction_rating, notes, style: 'pourover',
-        });
-        if (!brewLog?.short_id) {
-          throw new Error('BrewLog creation did not return an id — aborting before creating PouroverDetail.');
-        }
-        brewLogId = brewLog.short_id;
-      }
-
-      const payload = { ...detailFields, brew_log: brewLogId, pour_events };
+      const payload = shortid
+        ? { ...detailFields, pour_events }
+        : {
+            ...detailFields,
+            pour_events,
+            brew_log: { bean, date, extraction_rating, notes, style: 'pourover' },
+          };
 
       const res = shortid
         ? await updatePourover(shortid, payload)
         : await submitPourover(payload);
 
       setSaveDialogue(true);
+
+      if (res?.needs_bag_close_prompt) {
+        setPendingBeanShortId(bean);
+        setBagCloseDialogue(true);
+      }
+
       console.log("Pourover save result:", res);
     } catch (err) {
       console.log(err);
-      setErrors(err);
+      const { brew_log: brewLogErrors, ...detailErrors } = err;
+      setErrors({ ...detailErrors, ...brewLogErrors });
     }
   };
 
@@ -131,6 +133,15 @@ export default function PouroverFormPage() {
               message={"Pourover brew was successfully saved!"}
               open={saveDialogue}
               onCloseParent={() => { setSaveDialogue(false); navigate('/history/by-style'); }}
+            />
+            <DialogueBox
+              title={"Bag Almost Empty"}
+              message={"This bag is nearly out — want to mark it as finished?"}
+              open={bagCloseDialogue}
+              onCloseParent={() => setBagCloseDialogue(false)}
+              onConfirm={() => markBeanFinished(pendingBeanShortId)} 
+              confirmLabel="Yes, Close Bag"
+              cancelLabel="No, Not yet"
             />
           </DefaultBodyLayout>
         </div>

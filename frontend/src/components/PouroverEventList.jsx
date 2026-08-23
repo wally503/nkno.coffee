@@ -60,7 +60,7 @@ export default function PouroverEventList({ item, onChange, initialValues, mode,
           {mode === "view"
             ? viewMode(events, totalPoured)
             : events.map((event, index) =>
-                addEditMode(event, index, handleChange, handleAdd, handleRemove, events))}
+                addEditMode(event, index, handleChange, handleAdd, handleRemove, events, error?.[index]))}
         </Grid>
         {mode !== "view" && (
           <Box sx={{ mt: 1, fontSize: "0.85rem", color: "text.secondary" }}>
@@ -72,16 +72,18 @@ export default function PouroverEventList({ item, onChange, initialValues, mode,
   );
 }
 
-function addEditMode(event, index, handleChange, handleAdd, handleRemove, events) {
+function addEditMode(event, index, handleChange, handleAdd, handleRemove, events, rowError) {
   return (
     <Grid key={index} size={{ xs: 12 }}>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+      <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2, minHeight: 96 }}>
         <TextField
           label="Time"
           placeholder="0:30"
           value={event.pour_time}
           onChange={(e) => handleChange(index, 'pour_time', e.target.value)}
           onBlur={(e) => handleChange(index, 'pour_time', normalizePourTime(e.target.value))}
+          error={!!rowError?.pour_time}
+          helperText={rowError?.pour_time?.[0] ?? " "}
           sx={{ width: 200 }}
         />
         <TextField
@@ -89,6 +91,8 @@ function addEditMode(event, index, handleChange, handleAdd, handleRemove, events
           type="number"
           value={event.pour_amount}
           onChange={(e) => handleChange(index, 'pour_amount', e.target.value)}
+          error={!!rowError?.pour_amount}
+          helperText={rowError?.pour_amount?.[0] ?? " "}
           sx={{ width: 220 }}
         />
         <TextField
@@ -96,6 +100,8 @@ function addEditMode(event, index, handleChange, handleAdd, handleRemove, events
           label="Pour Style"
           value={event.pour_style}
           onChange={(e) => handleChange(index, 'pour_style', e.target.value)}
+          error={!!rowError?.pour_style}
+          helperText={rowError?.pour_style ? "Required" : " "}
           sx={{ width: 250 }}
         >
           {POUROVER_STATIC_OPTIONS.pour_style.map((opt) => (
@@ -104,20 +110,10 @@ function addEditMode(event, index, handleChange, handleAdd, handleRemove, events
             </MenuItem>
           ))}
         </TextField>
-        <IconButton
-          onClick={handleAdd}
-          size="small"
-          color="primary"
-          disabled={!event.pour_time || !event.pour_amount || !event.pour_style}
-        >
+        <IconButton onClick={handleAdd} size="small" color="primary" disabled={!event.pour_time || !event.pour_amount || !event.pour_style}>
           <AddIcon />
         </IconButton>
-        <IconButton
-          onClick={() => handleRemove(index)}
-          size="small"
-          color="secondary"
-          disabled={events.length === 1}
-        >
+        <IconButton onClick={() => handleRemove(index)} size="small" color="secondary" disabled={events.length === 1}>
           <RemoveIcon />
         </IconButton>
       </Box>
@@ -126,7 +122,7 @@ function addEditMode(event, index, handleChange, handleAdd, handleRemove, events
 }
 
 // Cleans up whatever the user typed into a "m:ss" shape Django's DurationField
-// will accept. 
+// will accept.
 function normalizePourTime(value) {
   if (!value) return value;
 

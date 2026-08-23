@@ -52,29 +52,22 @@ export const pouroverConfig = {
 
   fields: [
     // bean + date up top, same spacer treatment as aeropressConfig
-    {
-      type: "dropdown",
-      name: "bean",
-      label: "Bean",
-      required: true,
-      size: { xs: 12, sm: 5, md: 5 },
-      optionSource: "beans",
-    },
-    {
-      type: "spacer",
-      size: { xs: 0, sm: 3, md: 3 },
-      gridSx: { mt: -2 },
-      color: "rgba(180, 140, 100, 0)",
-    },
-    {
-      type: "date_time",
-      name: "date",
-      label: "Date & Time",
-      required: true,
-      size: { xs: 12, sm: 4, md: 4 },
-      defaultNow: true,
-    },
-
+  {
+    type: "dropdown",
+    name: "bean",
+    label: "Bean",
+    required: true,
+    size: { xs: 12, sm: 8, md: 8 },
+    optionSource: "beans",
+  },
+  {
+    type: "date_time",
+    name: "date",
+    label: "Date & Time",
+    required: true,
+    size: { xs: 12, sm: 4, md: 4 },
+    defaultNow: true,
+  },
     { type: "divider" },
 
     // pourover-specific fields — dripper/filter_brand/filter_count as one row,

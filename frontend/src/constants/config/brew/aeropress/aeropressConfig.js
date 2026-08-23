@@ -59,28 +59,22 @@ export const aeropressConfig = {
 
   fields: [
     // brew log fields — locks the bean, sets the date/rating for this session
-    {
-      type: "dropdown",
-      name: "bean",
-      label: "Bean",
-      required: true,
-      size: { xs: 12, sm: 5, md: 5 },
-      optionSource: "beans",
-    },
-    {
-      type: "spacer",
-      size: { xs: 0, sm: 2, md: 2 },
-      gridSx: { mt: -2 },  // negative = pushes the line up; adjust the number to taste
-      color: "rgba(180, 140, 100, 0.5)",
-    },
-    {
-      type: "date_time",
-      name: "date",
-      label: "Date & Time",
-      required: true,
-      size: { xs: 12, sm: 5, md: 5 },
-      defaultNow: true,
-    },
+  {
+    type: "dropdown",
+    name: "bean",
+    label: "Bean",
+    required: true,
+    size: { xs: 12, sm: 8, md: 8 },
+    optionSource: "beans",
+  },
+  {
+    type: "date_time",
+    name: "date",
+    label: "Date & Time",
+    required: true,
+    size: { xs: 12, sm: 4, md: 4 },
+    defaultNow: true,
+  },
 
 
 

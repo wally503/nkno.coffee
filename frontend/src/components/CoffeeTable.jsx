@@ -142,6 +142,6 @@ export default function CoffeeTable({columns, rows, totalCount, tableState, view
       return column.render(value, row);
     if (column.format && typeof value === "number") 
       return column.format(value);
-    return value || "-";
+    return value ?? "-";
   }
 }

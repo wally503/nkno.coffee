@@ -159,6 +159,15 @@ class BrewBaseMixin(models.Model):
     class Meta:
         abstract = True
 
+    def save(self, *args, **kwargs):
+        is_new = self._state.adding
+        super().save(*args, **kwargs)
+
+        bean = self.brew_log.bean
+        bean.recalculate_used_weight()
+
+        # only relevant on create — edits are corrections, not new consumption
+        self._bag_close_prompt = is_new and bean.needs_bag_close_prompt
 
 # ---------------------------------------------------------------------------
 # BrewLog — the spine
@@ -195,7 +204,6 @@ class BrewLog(models.Model):
                 bean=self.bean,
                 event_type=BagLifecycleEvent.EventType.OPENED,
                 date=self.date,
-                time=self.time,
             )
 
     @property
@@ -208,7 +216,7 @@ class BrewLog(models.Model):
     def days_since_opened(self):
         if not self.bean.opened_date:
             return None
-        return (self.date.date() - self.bean.opened_date).days
+        return (self.date - self.bean.opened_date).days
 
     class Meta:
         ordering = ['-date']

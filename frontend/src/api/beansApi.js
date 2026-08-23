@@ -108,3 +108,13 @@ export async function getLatestBean(){
         console.error(error.response.data);
     }
 }
+
+export async function markBeanFinished(shortId) {
+    try {
+        const { data } = await axiosInstance.patch(`coffee/beans/${shortId}/`, { finished: true });
+        return data;
+    } catch (error) {
+        console.error(error.response?.status);
+        console.error(error.response?.data);
+    }
+}

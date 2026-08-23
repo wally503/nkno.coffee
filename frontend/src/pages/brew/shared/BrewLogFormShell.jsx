@@ -129,6 +129,25 @@ function buildDivider(key) {
 // `sx` wins over `color` if both are set. Neither is required — bare
 // { type: "spacer" } falls back to the theme's divider token.
 function buildSpacer(field, key) {
+  if (field.orientation === "vertical") {
+    return (
+      <Grid
+        key={key}
+        size={field.size ?? { xs: 0, sm: 1, md: 1 }}
+        sx={{ display: "flex", alignItems: "center", justifyContent: "center", ...(field.gridSx ?? {}) }}
+      >
+        <Divider
+          orientation="vertical"
+          sx={{
+            height: 36, // matches input height, not the full field block
+            borderColor: field.color ?? "divider",
+            ...(field.sx ?? {}),
+          }}
+        />
+      </Grid>
+    );
+  }
+
   return (
     <Grid
       key={key}

@@ -20,8 +20,21 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-export default function DialogueBox( {title, message, open, onCloseParent } ) {
+export default function DialogueBox({
+  title,
+  message,
+  open,
+  onCloseParent,
+  onConfirm,
+  confirmLabel = "Confirm",
+  cancelLabel = "OK",
+}) {
     const handleClose = () => {
+        onCloseParent();
+    };
+
+    const handleConfirm = () => {
+        onConfirm();
         onCloseParent();
     };
 
@@ -53,9 +66,14 @@ export default function DialogueBox( {title, message, open, onCloseParent } ) {
                     </Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus onClick={handleClose}>
-                        OK
+                    <Button onClick={handleClose}>
+                        {cancelLabel}
                     </Button>
+                    {onConfirm && (
+                        <Button autoFocus onClick={handleConfirm} variant="contained">
+                            {confirmLabel}
+                        </Button>
+                    )}
                 </DialogActions>
             </BootstrapDialog>
         </>

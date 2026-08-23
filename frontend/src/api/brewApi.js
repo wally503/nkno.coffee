@@ -5,11 +5,8 @@ import axiosInstance from './axiosInstance'
 
 export async function brewBeans(pageSize = 500) {
     try {
-        // finished=false assumes BeanViewSet supports filtering on that field —
-        // confirm the result set actually shrinks when this param is passed;
-        // if not, this needs a filterset_fields fix on BeanViewSet, not here.
         const { data } = await axiosInstance.get(`coffee/beans/?finished=false&page_size=${pageSize}`)
-        return data.results.map(b => ({ label: b.name, value: b.id }))
+        return data.results.map(b => ({ label: b.name, value: b.short_id }))
     } catch (error) {
         console.error(error.response?.status)
         console.error(error.response?.data)

@@ -2,6 +2,9 @@ from django.db import models
 from django.utils import timezone
 from .choices import CaffOrDecaf, WashingStyle, OrganicOrNot, BusinessType, RoastLevel
 import nanoid
+from decimal import Decimal
+from django.db.models import Sum
+
 # Create your models here.
 
 class Countries(models.Model):
@@ -83,7 +86,7 @@ class Bean(models.Model):
     caff_or_decaf = models.CharField(max_length=20, choices=CaffOrDecaf.choices)
     purchase_date = models.DateField(null=True, blank=True)
     roast_date = models.DateField(null=True, blank=True)
-    opened_date = models.DateField(null=True, blank=True)
+    opened_date = models.DateTimeField(null=True, blank=True)
     finished = models.BooleanField(default=False)
     min_elevation = models.IntegerField(null=True, blank=True)
     max_elevation = models.IntegerField(null=True, blank=True)
@@ -92,8 +95,8 @@ class Bean(models.Model):
     short_id = models.CharField(max_length=10, unique=True, blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
     purchased = models.BooleanField(default=True)
-    bag_weight = models.IntegerField(null=True, blank=True)
-    used_weight = models.IntegerField(null=True, blank=True)
+    bag_weight = models.DecimalField(max_digits=6, decimal_places=1, null=True, blank=True)
+    used_weight = models.DecimalField(max_digits=6, decimal_places=1, null=True, blank=True)
 
     @property
     def had_as_drink(self):
@@ -116,9 +119,29 @@ class Bean(models.Model):
             BagLifecycleEvent.objects.create(
                 bean=self,
                 event_type=BagLifecycleEvent.EventType.FINISHED,
-                date=timezone.now().date(),
+                date=timezone.now(),
             )
 
+    def recalculate_used_weight(self):
+        from brew.models import EspressoDetail, AeropressDetail, PouroverDetail
+        # add ColdBrewDetail once it exists
+
+        total = Decimal('0')
+        for model in [EspressoDetail, AeropressDetail, PouroverDetail]:
+            total += model.objects.filter(brew_log__bean=self).aggregate(
+                total=Sum('weight')
+            )['total'] or Decimal('0')
+
+        self.used_weight = total
+        self.save(update_fields=['used_weight'])
+
+    @property
+    def remaining_weight(self):
+        return (self.bag_weight or Decimal('0')) - (self.used_weight or Decimal('0'))
+
+    @property
+    def needs_bag_close_prompt(self):
+        return self.remaining_weight <= 10 and not self.finished
     class Meta:
         ordering = ['-date_added']
 

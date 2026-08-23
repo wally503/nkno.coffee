@@ -80,6 +80,7 @@ class BeanViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
         return Response(BeanListSerializer(bean).data, status=201)
 
     def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
         instance = self.get_object()
         flav_notes = request.data.get('flavor_notes')
         data = request.data.copy()
@@ -90,10 +91,10 @@ class BeanViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
                 note_obj, _ = FlavorNotes.objects.get_or_create(name=note)
                 note_objects.append(note_obj)
             data['flavor_notes'] = [n.id for n in note_objects]
-        serializer = self.get_serializer(instance, data=data)
+        serializer = self.get_serializer(instance, data=data, partial=partial)
         serializer.is_valid(raise_exception=True)
         bean = serializer.save()
-        return Response(BeanListSerializer(bean).data, status=201)
+        return Response(BeanListSerializer(bean).data, status=200)
 
     @action(detail=False, methods=['get'])
     def country_counts(self, request):
