@@ -13,8 +13,8 @@ export default function HomePage() {
                 getDailyBean(),
                 getLatestBean()
             ]);
-            console.log(daily.data);
-            console.log(latest.data);
+            // console.log(daily.data);
+            // console.log(latest.data);
 
 
             setDailyBean(daily.data);

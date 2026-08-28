@@ -66,6 +66,7 @@ export const aeropressConfig = {
     required: true,
     size: { xs: 12, sm: 8, md: 8 },
     optionSource: "beans",
+    editDisable: true,
   },
   {
     type: "date_time",

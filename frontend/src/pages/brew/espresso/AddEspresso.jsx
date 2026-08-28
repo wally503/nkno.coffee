@@ -39,21 +39,25 @@ export default function EspressoFormPage() {
 
   React.useEffect(() => {
     const load = async () => {
-      const [beans, grinders, scales, kettles] = await Promise.all([
-        brewBeans(),
+      const [espressoRes, grinders, scales] = await Promise.all([
+        shortid ? getEspressoById(shortid) : Promise.resolve(null),
         brewGrinders(),
         brewScales(),
-        brewKettles(),
       ]);
-      setOptions({ ...ESPRESSO_STATIC_OPTIONS, beans, grinders, scales, kettles });
 
-      if (shortid) {
-        const { data } = await getEspressoById(shortid);
-        if (data) {
-          setFormData(prev => ({ ...prev, ...normalizeEspressoData(data) }));
-        }
+      const data = espressoRes?.data;
+
+      const beans = shortid && data?.brew_log?.bean
+        ? [{ label: data.brew_log.bean.name, value: data.brew_log.bean.short_id }]
+        : await brewBeans();
+
+      setOptions({ ...ESPRESSO_STATIC_OPTIONS, beans, grinders, scales });
+
+      if (data) {
+        setFormData(prev => ({ ...prev, ...normalizeEspressoData(data) }));
       }
     };
+
     load().catch(console.error);
   }, []);
 
@@ -64,7 +68,7 @@ export default function EspressoFormPage() {
 
   const normalizeEspressoData = (data) => ({
     ...data,
-    bean: data.brew_log?.bean,
+    bean: data.brew_log?.bean?.short_id ?? data.brew_log?.bean,
     date: data.brew_log?.date,
     extraction_rating: data.brew_log?.extraction_rating,
     notes: data.brew_log?.notes,

@@ -55,6 +55,7 @@ function addEditMode(dropdown, onChange, value, mode, options, error){
               fullWidth
               autoHighlight
               autoSelect
+              disabled={dropdown.editDisable && mode === "edit"}
               options={options}
               getOptionLabel={(option) => option.label}
               renderInput={(params) => (
@@ -67,7 +68,10 @@ function addEditMode(dropdown, onChange, value, mode, options, error){
                   helperText={error?.[0]}
                 />
               )}
-              onChange={(e, selectedOption) => onChange(dropdown.name, selectedOption?.value)}
+              onChange={(e, selectedOption) => {
+                console.log('selectedOption:', selectedOption);
+                onChange(dropdown.name, selectedOption?.value);
+              }}
               value={options?.find(o => o.value === value) ?? null}
             />
         </Box>

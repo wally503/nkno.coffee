@@ -39,24 +39,29 @@ export default function PouroverFormPage() {
 
   React.useEffect(() => {
     const load = async () => {
-      const [beans, grinders, scales, kettles] = await Promise.all([
-        brewBeans(),
+      const [pouroverRes, grinders, scales, kettles] = await Promise.all([
+        shortid ? getPouroverById(shortid) : Promise.resolve(null),
         brewGrinders(),
         brewScales(),
         brewKettles(),
       ]);
+
+      const data = pouroverRes?.data;
+
+      const beans = shortid && data?.brew_log?.bean
+        ? [{ label: data.brew_log.bean.name, value: data.brew_log.bean.short_id }]
+        : await brewBeans();
+
       setOptions({ ...POUROVER_STATIC_OPTIONS, beans, grinders, scales, kettles });
 
-      if (shortid) {
-        const { data } = await getPouroverById(shortid);
-        if (data) {
-          setFormData(prev => ({ ...prev, ...normalizePouroverData(data) }));
-        }
+      if (data) {
+        setFormData(prev => ({ ...prev, ...normalizePouroverData(data) }));
       }
     };
+
     load().catch(console.error);
   }, []);
-
+  
   const handleFieldChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: undefined }));
@@ -64,7 +69,7 @@ export default function PouroverFormPage() {
 
   const normalizePouroverData = (data) => ({
     ...data,
-    bean: data.brew_log?.bean,
+    bean: data.brew_log?.bean?.short_id ?? data.brew_log?.bean,
     date: data.brew_log?.date,
     extraction_rating: data.brew_log?.extraction_rating,
     notes: data.brew_log?.notes,

@@ -42,6 +42,11 @@ class KettleNestedSerializer(serializers.ModelSerializer):
         model = Kettle
         exclude = ['id']
 
+class BeanNestedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bean
+        fields = ['short_id', 'name', 'roaster']
+
 # ---------------------------------------------------------------------------
 # BrewLog
 # ---------------------------------------------------------------------------
@@ -75,6 +80,14 @@ class BrewLogListSerializer(serializers.ModelSerializer):
         detail = getattr(obj, f'{obj.style}_detail', None)
         return detail.id if detail else None
 
+class BrewLogReadSerializer(serializers.ModelSerializer):
+    bean = BeanNestedSerializer(read_only=True)
+    days_since_roast = serializers.ReadOnlyField()
+    days_since_opened = serializers.ReadOnlyField()
+
+    class Meta:
+        model = BrewLog
+        fields = '__all__'
 
 # ---------------------------------------------------------------------------
 # Shared mixin — atomic BrewLog + Detail creation
@@ -105,10 +118,7 @@ class AtomicDetailCreateMixin:
         nested_data = self.pop_nested(validated_data)
 
         with transaction.atomic():
-            brew_log_serializer = BrewLogSerializer(data=brew_log_data)
-            brew_log_serializer.is_valid(raise_exception=True)
-            brew_log = brew_log_serializer.save()
-
+            brew_log = BrewLog.objects.create(**brew_log_data)
             detail = self.detail_model.objects.create(brew_log=brew_log, **validated_data)
             self.create_nested(detail, nested_data)
 
@@ -199,7 +209,7 @@ class AeropressDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSerial
 class AeropressDetailReadSerializer(serializers.ModelSerializer):
     """View mode — expanded/nested, no id, read-only."""
     hoffmann_events = HoffmannEventSerializer(many=True, read_only=True)
-    brew_log = BrewLogSerializer(read_only=True)
+    brew_log = BrewLogReadSerializer(read_only=True)
     grinder = GrinderNestedSerializer(read_only=True)
     scale = ScaleNestedSerializer(read_only=True)
     kettle = KettleNestedSerializer(read_only=True)
@@ -306,7 +316,7 @@ class PouroverDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSeriali
 
 
 class PouroverDetailReadSerializer(serializers.ModelSerializer):
-    brew_log = BrewLogSerializer(read_only=True)
+    brew_log = BrewLogReadSerializer(read_only=True)
     grinder = GrinderNestedSerializer(read_only=True)
     scale = ScaleNestedSerializer(read_only=True)
     kettle = KettleNestedSerializer(read_only=True)
@@ -424,7 +434,7 @@ class EspressoDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSeriali
 
 
 class EspressoDetailReadSerializer(serializers.ModelSerializer):
-    brew_log = BrewLogSerializer(read_only=True)
+    brew_log = BrewLogReadSerializer(read_only=True)
     grinder = GrinderNestedSerializer(read_only=True)
     scale = ScaleNestedSerializer(read_only=True)
 

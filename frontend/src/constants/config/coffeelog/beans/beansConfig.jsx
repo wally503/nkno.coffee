@@ -26,13 +26,13 @@ export const beansConfig = {
       id: "status_icons",
       label: "",
       minWidth: 70,
-      render: (_, row) => (
+      render: (_, row) => ( 
         <Box sx={{ display: 'flex', gap: 0.5 }}>
           <Tooltip title={row.purchased ? "Owned a bag" : "Never bought"}>
-            <CoffeeBean style={{ width: ICON_SIZE, height: ICON_SIZE, color: BEAN_COLOR, opacity: row.purchased ? 1 : 0.15 }} />
+            <CoffeeBean style={{ minWidth: ICON_SIZE, maxWidth: ICON_SIZE, height: ICON_SIZE, color: BEAN_COLOR, opacity: row.purchased ? 1 : 0.15 }} />
           </Tooltip>
           <Tooltip title={row.had_as_drink ? "Had as a drink" : "Never had as a drink"}>
-            <LocalCafeIcon sx={{ fontSize: ICON_SIZE, color: CUP_COLOR, opacity: row.had_as_drink ? 1 : 0.08 }} />
+            <LocalCafeIcon sx={{ minWidth: ICON_SIZE, maxWidth: ICON_SIZE, height: ICON_SIZE, fontSize: ICON_SIZE, color: CUP_COLOR, opacity: row.had_as_drink ? 1 : 0.08 }} />
           </Tooltip>
         </Box>
       ),

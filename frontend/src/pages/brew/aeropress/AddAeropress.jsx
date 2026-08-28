@@ -4,7 +4,7 @@ import BrewLogFormShell from "../shared/BrewLogFormShell";
 import { AEROPRESS_STATIC_OPTIONS, aeropressConfig } from "../../../constants/config/brew/aeropress/aeropressConfig";
 import {
   brewBeans, brewGrinders, brewScales, brewKettles,
-  submitAeropress, getAeropressById, updateAeropress
+  submitAeropress, getAeropressById, updateAeropress, brewBeansViewEdit
 } from "../../../api/brewApi";
 import { markBeanFinished } from "../../../api/beansApi";
 import DialogueBox from "../../../components/DialogueBox";
@@ -39,21 +39,26 @@ export default function AeropressFormPage() {
 
   React.useEffect(() => {
     const load = async () => {
-      const [beans, grinders, scales, kettles] = await Promise.all([
-        brewBeans(),
+      const [aeropressRes, grinders, scales, kettles] = await Promise.all([
+        shortid ? getAeropressById(shortid) : Promise.resolve(null),
         brewGrinders(),
         brewScales(),
         brewKettles(),
       ]);
+
+      const data = aeropressRes?.data;
+
+      const beans = shortid && data?.brew_log?.bean
+        ? [{ label: data.brew_log.bean.name, value: data.brew_log.bean.short_id }]
+        : await brewBeans();
+
       setOptions({ ...AEROPRESS_STATIC_OPTIONS, beans, grinders, scales, kettles });
 
-      if (shortid) {
-        const { data } = await getAeropressById(shortid);
-        if (data) {
-          setFormData(prev => ({ ...prev, ...normalizeAeropressData(data) }));
-        }
+      if (data) {
+        setFormData(prev => ({ ...prev, ...normalizeAeropressData(data) }));
       }
     };
+
     load().catch(console.error);
   }, []);
 
@@ -64,7 +69,7 @@ export default function AeropressFormPage() {
 
   const normalizeAeropressData = (data) => ({
     ...data,
-    bean: data.brew_log?.bean,
+    bean: data.brew_log?.bean?.short_id ?? data.brew_log?.bean,
     date: data.brew_log?.date,
     extraction_rating: data.brew_log?.extraction_rating,
     grinder: data.grinder?.short_id ?? data.grinder,

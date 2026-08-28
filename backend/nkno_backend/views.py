@@ -60,10 +60,14 @@ def refresh(request):
         return Response({"detail": "BAD"}, status=status.HTTP_401_UNAUTHORIZED)
     try:
         token = RefreshToken(raw_refresh_token)
-        new_access_token = str(token.access_token)
+        user = User.objects.get(id=token["user_id"])
+        
+        token.blacklist()
+        new_refresh_token = RefreshToken.for_user(user)
         response = Response({"detail": "OK"})
-        response.set_cookie(key="access_token", value=new_access_token, httponly=True)
+        response.set_cookie(key="access_token", value=str(new_refresh_token.access_token), httponly=True)
+        response.set_cookie(key="refresh_token", value=str(new_refresh_token), httponly=True)
         return response
     except Exception as e:
         print("REFRESH FAILED:", type(e).__name__, str(e), flush=True)
-        return Response({"detail": "BAD"}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({"detail": "BAD"}, status=status.HTTP_401_UNAUTHORIZED) 

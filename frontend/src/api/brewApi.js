@@ -13,6 +13,16 @@ export async function brewBeans(pageSize = 500) {
     }
 }
 
+export async function brewBeansViewEdit(shortId) {
+    try {
+        const { data } = await axiosInstance.get(`coffee/beans/${shortId}`)
+        return data.results.map(b => ({ label: b.name, value: b.short_id }))
+    } catch (error) {
+        console.error(error.response?.status)
+        console.error(error.response?.data)
+    }
+}
+
 export async function brewGrinders(pageSize = 500) {
     try {
         const { data } = await axiosInstance.get(`brew/grinders/?page_size=${pageSize}`)
