@@ -31,12 +31,12 @@ export default function HoffmannEventList({ item, onChange, initialValues, mode,
     onChange(updated);
   };
 
-  function handleDurationChange(e) {
-    const digits = e.target.value.replace(/\D/g, '').slice(-4); // last 4 digits max
+  function handleDurationChange(newValue) {
+    const digits = newValue.replace(/\D/g, '').slice(-4);
     const padded = digits.padStart(3, '0');
     const mins = padded.slice(0, -2);
     const secs = padded.slice(-2);
-    setDisplay(`${mins}:${secs}`);
+    return `${mins}:${secs}`;
   }
 
   const handleAdd = () => {
