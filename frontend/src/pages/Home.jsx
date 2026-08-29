@@ -56,7 +56,7 @@ export default function HomePage() {
                         <CardContent sx={{ textAlign:'Center', justifyContent: 'center'}}>
                             <Typography variant="h5">{dailyBean['name']}</Typography>
                             <Typography variant="body2">{dailyBean['roaster__name']}</Typography>
-                            <Typography variant="body2">{dailyBean['origin_country__name']}</Typography>
+                            <Typography variant="body2">{dailyBean['origin_country__name'] || '-'}</Typography>
                         </CardContent>
                     </Card> 
                 </Box>

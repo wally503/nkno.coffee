@@ -141,27 +141,28 @@ function viewMode(events, totalPoured) {
 
   const summary = events
     .filter(e => e.pour_time && e.pour_amount)
-    .map(e => `${e.pour_time} – ${e.pour_amount}ml (${styleLabel(e.pour_style)})`)
-    .join(", ");
+    .map(e => `${e.pour_time} – ${e.pour_amount}ml (${styleLabel(e.pour_style)})`);
 
   return (
     <Grid key="pourover-view" size={{ xs: 12, sm: 12, md: 12 }}>
-      <TextField
-        fullWidth
-        multiline
-        label={`Pour Events (total: ${totalPoured}ml)`}
-        value={summary || "-"}
-        variant="standard"
-        slotProps={{
-          input: {
-            readOnly: true,
-            disableUnderline: true,
-            tabIndex: -1,
-            sx: { cursor: "default", caretColor: "transparent" }
-          },
-          inputLabel: { shrink: true, sx: { color: "text.secondary" } }
-        }}
-      />
+      {summary.map(e =>
+        <TextField
+          fullWidth
+          multiline
+          label={e.index === 0 ?? `Pour Events (total: ${totalPoured}ml)`}
+          value={e.value || "-"}
+          variant="standard"
+          slotProps={{
+            input: {
+              readOnly: true,
+              disableUnderline: true,
+              tabIndex: -1,
+              sx: { cursor: "default", caretColor: "transparent" }
+            },
+            inputLabel: { shrink: true, sx: { color: "text.secondary" } }
+          }}
+        />
+      )}
     </Grid>
   );
 }

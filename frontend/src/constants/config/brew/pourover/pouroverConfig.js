@@ -13,7 +13,7 @@ export const POUROVER_STATIC_OPTIONS = {
   ],
   pour_style: [
     { label: 'Center Focused', value: 'center' },
-    { label: 'Clockwise', value: 'clockwise' },
+    { label: 'Spiral', value: 'spiral'},
   ],
   water_type: [
     { label: 'Straight Distilled', value: 'distilled' },
@@ -26,7 +26,10 @@ export const POUROVER_STATIC_OPTIONS = {
     { label: 'Tap Water', value: 'tap' },
   ],
   filter_type: [
-    { label: 'Classic', value: 'classic' },
+    { label: 'Origami', value: 'origami' },
+  ],
+  filter_brand: [
+    { label: 'Origami', value: 'origami' },
   ],
   pre_wet: [
     { label: 'Yes', value: 'wet' },
@@ -83,12 +86,12 @@ export const pouroverConfig = {
       options: POUROVER_STATIC_OPTIONS.dripper,
     },
     {
-      type: "text",
+      type: "dropdown",
       name: "filter_brand",
       label: "Filter Brand",
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
-      placeholder: "Cafec Abaca",
+      options: POUROVER_STATIC_OPTIONS.filter_brand,
     },
     {
       type: "text_numeric",

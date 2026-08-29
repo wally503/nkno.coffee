@@ -94,10 +94,11 @@ class ColdBrewFilterStyle(models.TextChoices):
 
 class PourStyle(models.TextChoices):
     CENTER = 'center', 'Center Focused'
-    CLOCKWISE = 'clockwise', 'Clockwise'
+    SPIRAL = 'spiral', 'Spiral'
 
 class PouroverFilterType(models.TextChoices):
     CLASSIC = 'classic', 'Classic'
+    ORIGAMI = 'origami', 'Origami'
 
 # ---------------------------------------------------------------------------
 # Equipment lookup tables
