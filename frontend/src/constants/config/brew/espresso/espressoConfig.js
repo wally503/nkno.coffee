@@ -220,6 +220,7 @@ export const espressoConfig = {
       label: "Number of Paper Filters Used",
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
+      inputStyle: "numeric",
     },
 
 
@@ -229,6 +230,7 @@ export const espressoConfig = {
       label: "Pull Time",
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
+      inputStyle: "duration",
     },
     
     { type: "divider" },

@@ -83,7 +83,7 @@ function buildTextFieldNumeric(field, formData, onFieldChange, mode, errors) {
             onChange={onFieldChange}
             error={errors[field.name]}
             mode={mode}
-            inputStyle="numeric"
+            inputStyle={field.inputStyle !== null ? field.inputStyle : "numeric"}
           />;
 }
 
