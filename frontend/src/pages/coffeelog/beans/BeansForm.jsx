@@ -3,16 +3,29 @@ import * as React from "react";
 import CoffeeLogFormShell from "../shared/CoffeeLogFormShell";
 import { BEANS_STATIC_OPTIONS, beansConfig   } from "../../../constants/config/coffeelog/beans/beansConfig";
 import { beansCountries, beansNotes, beansRoasters, submitBeans, getBeanById, updateBean } from "../../../api/beansApi";
+import { brewsByBean } from "../../../api/brewApi";
 import DialogueBox from "../../../components/DialogueBox";
+import { useTableState } from "../../../hooks/useTableState";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import DefaultBodyLayout from "../../../components/DefaultBodyLayout";
 import Fade from '@mui/material/Fade';
+import Box from '@mui/material/Box';
+import Tab from '@mui/material/Tab';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
+import CoffeeTable from "../../../components/CoffeeTable";
 
 export default function BeansFormPage() {
   const [formData, setFormData] = React.useState({});
   const [options, setOptions] = React.useState(null);
   const [errors, setErrors] = React.useState({});
   const [saveDialogue, setSaveDialogue] = React.useState(false);
+
+  const [tabValue, setTabValue] = React.useState("1");
+  const brewTableState = useTableState('name');
+  const [brewRows, setBrewRows] = React.useState([]);
+  const [brewTotalCount, setBrewTotalCount] = React.useState(0);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -31,7 +44,9 @@ export default function BeansFormPage() {
     add: "Add Beans"
   } 
 
-
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
 
   React.useEffect(() => {
     const load = async () => {
@@ -51,11 +66,18 @@ export default function BeansFormPage() {
             ).filter(Boolean);
           setFormData(prev => ({ ...data, flavor_notes: noteLabels }));
         }
+        if(mode === "view"){
+          const [brews] = await Promise.all([
+            brewsByBean(shortid, brewTableState.page, brewTableState.pageSize, brewTableState.search, brewTableState.orderingParam),
+          ]);
+          setBrewRows(brews.results);
+          setBrewTotalCount(brews.count);
+        }
       }
     };
     load().catch(console.error);
 
-  }, []);
+  }, [brewTableState.page, brewTableState.pageSize, brewTableState.search, brewTableState.orderingParam]);
 
   const handleFieldChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -106,9 +128,35 @@ export default function BeansFormPage() {
               open={saveDialogue}
               onCloseParent={() => { setSaveDialogue(false); navigate('/coffeeLog/beans/list') } }
             />
+            { mode === "view" && beanViewTables() }
           </DefaultBodyLayout>
         </div>
       </Fade>
     </>
   );
+
+  function beanViewTables(){
+    return (
+      <>
+        <Box sx={{ width: "90%", maxWidth: 1400, mx: "auto" }}>
+          <TabContext value={tabValue}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <TabList onChange={handleTabChange} aria-label="Beans Related Brews">
+                <Tab label="Brews" value="1" />
+              </TabList>
+            </Box>
+            <TabPanel value="1">
+              <CoffeeTable 
+                  columns={beansConfig.brewsTableColumns} 
+                  rows={brewRows} 
+                  totalCount={brewTotalCount}
+                  tableState={brewTableState}
+                viewRoute={`/coffeeLog/beans/view`}
+              />
+            </TabPanel> 
+          </TabContext>
+        </Box>
+      </>
+    )
+  }
 }

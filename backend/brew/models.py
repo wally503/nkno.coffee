@@ -152,9 +152,9 @@ class Kettle(models.Model):
 class BrewBaseMixin(models.Model):
     grinder = models.ForeignKey(Grinder, on_delete=models.PROTECT)
     grind_rotations = models.PositiveSmallIntegerField()
-    grind_position = models.DecimalField(max_digits=3, decimal_places=1)
+    grind_position = models.DecimalField(max_digits=4, decimal_places=2)
     water_type = models.CharField(max_length=20, choices=WaterType.choices)
-    weight = models.DecimalField(max_digits=5, decimal_places=1)  # bean grams
+    weight = models.DecimalField(max_digits=5, decimal_places=3)  # bean grams
     scale = models.ForeignKey(Scale, on_delete=models.PROTECT)
 
     class Meta:

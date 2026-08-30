@@ -207,6 +207,51 @@ export const beansConfig = {
       // placeholder: "",
     },  
   ],
+  brewsTableColumns: [
+    { 
+      id: "name", 
+      label: "Bean Name", 
+      minWidth: 150,
+    },
+    {
+      id: "origin_country",
+      label: "Roast Origin",
+      minWidth: 120,
+      orderingField: "origin_country__name",
+    },
+    {
+      id: "roast_level",
+      label: "Roast",
+      minWidth: 85,
+    },
+    {
+      id: "washing_style",
+      label: "Process",
+      minWidth: 85,
+    },
+    {
+      id: "elevation",
+      label: "Elevation",
+      minWidth: 100,
+      orderingField: null,
+    },
+    {
+      id: "flavor_notes",
+      label: "Notes",
+      minWidth: 180,
+      orderingField: null,
+    },
+    {
+      id: "roast_date",
+      label: "Roast Date",
+      minWidth: 180,
+    },
+    {
+      id: "purchase_date",
+      label: "Purchase Date",
+      minWidth: 180,
+    }
+  ],
 };
 
 export const BEANS_STATIC_OPTIONS = {

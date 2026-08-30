@@ -3,14 +3,14 @@
 // New Brew leaf routes only. PickBrewStyle is this section's CardSelect
 // equivalent — wired directly in App.jsx as the index route, same pattern
 // as BrewControlsCardSelect/BrewTemplatesCardSelect were.
-//
+// 
 // Unlike controls/templates before it, these pages are bespoke per-style
 // components (AeropressFormPage, etc.) rather than config-driven DynamicForm —
 // see aeropressConfig.js comments for why.
 
-import EspressoFormPage from '../../../../pages/brew/espresso/AddEspresso';
-import AeropressFormPage from '../../../../pages/brew/aeropress/AddAeropress';
-import PouroverFormPage from '../../../../pages/brew/pourover/AddPourover';
+import EspressoFormPage from '../../../../pages/brew/espresso/EspressoForm';
+import AeropressFormPage from '../../../../pages/brew/aeropress/AeropressForm';
+import PouroverFormPage from '../../../../pages/brew/pourover/PouroverForm';
 // import ColdBrewFormPage from '../../../../pages/brew/coldBrew/AddColdBrew';
 
 export const newBrewRouteList = [
