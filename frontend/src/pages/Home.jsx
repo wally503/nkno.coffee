@@ -40,7 +40,7 @@ export default function HomePage() {
                         <CardContent sx={{ textAlign:'Center', justifyContent: 'center'}}>
                             <Typography variant="h5">{latestBean['name']}</Typography>
                             <Typography variant="body2">{latestBean['roaster__name']}</Typography>
-                            <Typography variant="body2">{latestBean['origin_country__name']}</Typography>
+                            <Typography variant="body2">{latestBean['origin_country__name'] || '-'}</Typography>
                         </CardContent>
                     </Card>            
                     <Card id={dailyBean['id']} sx={{

@@ -4,11 +4,24 @@ import LocalCafeIcon from '@mui/icons-material/LocalCafe';
 import Tooltip from '@mui/material/Tooltip'
 import Box from '@mui/material/Box';
 import CoffeeBean from '../../../../assets/icons/coffee-bean.svg?react';
+import { ratingCustomIcons } from '../../../../components/RatingGridItem';
 
 const ICON_SIZE = 24;
 const BEAN_COLOR = '#6f4e37';  
 const CUP_COLOR  = '#a67c52';
  
+export const BAG_EVENT_ROW_SX_OPEN = {
+  backgroundColor: 'rgba(47, 102, 11, 0.22) !important',
+  color: 'rgba(255, 252, 238, 0.97) !important',
+  fontStyle: 'italic',
+};
+
+export const BAG_EVENT_ROW_SX_CLOSE = {
+  backgroundColor: 'rgba(102, 17, 11, 0.22) !important',
+  color: 'rgba(255, 252, 238, 0.97) !important',
+  fontStyle: 'italic',
+};
+
 export const beansConfig = {
   key: 'bean',
   label: 'Bean',
@@ -208,49 +221,55 @@ export const beansConfig = {
     },  
   ],
   brewsTableColumns: [
-    { 
-      id: "name", 
-      label: "Bean Name", 
-      minWidth: 150,
-    },
     {
-      id: "origin_country",
-      label: "Roast Origin",
+      id: "date",
+      label: "Date",
       minWidth: 120,
-      orderingField: "origin_country__name",
+      render: (value) => value
+        ? new Date(value).toLocaleString("en-CA", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          }).replace(",", "")
+        : "-",
     },
     {
-      id: "roast_level",
-      label: "Roast",
-      minWidth: 85,
-    },
-    {
-      id: "washing_style",
-      label: "Process",
-      minWidth: 85,
-    },
-    {
-      id: "elevation",
-      label: "Elevation",
+      id: "style_display",
+      label: "Style",
       minWidth: 100,
+    },
+    {
+      id: "extraction_rating",
+      label: "Rating",
+      minWidth: 80,
+      orderingField: "extraction_rating",
+      render: (value, row) => {
+        if (row.style === "bag_event") {
+          return (
+            <span style={{ opacity: 1, fontStyle: "italic" }}>
+              {/* {row.event_type === "opened" ? "Opened" : "Finished"} */}
+              {'-'}
+            </span>
+          );
+        }
+        return ratingCustomIcons[value]?.icon ?? <span style={{ opacity: 0.3 }}>{ratingCustomIcons[3].icon}</span>;
+      },
+    },
+    {
+      id: "pull_number",
+      label: "Pull #",
+      minWidth: 80,
+      orderingField: "pull_number",
+    },
+    {
+      id: "days_since_roast",
+      label: "Days Since Roast",
+      minWidth: 130,
       orderingField: null,
     },
-    {
-      id: "flavor_notes",
-      label: "Notes",
-      minWidth: 180,
-      orderingField: null,
-    },
-    {
-      id: "roast_date",
-      label: "Roast Date",
-      minWidth: 180,
-    },
-    {
-      id: "purchase_date",
-      label: "Purchase Date",
-      minWidth: 180,
-    }
   ],
 };
 

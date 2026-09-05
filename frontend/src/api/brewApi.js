@@ -185,9 +185,9 @@ export async function updateEspresso(id, formData) {
 
 // --- Beans CRUD ------------------------------------------------------------
 
-export async function brewsByBean(shortid, page = 0, pageSize = 10, search = null, order = null){
+export async function brewsByBean(bean_short_id, page = 0, pageSize = 10, search = null, order = null){
     try{
-        const { data } = await axiosInstance.get(`coffee/beans/?roaster=${shortid}&page=${page + 1}&page_size=${pageSize}&search=${search ?? ''}&ordering=${order ?? ''}`)
+        const { data } = await axiosInstance.get(`brew/brewlogs/?bean_short_id=${bean_short_id}&page=${page + 1}&page_size=${pageSize}&search=${search ?? ''}&ordering=${order ?? ''}`)
         return data
     } catch (error) {
         console.error(error.response.status)

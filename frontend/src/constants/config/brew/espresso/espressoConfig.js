@@ -40,8 +40,9 @@ export const ESPRESSO_STATIC_OPTIONS = {
     { label: 'Normcore Filter', value: 'normcore' },
   ],
   paper_filter_used: [
-    { label: 'Used', value: 'used' },
     { label: 'Not Used', value: 'not_used' },
+    { label: 'Used', value: 'used' },
+    
   ],
 };
 

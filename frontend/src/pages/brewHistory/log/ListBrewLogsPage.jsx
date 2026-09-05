@@ -4,7 +4,8 @@ import PageHeaderTitle from "../../../components/PageTitle";
 import { useTableState } from "../../../hooks/useTableState";
 import CoffeeTable from "../../../components/CoffeeTable";
 import { defaultBrewLogsTableList } from "../../../api/brewApi";
-import { logColumns, STYLE_ROUTE_SEGMENT, BAG_EVENT_ROW_SX_OPEN, BAG_EVENT_ROW_SX_CLOSE } from "../../../constants/config/brew/history/logConfig";
+import { logColumns, STYLE_ROUTE_SEGMENT } from "../../../constants/config/brew/history/logConfig";
+import { BAG_EVENT_ROW_SX_OPEN, BAG_EVENT_ROW_SX_CLOSE } from "../../../constants/tableStyles";
 import DefaultBodyLayout from "../../../components/DefaultBodyLayout";
 
 export default function ListBrewLogsPage() {

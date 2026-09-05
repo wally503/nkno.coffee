@@ -4,6 +4,7 @@ import CoffeeLogFormShell from "../shared/CoffeeLogFormShell";
 import { BEANS_STATIC_OPTIONS, beansConfig   } from "../../../constants/config/coffeelog/beans/beansConfig";
 import { beansCountries, beansNotes, beansRoasters, submitBeans, getBeanById, updateBean } from "../../../api/beansApi";
 import { brewsByBean } from "../../../api/brewApi";
+import { BAG_EVENT_ROW_SX_OPEN, BAG_EVENT_ROW_SX_CLOSE } from "../../../constants/tableStyles";
 import DialogueBox from "../../../components/DialogueBox";
 import { useTableState } from "../../../hooks/useTableState";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
@@ -23,7 +24,7 @@ export default function BeansFormPage() {
   const [saveDialogue, setSaveDialogue] = React.useState(false);
 
   const [tabValue, setTabValue] = React.useState("1");
-  const brewTableState = useTableState('name');
+  const brewTableState = useTableState('date');
   const [brewRows, setBrewRows] = React.useState([]);
   const [brewTotalCount, setBrewTotalCount] = React.useState(0);
 
@@ -136,6 +137,12 @@ export default function BeansFormPage() {
   );
 
   function beanViewTables(){
+    const decoratedRows = brewRows.map((row) =>
+      row.style === 'bag_event' 
+        ? row.event_type === 'opened' ? { ...row, rowSx: BAG_EVENT_ROW_SX_OPEN } : { ...row, rowSx: BAG_EVENT_ROW_SX_CLOSE }
+        : row
+    );
+
     return (
       <>
         <Box sx={{ width: "90%", maxWidth: 1400, mx: "auto" }}>
@@ -147,10 +154,10 @@ export default function BeansFormPage() {
             </Box>
             <TabPanel value="1">
               <CoffeeTable 
-                  columns={beansConfig.brewsTableColumns} 
-                  rows={brewRows} 
-                  totalCount={brewTotalCount}
-                  tableState={brewTableState}
+                columns={beansConfig.brewsTableColumns} 
+                rows={decoratedRows} 
+                totalCount={brewTotalCount}
+                tableState={brewTableState}
                 viewRoute={`/coffeeLog/beans/view`}
               />
             </TabPanel> 

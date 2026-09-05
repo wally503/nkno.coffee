@@ -8,12 +8,19 @@ from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from .models import *
 from .serializers import *
 from .permissions import SuperUserDestroyMixin
-
+from datetime import timedelta
 
 class CatalogViewSet(ListModelMixin, RetrieveModelMixin, viewsets.GenericViewSet):
     lookup_field = 'short_id'
     filter_backends = [OrderingFilter, SearchFilter]
 
+# ---------------------------------------------------------------------------
+# Tiebreaker for open/close events
+# ---------------------------------------------------------------------------
+
+TIEBREAK_OFFSET = {
+    'bag_event': timedelta(microseconds=-1),
+}
 
 # ---------------------------------------------------------------------------
 # Equipment lookups
@@ -57,36 +64,51 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
             return BrewLogListSerializer
         return BrewLogSerializer
 
+
+
     def list(self, request, *args, **kwargs):
         search = request.query_params.get('search', '') or ''
         ordering = request.query_params.get('ordering', '') or '-date'
+        bean = request.query_params.get('bean_short_id')
 
         brew_qs = self.filter_queryset(self.get_queryset())
 
         bag_qs = BagLifecycleEvent.objects.select_related('bean').all()
+        if bean:
+            bag_qs = bag_qs.filter(bean__short_id=bean)
         if search:
             bag_qs = bag_qs.filter(
                 Q(bean__name__icontains=search) | Q(notes__icontains=search)
             )
 
         combined = [self._brew_log_row(b) for b in brew_qs] + \
-                   [self._bag_event_row(e) for e in bag_qs]
+                [self._bag_event_row(e) for e in bag_qs]
 
-        # Only 'date' is safe to sort a combined list by — extraction_rating
-        # and pull_number don't exist on bag events, so sorting by them would
-        # mean comparing None against an int and crashing.
-        combined.sort(key=lambda r: r['date'], reverse=ordering.startswith('-'))
+        def sort_key(row):
+            offset = TIEBREAK_OFFSET.get(row['style'], timedelta(0))
+            return row['date'] + offset
+
+        combined.sort(key=sort_key, reverse=ordering.startswith('-'))
 
         page = self.paginate_queryset(combined)
         if page is not None:
             return self.get_paginated_response(page)
         return Response(combined)
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        bean = self.request.query_params.get('bean_short_id')
+        if bean:
+            queryset = queryset.filter(bean__short_id=bean)
+        return queryset
+    
+
     def _brew_log_row(self, brew_log):
         detail = getattr(brew_log, f'{brew_log.style}_detail', None)
         return {
             'short_id': brew_log.short_id,
             'bean_name': brew_log.bean.name if brew_log.bean else '-',
+            'bean_short_id': brew_log.bean.short_id if brew_log.bean else '-',
             'style': brew_log.style,
             'style_display': brew_log.get_style_display(),
             'date': brew_log.date,
@@ -94,12 +116,14 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
             'pull_number': brew_log.pull_number,
             'detail_id': detail.id if detail else None,
             'days_since_opened': brew_log.days_since_opened,
+            'days_since_roast': brew_log.days_since_roast,
         }
 
     def _bag_event_row(self, event):
         return {
             'short_id': f'bagevent-{event.id}',
             'bean_name': event.bean.name if event.bean else '-',
+            'bean_short_id': event.bean.short_id if event.bean else '-',
             'style': 'bag_event',
             'style_display': f'Bag {event.get_event_type_display()}',
             'event_type': event.event_type,
@@ -108,6 +132,7 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
             'pull_number': None,
             'detail_id': None,
             'days_since_opened': None,
+            'days_since_roast': None,
         }
 
 
