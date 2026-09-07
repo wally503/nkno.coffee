@@ -28,6 +28,15 @@ const theme = createTheme({
           "&:hover .MuiOutlinedInput-notchedOutline": {
             borderColor: "rgba(180, 140, 100, 0.9)",
           },
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: "rgba(180, 140, 100, 0.9)",
+            borderWidth: "2px",
+          },
+        },
+        input: {
+          "&:focus, &:focus-visible": {
+            outline: "none",
+          },
         },
       },
     },

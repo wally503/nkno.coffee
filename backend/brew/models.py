@@ -297,6 +297,7 @@ class PouroverPourEvent(models.Model):
         on_delete=models.CASCADE,
     )
     pour_time = models.DurationField()
+    pour_duration = models.DurationField()
     pour_amount = models.DecimalField(max_digits=6, decimal_places=1)
     pour_style = models.CharField(max_length=20, choices=PourStyle.choices)
 
@@ -330,6 +331,7 @@ class EspressoDetail(BrewBaseMixin, models.Model):
     wdt_used = models.CharField(max_length=10, choices=WdtUsedChoice.choices)
     wdt_rotations = models.PositiveSmallIntegerField(default=0)
     pull_time = models.DurationField()
+    pull_weight = models.DecimalField(max_digits=6, decimal_places=3)
     machine = models.CharField(max_length=70, choices=EspressoMakerChoice.choices, default=EspressoMakerChoice.GAGGIA_UNMOD)
     puck_screen = models.CharField(max_length=50, choices=PuckScreenChoice.choices, default=PuckScreenChoice.NONE)
     cup = models.CharField(max_length=20, choices=CupChoice.choices)

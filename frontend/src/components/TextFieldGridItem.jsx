@@ -86,7 +86,7 @@ export default function TextFieldGridItem({ item, onChange, value, mode, error, 
                 ... (mode === "view" && { disableUnderline: true }),
                 readOnly: mode === "view",
                 inputMode: inputStyle === "numeric" ? "decimal" : "text",
-                tabIndex: mode === "view" ? -1 : 0,
+                ... (mode === "view" && { tabIndex: -1 }),
                 sx: mode === "view" ? { cursor: "default", caretColor: "transparent" } : {}
               },
               inputLabel: { shrink: true, ...(mode === "view" && { sx: { color: "text.secondary" } }) },
