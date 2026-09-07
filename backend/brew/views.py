@@ -52,7 +52,13 @@ class KettleViewSet(CatalogViewSet):
 # ---------------------------------------------------------------------------
 
 class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
-    queryset = BrewLog.objects.select_related('bean').all()
+    queryset = BrewLog.objects.select_related(
+        'bean',
+        'espresso_detail__grinder',
+        'pourover_detail__grinder',
+        'aeropress_detail__grinder',
+        'coldbrew_detail__grinder',
+    ).all()
     lookup_field = 'short_id'
     filter_backends = [OrderingFilter, SearchFilter]
     search_fields = ['bean__name', 'notes']
@@ -105,6 +111,10 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
 
     def _brew_log_row(self, brew_log):
         detail = getattr(brew_log, f'{brew_log.style}_detail', None)
+        grind_setting = (
+            f"{detail.grind_rotations}, {detail.grind_position}"
+            if detail else '-'
+        )
         return {
             'short_id': brew_log.short_id,
             'bean_name': brew_log.bean.name if brew_log.bean else '-',
@@ -117,6 +127,8 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
             'detail_id': detail.id if detail else None,
             'days_since_opened': brew_log.days_since_opened,
             'days_since_roast': brew_log.days_since_roast,
+            'grinder_name': detail.grinder.name if detail and detail.grinder else '-',
+            'grind_setting': grind_setting,
         }
 
     def _bag_event_row(self, event):
@@ -131,8 +143,10 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
             'extraction_rating': None,
             'pull_number': None,
             'detail_id': None,
-            'days_since_opened': None,
-            'days_since_roast': None,
+            'days_since_opened': None, # if 'finished' -> diff open / today
+            'days_since_roast': None, # if 'opened' -> diff roast date / today
+            'grinder_name': None,
+            'grind_setting': None,
         }
 
 

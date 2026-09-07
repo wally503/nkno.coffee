@@ -50,6 +50,7 @@ export const drinksConfig = {
       name: "roaster",
       label: "Cafe / Roaster",
       required: true,
+      disableNudge: true,
       size: { xs: 12, sm: 6, md: 6},
       optionSource: "roasters", 
     },
@@ -58,6 +59,7 @@ export const drinksConfig = {
       name: "venue",
       label: "Venue (if hosted elsewhere)",
       required: false,
+      disableNudge: true,
       size: { xs: 12, sm: 6, md: 6 },
       optionSource: "roasters",
     },
@@ -66,6 +68,7 @@ export const drinksConfig = {
       name: "drink",
       label: "Name Of Drink",
       required: true,
+      disableNudge: true,
       size: { xs: 12, sm: 6, md: 6 }
     },
     {
@@ -73,6 +76,7 @@ export const drinksConfig = {
       name: "bean",
       label: "Bean",
       required: false,
+      disableNudge: true,
       size: { xs: 12, sm: 6, md: 6 },
       placeholder: "12",
       optionSource: "beans"
@@ -82,6 +86,7 @@ export const drinksConfig = {
       name: "drink_date",
       label: "Drink Date",
       required: true,
+      disableNudge: true,
       size: { xs: 12, sm: 6, md: 6 },
       placeholder: "12",
     },
@@ -90,6 +95,7 @@ export const drinksConfig = {
       name: "notes",
       label: "Notes / Comments",
       required: false,
+      disableNudge: true,
       size: { xs: 12, sm: 12, md: 12 },
     },
     {

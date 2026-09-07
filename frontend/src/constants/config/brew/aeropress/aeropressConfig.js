@@ -6,10 +6,10 @@ export const AEROPRESS_STATIC_OPTIONS = {
     { label: 'Standard', value: 'standard' },
     { label: 'Fellow Prismo', value: 'prismo' },
   ],
-  filter: [
+  filter_type: [
     { label: 'None', value: 'none' },
-    { label: 'Single', value: 'single' },
-    { label: 'Classic', value: 'classic' },
+    { label: 'Off-brand', value: 'off_brand' },
+    { label: 'Aeropress', value: 'aeropress' },
   ],
   orientation: [
     { label: 'Standard', value: 'standard' },
@@ -89,6 +89,7 @@ export const aeropressConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       options: AEROPRESS_STATIC_OPTIONS.base,
+      defaultValue: 'prismo',
     },
     {
       type: "dropdown",
@@ -97,6 +98,7 @@ export const aeropressConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       options: AEROPRESS_STATIC_OPTIONS.orientation,
+      defaultValue: 'standard',
     },
     {
       type: "dropdown",
@@ -104,7 +106,8 @@ export const aeropressConfig = {
       label: "Filter",
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
-      options: AEROPRESS_STATIC_OPTIONS.filter,
+      options: AEROPRESS_STATIC_OPTIONS.filter_type,
+      defaultValue: 'aeropress',
     },
     {
       type: "dropdown",
@@ -113,6 +116,7 @@ export const aeropressConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       optionSource: "scales",
+      defaultValue: 'gBgrpqk1',
     },
 
     {
@@ -122,6 +126,7 @@ export const aeropressConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       optionSource: "kettles",
+      defaultValue: '1MRGE9cw',
     },
         {
       type: "dropdown",
@@ -130,6 +135,7 @@ export const aeropressConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       options: AEROPRESS_STATIC_OPTIONS.cup,
+      defaultValue: 'ceramic',
     },
     { type: "divider" },
 
@@ -141,6 +147,7 @@ export const aeropressConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       optionSource: "grinders",
+      defaultValue: 'bDY9UtLh'
     },
     {
       type: "text_numeric",
@@ -149,6 +156,7 @@ export const aeropressConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       placeholder: "3",
+      defaultValue: 2,
     },
     {
       type: "text_numeric",
@@ -157,6 +165,7 @@ export const aeropressConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       placeholder: "5.5",
+      defaultValue: 7,
     },
     {
       type: "dropdown",
@@ -165,6 +174,7 @@ export const aeropressConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       options: AEROPRESS_STATIC_OPTIONS.water_type,
+      defaultValue: 'tww_light',
     },
     {
       type: "dropdown",
@@ -181,6 +191,7 @@ export const aeropressConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       options: AEROPRESS_STATIC_OPTIONS.pre_wet,
+      defaultValue: 'wet',
     },
     {
       type: "text_numeric",

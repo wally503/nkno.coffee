@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Grid, FormControl, TextField, FormHelperText, Box } from "@mui/material";
+import { requiredNudgeStyling } from "../constants/gridStyles";
 
 function appendDigit(currentDigits, key) {
   if (/^\d$/.test(key)) {
@@ -79,6 +80,7 @@ export default function TextFieldGridItem({ item, onChange, value, mode, error, 
             error={!!error}
             helperText={error?.[0]}
             value={value}
+            sx={item.disableNudge ? {} : requiredNudgeStyling(item, mode, value, error)}
             slotProps={{
               input: {
                 ... (mode === "view" && { disableUnderline: true }),
@@ -87,7 +89,7 @@ export default function TextFieldGridItem({ item, onChange, value, mode, error, 
                 tabIndex: mode === "view" ? -1 : 0,
                 sx: mode === "view" ? { cursor: "default", caretColor: "transparent" } : {}
               },
-              inputLabel: mode === "view" ? { shrink: true, sx: { color: "text.secondary" } } : {},
+              inputLabel: { shrink: true, ...(mode === "view" && { sx: { color: "text.secondary" } }) },
             }}
           />
         </Box>

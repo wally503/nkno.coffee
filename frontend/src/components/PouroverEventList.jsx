@@ -84,7 +84,7 @@ function addEditMode(event, index, handleChange, handleAdd, handleRemove, events
           onBlur={(e) => handleChange(index, 'pour_time', normalizePourTime(e.target.value))}
           error={!!rowError?.pour_time}
           helperText={rowError?.pour_time?.[0] ?? " "}
-          sx={{ width: 200 }}
+          sx={{ width: 180 }}
         />
         <TextField
           label="Amount (ml)"
@@ -93,7 +93,7 @@ function addEditMode(event, index, handleChange, handleAdd, handleRemove, events
           onChange={(e) => handleChange(index, 'pour_amount', e.target.value)}
           error={!!rowError?.pour_amount}
           helperText={rowError?.pour_amount?.[0] ?? " "}
-          sx={{ width: 220 }}
+          sx={{ width: 280 }}
         />
         <TextField
           select

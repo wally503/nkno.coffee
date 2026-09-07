@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Grid, FormControl, TextField, Autocomplete, FormHelperText, Box } from '@mui/material';
 import TextFieldGridItem from './TextFieldGridItem';
 import { getRegionsForCountry } from '../api/roasterApi';
+import { requiredNudgeStyling } from "../constants/gridStyles";
 
 export default function DropdownGridItem({ dropdown, onChange, value, mode, dependsOn, dependsOnFieldValue, error }) {
   const [options, setOptions] = useState(dropdown.options?.length ? dropdown.options : []);
@@ -68,6 +69,7 @@ function addEditMode(dropdown, onChange, value, mode, options, error){
                   helperText={error?.[0]}
                 />
               )}
+              sx={mode !== "view" && !dropdown.disableNudge ? requiredNudgeStyling(dropdown, mode, value, error) : {}}
               onChange={(e, selectedOption) => {
                 console.log('selectedOption:', selectedOption);
                 onChange(dropdown.name, selectedOption?.value);

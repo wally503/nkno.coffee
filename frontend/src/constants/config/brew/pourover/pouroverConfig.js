@@ -44,7 +44,6 @@ export const pouroverConfig = {
   base: `${BREW_BASE}/pourover`,
   uriPath: 'pourover/',
 
-  // Column metadata for the By Style history list view — mirrors aeropressConfig's columns.
   columns: [
     { id: "date", label: "Date", minWidth: 100, orderingField: "brew_log__date" },
     { id: "bean", label: "Bean", minWidth: 160, orderingField: "brew_log__bean__name" },
@@ -54,29 +53,25 @@ export const pouroverConfig = {
   ],
 
   fields: [
-    // bean + date up top, same spacer treatment as aeropressConfig
-  {
-    type: "dropdown",
-    name: "bean",
-    label: "Bean",
-    required: true,
-    size: { xs: 12, sm: 8, md: 8 },
-    optionSource: "beans",
-    editDisable: true,
-  },
-  {
-    type: "date_time",
-    name: "date",
-    label: "Date & Time",
-    required: true,
-    size: { xs: 12, sm: 4, md: 4 },
-    defaultNow: true,
-  },
+    {
+      type: "dropdown",
+      name: "bean",
+      label: "Bean",
+      required: true,
+      size: { xs: 12, sm: 8, md: 8 },
+      optionSource: "beans",
+      editDisable: true,
+    },
+    {
+      type: "date_time",
+      name: "date",
+      label: "Date & Time",
+      required: true,
+      size: { xs: 12, sm: 4, md: 4 },
+      defaultNow: true,
+    },
     { type: "divider" },
 
-    // pourover-specific fields — dripper/filter_brand/filter_count as one row,
-    // pre_wet as its own toggle row (binary — a switch reads better than a
-    // 2-option dropdown), then kettle/scale/cup as an even 3-across row.
     {
       type: "dropdown",
       name: "dripper",
@@ -84,6 +79,7 @@ export const pouroverConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       options: POUROVER_STATIC_OPTIONS.dripper,
+      defaultValue: 'origami',
     },
     {
       type: "dropdown",
@@ -92,6 +88,7 @@ export const pouroverConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       options: POUROVER_STATIC_OPTIONS.filter_brand,
+      defaultValue: 'origami',
     },
     {
       type: "text_numeric",
@@ -100,14 +97,16 @@ export const pouroverConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       placeholder: "1",
+      defaultValue: 1,
     },
     {
-     type: "dropdown",
-     name: "filter_type",
-     label: "Filter Type",
-     required: true,
-     size: { xs: 12, sm: 4, md: 4 },
-     options: POUROVER_STATIC_OPTIONS.filter_type,
+      type: "dropdown",
+      name: "filter_type",
+      label: "Filter Type",
+      required: true,
+      size: { xs: 12, sm: 4, md: 4 },
+      options: POUROVER_STATIC_OPTIONS.filter_type,
+      defaultValue: 'origami',
     },
     {
       type: "dropdown",
@@ -116,6 +115,7 @@ export const pouroverConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       options: POUROVER_STATIC_OPTIONS.pre_wet,
+      defaultValue: 'wet',
     },
     {
       type: "spacer",
@@ -129,6 +129,7 @@ export const pouroverConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       optionSource: "kettles",
+      defaultValue: '1MRGE9cw',
     },
     {
       type: "dropdown",
@@ -137,6 +138,7 @@ export const pouroverConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       optionSource: "scales",
+      defaultValue: 'gBgrpqk1',
     },
     {
       type: "dropdown",
@@ -145,12 +147,10 @@ export const pouroverConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       options: POUROVER_STATIC_OPTIONS.cup,
+      defaultValue: 'ceramic',
     },
     { type: "divider" },
 
-    // shared grind/water/scale fields (from BrewBaseMixin), plus weight/temp/water.
-    // water_type + pour_style + spacer mirrors aeropressConfig's
-    // water_type + pour_direction + spacer row exactly.
     {
       type: "dropdown",
       name: "grinder",
@@ -158,6 +158,7 @@ export const pouroverConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       optionSource: "grinders",
+      defaultValue: 'cP37x_fF',
     },
     {
       type: "text_numeric",
@@ -166,6 +167,7 @@ export const pouroverConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       placeholder: "2",
+      defaultValue: 3,
     },
     {
       type: "text_numeric",
@@ -174,6 +176,7 @@ export const pouroverConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       placeholder: "8.0",
+      defaultValue: 10,
     },
     {
       type: "dropdown",
@@ -182,6 +185,7 @@ export const pouroverConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       options: POUROVER_STATIC_OPTIONS.water_type,
+      defaultValue: 'tww_light',
     },
     {
       type: "spacer",
@@ -212,11 +216,8 @@ export const pouroverConfig = {
       size: { xs: 12, sm: 4, md: 4 },
       placeholder: "20",
     },
-
     { type: "divider" },
 
-    // variable-count pour events — no `size`, same as hoffmann_events on
-    // aeropressConfig: the shell hardcodes its own Grid offset/width for event_list.
     {
       type: "event_list",
       component: "pourover",
@@ -236,7 +237,6 @@ export const pouroverConfig = {
       placeholder: "Tasting notes, what you'd change next time",
     },
 
-    // rating pinned at the very end, same as aeropressConfig
     {
       type: "rating",
       name: "extraction_rating",

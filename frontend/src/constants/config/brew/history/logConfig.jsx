@@ -15,7 +15,7 @@ export const logColumns = [
   {
     id: "date",
     label: "Date",
-    minWidth: 180,
+    minWidth: 140,
     orderingField: "date",
     render: (value) => value
       ? new Date(value).toLocaleString("en-CA", {
@@ -31,13 +31,25 @@ export const logColumns = [
   {
     id: "bean_name",
     label: "Bean",
-    minWidth: 180,
+    minWidth: 150,
     orderingField: null, // BrewLogViewSet.ordering_fields doesn't include bean__name yet
   },
   {
     id: "style_display",
     label: "Style",
-    minWidth: 140,
+    minWidth: 110,
+    orderingField: null, // ordering_fields doesn't include style yet
+  },
+  {
+    id: "grinder_name",
+    label: "Grinder",
+    minWidth: 100,
+    orderingField: null, // ordering_fields doesn't include style yet
+  },
+  {
+    id: "grind_setting",
+    label: "Setting",
+    minWidth: 90,
     orderingField: null, // ordering_fields doesn't include style yet
   },
   {
@@ -60,7 +72,7 @@ export const logColumns = [
   {
     id: "pull_number",
     label: "Pull #",
-    minWidth: 100,
+    minWidth: 70,
     orderingField: "pull_number",
   },
   {

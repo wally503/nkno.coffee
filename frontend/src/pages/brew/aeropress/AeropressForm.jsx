@@ -54,6 +54,14 @@ export default function AeropressFormPage() {
 
       setOptions({ ...AEROPRESS_STATIC_OPTIONS, beans, grinders, scales, kettles });
 
+      if (!shortid) { // only for add mode
+        const defaults = {};
+        aeropressConfig.fields.forEach(f => {
+          if (f.defaultValue !== undefined) defaults[f.name] = f.defaultValue;
+        });
+        setFormData(prev => ({ ...prev, ...defaults }));
+      }
+
       if (data) {
         setFormData(prev => ({ ...prev, ...normalizeAeropressData(data) }));
       }

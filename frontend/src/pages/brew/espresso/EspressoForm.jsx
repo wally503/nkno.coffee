@@ -13,7 +13,13 @@ import DefaultBodyLayout from "../../../components/DefaultBodyLayout";
 import Fade from '@mui/material/Fade';
 
 export default function EspressoFormPage() {
-  const [formData, setFormData] = React.useState({});
+  const [formData, setFormData] = React.useState(() => {
+    const defaults = {};
+    espressoConfig.fields.forEach(f => {
+      if (f.defaultValue !== undefined) defaults[f.name] = f.defaultValue;
+    });
+    return defaults;
+  });
   const [options, setOptions] = React.useState(null);
   const [errors, setErrors] = React.useState({});
   const [saveDialogue, setSaveDialogue] = React.useState(false);
@@ -53,6 +59,14 @@ export default function EspressoFormPage() {
 
       setOptions({ ...ESPRESSO_STATIC_OPTIONS, beans, grinders, scales });
 
+      if (!shortid) { // only for add mode
+        const defaults = {};
+        espressoConfig.fields.forEach(f => {
+          if (f.defaultValue !== undefined) defaults[f.name] = f.defaultValue;
+        });
+        setFormData(prev => ({ ...prev, ...defaults }));
+      }
+
       if (data) {
         setFormData(prev => ({ ...prev, ...normalizeEspressoData(data) }));
       }
@@ -79,10 +93,13 @@ export default function EspressoFormPage() {
 
   const handleSubmit = async () => {
     try {
-      const { bean, date, extraction_rating, notes, ...detailFields } = formData;
+      const { bean, date, extraction_rating, notes, brew_log, ...detailFields } = formData;
 
       const payload = shortid
-        ? { ...detailFields }
+        ? {
+            ...detailFields,
+            brew_log: { bean, date, extraction_rating, notes, style: 'espresso' },
+          }
         : {
             ...detailFields,
             brew_log: { bean, date, extraction_rating, notes, style: 'espresso' },
