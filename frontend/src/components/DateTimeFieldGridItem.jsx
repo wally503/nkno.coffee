@@ -30,6 +30,7 @@ function addEditMode(item, onChange, value, mode, error) {
         value={value ? dayjs(value) : null}
         closeOnSelect
         onChange={(val) => onChange(item.name, val ? val.format('YYYY-MM-DD HH:mm') : null)}
+        value={value ? dayjs(value) : null}
         slotProps={{
           textField: {
             fullWidth: true,
@@ -54,7 +55,7 @@ function addEditMode(item, onChange, value, mode, error) {
 function viewMode(item, onChange, value, mode, error) {
   return <TextFieldGridItem
             item={item}
-            value={value ? dayjs(value).format('MMM D, YYYY') : "-"}
+            value={value ? dayjs(value).format('MMM D, YYYY h:mm A') : "-"}
             onChange={onChange}
             mode={mode}
             error={error} />

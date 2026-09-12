@@ -158,7 +158,7 @@ export default function BeansFormPage() {
                 rows={decoratedRows} 
                 totalCount={brewTotalCount}
                 tableState={brewTableState}
-                viewRoute={`/coffeeLog/beans/view`}
+                viewRoute={(row) => `/brew/${row.style}/view/${row.short_id}`}
               />
             </TabPanel> 
           </TabContext>
