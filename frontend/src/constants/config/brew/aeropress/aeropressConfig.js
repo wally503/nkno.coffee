@@ -219,8 +219,40 @@ export const aeropressConfig = {
     },
     { type: "divider" },
 
+        {
+      type: "spacer",
+      size: { xs: 0, sm: 2, md: 2 },
+      color: "rgba(180, 140, 100, 0)",
+    },
+    {
+      type: "text_numeric",
+      name: "press_time",
+      label: "End-to-End Press Time",
+      required: true,
+      size: { xs: 12, sm: 4, md: 4 },
+      placeholder: "2:18",
+      inputStyle: "duration",
+    },
+    {
+      type: "text_numeric",
+      name: "press_duration",
+      label: "Press Duration (to hiss)",
+      required: true,
+      size: { xs: 12, sm: 4, md: 4 },
+      placeholder: "00:18",
+      inputStyle: "duration",
+    },
+    {
+      type: "spacer",
+      size: { xs: 0, sm: 2, md: 2 },
+      color: "rgba(180, 140, 100, 0)",
+    },
+
+
+
     // variable-count Hoffmann stir events — no `size`, same as beansConfig's
     // dynamic_dropdown (flavor_notes): the shell hardcodes its own Grid offset/width.
+
     {
       type: "event_list",
       component: "hoffmann",
@@ -228,6 +260,8 @@ export const aeropressConfig = {
       label: "Hoffmann Events",
       required: false,
     },
+
+
 
     { type: "divider" },
 

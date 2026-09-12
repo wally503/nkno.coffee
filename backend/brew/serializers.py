@@ -190,6 +190,8 @@ class AeropressDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSerial
             'scale',
             'kettle',
             'needs_bag_close_prompt',
+            'press_time',
+            'press_duration'
         ]
 
     def get_needs_bag_close_prompt(self, obj):
@@ -216,6 +218,8 @@ class AeropressDetailReadSerializer(serializers.ModelSerializer):
     grinder = GrinderNestedSerializer(read_only=True)
     scale = ScaleNestedSerializer(read_only=True)
     kettle = KettleNestedSerializer(read_only=True)
+    press_time = MMSSDurationField()
+    press_duration = MMSSDurationField()
 
     class Meta:
         model = AeropressDetail
@@ -237,6 +241,8 @@ class AeropressDetailReadSerializer(serializers.ModelSerializer):
             'grinder',
             'scale',
             'kettle',
+            'press_time',
+            'press_duration'
         ]
 
 

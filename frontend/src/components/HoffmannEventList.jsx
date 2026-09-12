@@ -56,7 +56,7 @@ export default function HoffmannEventList({ item, onChange, initialValues, mode,
 
   return (
     <Grid container>
-      <Grid size={{ xs: 12, sm: 10, md: 10 }} offset={{ sm: 1, md: 1 }}>
+      <Grid size={{ xs: 12, sm: 10, md: 10 }} offset={{ sm: 2, md: 2 }}>
         {item?.label && (
           <Typography variant="subtitle2" sx={{ mb: 1, color: "text.secondary" }}>
             {item.label}
@@ -129,7 +129,7 @@ function viewMode(events) {
   return (
     <Grid key="hoffmann-view" container spacing={2} size={{ xs: 12 }}>
       {validEvents.map((e, i) => (
-        <Box key={e.id ?? i} sx={{ width: "100%" }}>
+        <Box key={e.id ?? i} sx={{ width: "80%" }}>
           {i > 0 && <Divider sx={{ my: 1.5 }} />}
           <Grid container spacing={2}>
             <Grid size={{ xs: 6, sm: 4 }}>

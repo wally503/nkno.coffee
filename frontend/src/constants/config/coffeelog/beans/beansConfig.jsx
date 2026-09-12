@@ -111,7 +111,7 @@ export const beansConfig = {
       label: "Roaster",
       required: true,
       disableNudge: true,
-      size: { xs: 12, sm: 4, md: 4 },
+      size: { xs: 12, sm: 5, md: 5 },
       optionSource: "roasters", 
     },
     {
@@ -130,13 +130,13 @@ export const beansConfig = {
       label: "Caff or Decaf",
       required: true,
       disableNudge: true,
-      size: { xs: 12, sm: 4, md: 4 },
+      size: { xs: 12, sm: 3, md: 3 },
       optionSource: "caffeineFlags",
     },
     {
       type: "dropdown",
       name: "organic_or_not",
-      label: "Organic or Not",
+      label: "Organic?",
       required: false,
       disableNudge: true,
       size: { xs: 12, sm: 3, md: 3 },
@@ -148,10 +148,28 @@ export const beansConfig = {
       label: "Process",
       required: false,
       disableNudge: true,
-      size: { xs: 12, sm: 3, md: 3 },
+      size: { xs: 12, sm: 4, md: 4 },
       optionSource: "processTypes",
     },
-        {
+    {
+      type: "dropdown",
+      name: "roast_level",
+      label: "Roast Level",
+      required: false,
+      disableNudge: true,
+      size: { xs: 12, sm: 3, md: 3 },
+      optionSource: "roastLevels",
+    },
+    {
+      type: "text_numeric",
+      name: "bag_weight",
+      label: "Bag Weight (g)",
+      required: false,
+      disableNudge: true,
+      size: { xs: 12, sm: 2, md: 2 },
+      placeholder: "12",
+    },
+    {
       type: "text",
       name: "min_elevation",
       label: "Min Elevation (in MASL)",
@@ -169,6 +187,7 @@ export const beansConfig = {
       size: { xs: 12, sm: 3, md: 3 },
       placeholder: "1800",
     },
+
     {
       type: "date",
       name: "roast_date",
@@ -187,24 +206,8 @@ export const beansConfig = {
       size: { xs: 12, sm: 3, md: 3 },
       placeholder: "12",
     },
-    {
-      type: "text_numeric",
-      name: "bag_weight",
-      label: "Bag Weight (g)",
-      required: false,
-      disableNudge: true,
-      size: { xs: 12, sm: 3, md: 3 },
-      placeholder: "12",
-    },
-    {
-      type: "dropdown",
-      name: "roast_level",
-      label: "Roast Level",
-      required: false,
-      disableNudge: true,
-      size: { xs: 12, sm: 3, md: 3 },
-      optionSource: "roastLevels",
-    },
+
+
     {
       type: "spacer",
       size: { xs: 0, sm: 6, md: 6 },

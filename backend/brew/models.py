@@ -241,6 +241,8 @@ class AeropressDetail(BrewBaseMixin, models.Model):
     kettle = models.ForeignKey(Kettle, on_delete=models.PROTECT)
     temp = models.DecimalField(max_digits=5, decimal_places=1)
     water = models.DecimalField(max_digits=6, decimal_places=1)
+    press_time = models.DurationField()
+    press_duration = models.DurationField()
 
     def __str__(self):
         return f"Aeropress – {self.brew_log}"
