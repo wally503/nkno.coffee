@@ -25,10 +25,11 @@ export default function TextFieldGridItem({ item, onChange, value, mode, error, 
 
   useEffect(() => {
     if (inputStyle === "duration") {
-      setDurationDigits(value ? value.replace(/\D/g, '') : "");
+      const stripped = value ? value.replace(/^\d{2}:/, '') : "";
+      setDurationDigits(stripped.replace(/\D/g, ''));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inputStyle]); // only re-sync on mount/mode change, not every keystroke
+  }, [inputStyle]);
 
   const handleChange = (e) => {
     const raw = e.target.value;

@@ -4,6 +4,7 @@ from django.db import transaction
 from rest_framework import serializers
 from .models import *
 from coffee.models import Bean
+from .fields import MMSSDurationField
 
 # ---------------------------------------------------------------------------
 # Equipment lookups
@@ -151,6 +152,8 @@ class AtomicDetailCreateMixin:
 # ---------------------------------------------------------------------------
 
 class HoffmannEventSerializer(serializers.ModelSerializer):
+    rotation_time = MMSSDurationField()
+    
     class Meta:
         model = HoffmannEvent
         fields = ['id', 'rotation_time', 'rotation_count']
@@ -258,6 +261,9 @@ class AeropressDetailListSerializer(serializers.ModelSerializer):
 # ---------------------------------------------------------------------------
 
 class PouroverPourEventSerializer(serializers.ModelSerializer):
+    pour_time = MMSSDurationField()
+    pour_duration = MMSSDurationField()
+    
     class Meta:
         model = PouroverPourEvent
         fields = ['id', 'pour_time', 'pour_amount', 'pour_style', 'pour_duration']
@@ -393,7 +399,7 @@ class EspressoDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSeriali
     scale = serializers.SlugRelatedField(slug_field='short_id', queryset=Scale.objects.all())
     brew_log = BrewLogSerializer()
     needs_bag_close_prompt = serializers.SerializerMethodField()
-
+    pull_time = MMSSDurationField()
     machine = serializers.ChoiceField(choices=EspressoMakerChoice.choices, required=True)
     basket = serializers.ChoiceField(choices=BasketChoice.choices, required=True)
     puck_screen = serializers.ChoiceField(choices=PuckScreenChoice.choices, required=True)
@@ -438,7 +444,8 @@ class EspressoDetailReadSerializer(serializers.ModelSerializer):
     brew_log = BrewLogReadSerializer(read_only=True)
     grinder = GrinderNestedSerializer(read_only=True)
     scale = ScaleNestedSerializer(read_only=True)
-
+    pull_time = MMSSDurationField()
+    
     class Meta:
         model = EspressoDetail
         fields = [

@@ -26,3 +26,9 @@ export function requiredNudgeStyling(item, mode, value, error) {
   if (isEmpty && !item.required) return OPTIONAL_EMPTY_NUDGE_SX;
   return {};
 }
+
+export function trimDurationDisplay(value) {
+  if (!value) return value;
+  // strips a leading "00:" (or any leading two-digit group + colon) — HH prefix
+  return value.replace(/^\d{2}:/, '');
+}
