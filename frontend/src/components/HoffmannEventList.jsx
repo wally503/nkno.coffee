@@ -5,6 +5,7 @@ import {
   Box,
   IconButton,
   TextField,
+  Divider,
   Typography
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
@@ -112,29 +113,40 @@ function addEditMode(event, index, handleChange, handleAdd, handleRemove, events
 }
 
 function viewMode(events) {
-  const summary = events
-    .filter(e => e.rotation_time && e.rotation_count)
-    .map(e => `${e.rotation_time} × ${e.rotation_count}`)
-    .join(", ");
+  const validEvents = events.filter(e => e.rotation_time && e.rotation_count);
+
+  if (!validEvents.length) {
+    return (
+      <Grid key="hoffmann-view" size={{ xs: 12 }}>
+        <Typography variant="caption" color="text.secondary">
+          Hoffmann Events
+        </Typography>
+        <Typography variant="body1">-</Typography>
+      </Grid>
+    );
+  }
 
   return (
-    <Grid key="hoffmann-view" size={{ xs: 12, sm: 12, md: 12 }}>
-      <TextField
-        fullWidth
-        multiline
-        label="Hoffmann Events"
-        value={summary || "-"}
-        variant="standard"
-        slotProps={{
-          input: {
-            readOnly: true,
-            disableUnderline: true,
-            tabIndex: -1,
-            sx: { cursor: "default", caretColor: "transparent" }
-          },
-          inputLabel: { shrink: true, sx: { color: "text.secondary" } }
-        }}
-      />
+    <Grid key="hoffmann-view" container spacing={2} size={{ xs: 12 }}>
+      {validEvents.map((e, i) => (
+        <Box key={e.id ?? i} sx={{ width: "100%" }}>
+          {i > 0 && <Divider sx={{ my: 1.5 }} />}
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 6, sm: 4 }}>
+              <Typography variant="caption" color="text.secondary">
+                Rotation Time
+              </Typography>
+              <Typography variant="body1">{e.rotation_time}</Typography>
+            </Grid>
+            <Grid size={{ xs: 6, sm: 4 }}>
+              <Typography variant="caption" color="text.secondary">
+                Rotation Count
+              </Typography>
+              <Typography variant="body1">{e.rotation_count}x Hoffman Swirls</Typography>
+            </Grid>
+          </Grid>
+        </Box>
+      ))}
     </Grid>
   );
 }
