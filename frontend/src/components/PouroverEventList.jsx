@@ -73,9 +73,31 @@ export default function PouroverEventList({ item, onChange, initialValues, mode,
 }
 
 function addEditMode(event, index, handleChange, handleAdd, handleRemove, events, rowError) {
+
+  function fromSeconds(totalSeconds) {
+    if (totalSeconds == null) return null;
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = totalSeconds % 60;
+    return [h, m, s].map(n => String(n).padStart(2, '0')).join(':');
+  }
+
+  const startSeconds = toSeconds(event.pour_time);
+  const durationSeconds = toSeconds(event.pour_duration);
+  const endSeconds = startSeconds != null && durationSeconds != null
+    ? startSeconds + durationSeconds
+    : null;
+  const rate = durationSeconds && event.pour_amount
+    ? (Number(event.pour_amount) / durationSeconds).toFixed(1)
+    : null;
+
+  const rangeLabel = startSeconds != null && endSeconds != null
+    ? `${event.pour_time} – ${fromSeconds(endSeconds)}${rate ? ` (${rate}g/s)` : ''}`
+    : null;
+
   return (
-    <Grid key={index} size={{ xs: 12 }}>
-      <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2, minHeight: 96 }}>
+    <Grid key={index} size={{ xs: 12 }} sx={{ mb: 2 }}>
+      <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}>
         <TextField
           label="Pour Time"
           placeholder="0:30"
@@ -83,7 +105,7 @@ function addEditMode(event, index, handleChange, handleAdd, handleRemove, events
           onChange={(e) => handleChange(index, 'pour_time', e.target.value)}
           onBlur={(e) => handleChange(index, 'pour_time', normalizePourTime(e.target.value))}
           error={!!rowError?.pour_time}
-          helperText={rowError?.pour_time?.[0] ?? " "}
+          helperText={rowError?.pour_time?.[0]}
           sx={{ width: 180 }}
         />
         <TextField
@@ -93,16 +115,16 @@ function addEditMode(event, index, handleChange, handleAdd, handleRemove, events
           onChange={(e) => handleChange(index, 'pour_duration', e.target.value)}
           onBlur={(e) => handleChange(index, 'pour_duration', normalizePourTime(e.target.value))}
           error={!!rowError?.pour_duration}
-          helperText={rowError?.pour_duration?.[0] ?? " "}
+          helperText={rowError?.pour_duration?.[0]}
           sx={{ width: 180 }}
         />
         <TextField
-          label="Amount (ml)"
+          label="Amount (g)"
           type="number"
           value={event.pour_amount}
           onChange={(e) => handleChange(index, 'pour_amount', e.target.value)}
           error={!!rowError?.pour_amount}
-          helperText={rowError?.pour_amount?.[0] ?? " "}
+          helperText={rowError?.pour_amount?.[0]}
           sx={{ width: 280 }}
         />
         <TextField
@@ -139,6 +161,11 @@ function addEditMode(event, index, handleChange, handleAdd, handleRemove, events
           <RemoveIcon />
         </IconButton>
       </Box>
+      {rangeLabel && (
+        <Typography variant="caption" sx={{ display: "block", color: "text.secondary", pl: 0.5, mt: -2 }}>
+          {rangeLabel}
+        </Typography>
+      )}
     </Grid>
   );
 }
@@ -157,34 +184,67 @@ function normalizePourTime(value) {
   return `${minutes}:${seconds}`;
 }
 
+function toSeconds(duration) {
+  if (!duration) return null;
+  const parts = duration.split(':').map(Number);
+  if (parts.some(Number.isNaN)) return null;
+
+  const [h, m, s] = parts.length === 3 ? parts : [0, ...parts];
+  return h * 3600 + m * 60 + s;
+}
+
 function viewMode(events, totalPoured) {
   const styleLabel = (value) =>
     POUROVER_STATIC_OPTIONS.pour_style.find((opt) => opt.value === value)?.label || value;
 
-  const summary = events
-    .filter(e => e.pour_time && e.pour_amount)
-    .map((e, index) => ({index: index, value: `${e.pour_time} – ${e.pour_amount}ml (${styleLabel(e.pour_style)})`}));
+  const columnSx = { width: 90 };
 
   return (
-    <Grid key="pourover-view" size={{ xs: 12, sm: 12, md: 12 }}>
-      {summary.map(e =>
-        <TextField
-          fullWidth
-          multiline
-          label={e.index == 0 ? `Pour Events (total: ${totalPoured}ml)` : undefined}
-          value={e.value || "-"}
-          variant="standard"
-          slotProps={{
-            input: {
-              readOnly: true,
-              disableUnderline: true,
-              tabIndex: -1,
-              sx: { cursor: "default", caretColor: "transparent" }
-            },
-            inputLabel: { shrink: true, sx: { color: "text.secondary" } }
-          }}
-        />
-      )}
+    <Grid key="pourover-view" size={{ xs: 12, sm: 12, md: 12 }} sx={{ maxWidth: 580 }}>
+      <Typography variant="caption" sx={{ color: "text.secondary" }}>
+        Pour Events (total: {totalPoured}g)
+      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          py: 0.5,
+          borderBottom: "1px solid rgba(255,255,255,0.2)",
+          fontSize: "0.75rem",
+          color: "text.secondary",
+          textTransform: "uppercase",
+          letterSpacing: 0.5
+        }}
+      >
+        <Box sx={columnSx}>Time</Box>
+        <Box sx={columnSx}>Weight</Box>
+        <Box sx={columnSx}>Duration</Box>
+        <Box sx={columnSx}>Rate</Box>
+        <Box sx={{ flex: 1, textAlign: "right" }}>Style</Box>
+      </Box>
+      {events
+        .filter(e => e.pour_time && e.pour_amount)
+        .map((e, index) => {
+          const seconds = toSeconds(e.pour_duration);
+          const rate = seconds ? (Number(e.pour_amount) / seconds).toFixed(1) : null;
+          return (
+            <Box
+              key={index}
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                py: 0.5,
+                borderBottom: "1px solid rgba(255,255,255,0.08)"
+              }}
+            >
+              <Box sx={columnSx}>{e.pour_time}</Box>
+              <Box sx={columnSx}>{e.pour_amount}g</Box>
+              <Box sx={columnSx}>{e.pour_duration}</Box>
+              <Box sx={columnSx}>{rate ? ` (${rate}g/s)` : ''}</Box>
+              <Box sx={{ flex: 1, textAlign: "right" }}>{styleLabel(e.pour_style)}</Box>
+            </Box>
+          );
+        })}
     </Grid>
   );
 }
