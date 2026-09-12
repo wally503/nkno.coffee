@@ -91,9 +91,7 @@ export default function PouroverFormPage() {
     try {
       const { bean, date, extraction_rating, notes, pour_events, ...detailFields } = formData;
 
-      const payload = shortid
-        ? { ...detailFields, pour_events }
-        : {
+      const payload = {
             ...detailFields,
             pour_events,
             brew_log: { bean, date, extraction_rating, notes, style: 'pourover' },

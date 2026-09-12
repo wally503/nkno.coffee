@@ -95,12 +95,7 @@ export default function EspressoFormPage() {
     try {
       const { bean, date, extraction_rating, notes, brew_log, ...detailFields } = formData;
 
-      const payload = shortid
-        ? {
-            ...detailFields,
-            brew_log: { bean, date, extraction_rating, notes, style: 'espresso' },
-          }
-        : {
+      const payload = {
             ...detailFields,
             brew_log: { bean, date, extraction_rating, notes, style: 'espresso' },
           };

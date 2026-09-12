@@ -260,8 +260,8 @@ export const espressoConfig = {
     },
     {
       type: "text_numeric",
-      name: "shot_weight",
-      label: "Shot Weight (g)",
+      name: "pull_weight",
+      label: "Pull Weight (g)",
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       // inputStyle: "duration",

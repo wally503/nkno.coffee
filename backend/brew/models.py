@@ -35,7 +35,7 @@ class AeropressBase(models.TextChoices):
 class AeropressFilter(models.TextChoices):
     NONE = 'none', 'None'
     SINGLE = 'single', 'Single'
-    CLASSIC = 'classic', 'Classic'
+    AEROPRESS = 'aeropress', 'Aeropress'
 
 class AeropressOrientation(models.TextChoices):
     STANDARD = 'standard', 'Standard'

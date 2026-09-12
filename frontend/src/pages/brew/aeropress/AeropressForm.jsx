@@ -90,9 +90,7 @@ export default function AeropressFormPage() {
     try {
       const { bean, date, extraction_rating, notes, hoffmann_events, ...detailFields } = formData;
 
-      const payload = shortid
-        ? { ...detailFields, hoffmann_events }
-        : {
+      const payload = {
             ...detailFields,
             hoffmann_events,
             brew_log: { bean, date, extraction_rating, notes, style: 'aeropress' },

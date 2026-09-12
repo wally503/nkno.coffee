@@ -56,14 +56,14 @@ export default function PouroverEventList({ item, onChange, initialValues, mode,
             {item.label}
           </Typography>
         )}
-        <Grid container spacing={1.5} columns={12}>
+        <Grid container spacing={0} columns={12}>
           {mode === "view"
             ? viewMode(events, totalPoured)
             : events.map((event, index) =>
                 addEditMode(event, index, handleChange, handleAdd, handleRemove, events, error?.[index]))}
         </Grid>
         {mode !== "view" && (
-          <Box sx={{ mt: 1, fontSize: "0.85rem", color: "text.secondary" }}>
+          <Box sx={{ mt: 0, fontSize: "0.85rem", color: "text.secondary" }}>
             Total poured: {totalPoured}ml
           </Box>
         )}
@@ -77,13 +77,23 @@ function addEditMode(event, index, handleChange, handleAdd, handleRemove, events
     <Grid key={index} size={{ xs: 12 }}>
       <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2, minHeight: 96 }}>
         <TextField
-          label="Time"
+          label="Pour Time"
           placeholder="0:30"
           value={event.pour_time}
           onChange={(e) => handleChange(index, 'pour_time', e.target.value)}
           onBlur={(e) => handleChange(index, 'pour_time', normalizePourTime(e.target.value))}
           error={!!rowError?.pour_time}
           helperText={rowError?.pour_time?.[0] ?? " "}
+          sx={{ width: 180 }}
+        />
+        <TextField
+          label="Pour Duration"
+          placeholder="0:30"
+          value={event.pour_duration}
+          onChange={(e) => handleChange(index, 'pour_duration', e.target.value)}
+          onBlur={(e) => handleChange(index, 'pour_duration', normalizePourTime(e.target.value))}
+          error={!!rowError?.pour_duration}
+          helperText={rowError?.pour_duration?.[0] ?? " "}
           sx={{ width: 180 }}
         />
         <TextField
@@ -110,10 +120,22 @@ function addEditMode(event, index, handleChange, handleAdd, handleRemove, events
             </MenuItem>
           ))}
         </TextField>
-        <IconButton onClick={handleAdd} size="small" color="primary" disabled={!event.pour_time || !event.pour_amount || !event.pour_style}>
+        <IconButton 
+          onClick={handleAdd} 
+          size="small" 
+          color="primary" 
+          disabled={!event.pour_time || !event.pour_amount || !event.pour_style}
+          sx={{ mt: 1.16 }}
+        >
           <AddIcon />
         </IconButton>
-        <IconButton onClick={() => handleRemove(index)} size="small" color="secondary" disabled={events.length === 1}>
+        <IconButton 
+          onClick={() => handleRemove(index)} 
+          size="small" 
+          color="secondary" 
+          disabled={events.length === 1}
+          sx={{ mt: 1.16 }}
+        >
           <RemoveIcon />
         </IconButton>
       </Box>

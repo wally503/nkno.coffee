@@ -260,7 +260,7 @@ class AeropressDetailListSerializer(serializers.ModelSerializer):
 class PouroverPourEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = PouroverPourEvent
-        fields = ['id', 'pour_time', 'pour_amount', 'pour_style']
+        fields = ['id', 'pour_time', 'pour_amount', 'pour_style', 'pour_duration']
 
 
 class PouroverDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSerializer):
@@ -426,6 +426,7 @@ class EspressoDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSeriali
             'paper_filter_type',
             'paper_filter_count',
             'pull_time',
+            'pull_weight',
             'needs_bag_close_prompt',
         ]
 
@@ -459,6 +460,7 @@ class EspressoDetailReadSerializer(serializers.ModelSerializer):
             'paper_filter_type',
             'paper_filter_count',
             'pull_time',
+            'pull_weight',
         ]
 
 

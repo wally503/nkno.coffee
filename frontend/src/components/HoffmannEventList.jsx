@@ -26,7 +26,8 @@ export default function HoffmannEventList({ item, onChange, initialValues, mode,
 
   const handleChange = (index, field, newValue) => {
     const updated = [...events];
-    updated[index] = { ...updated[index], [field]: handleDurationChange(newValue) };
+    const formattedValue = field === 'rotation_time' ? handleDurationChange(newValue) : newValue;
+    updated[index] = { ...updated[index], [field]: formattedValue };
     setEvents(updated);
     onChange(updated);
   };
