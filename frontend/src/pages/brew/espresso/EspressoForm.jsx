@@ -146,7 +146,7 @@ export default function EspressoFormPage() {
               title={"Saving Brew"}
               message={"Espresso brew was successfully saved!"}
               open={saveDialogue}
-              onCloseParent={() => { setSaveDialogue(false); navigate('/history/by-style'); }}
+              onCloseParent={() => { setSaveDialogue(false); navigate('/history/log'); }}
             />
             <DialogueBox
               title={"Bag Almost Empty"}

@@ -142,7 +142,7 @@ export default function AeropressFormPage() {
               title={"Saving Brew"}
               message={"Aeropress brew was successfully saved!"}
               open={saveDialogue}
-              onCloseParent={() => { setSaveDialogue(false); navigate('/history/by-style'); }}
+              onCloseParent={() => { setSaveDialogue(false); navigate('/history/log'); }}
             />
             <DialogueBox
               title={"Bag Almost Empty"}
