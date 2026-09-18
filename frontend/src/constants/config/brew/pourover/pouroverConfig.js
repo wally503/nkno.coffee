@@ -167,7 +167,7 @@ export const pouroverConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       placeholder: "2",
-      defaultValue: 3,
+      defaultValue: 2,
     },
     {
       type: "text_numeric",
@@ -176,7 +176,7 @@ export const pouroverConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       placeholder: "8.0",
-      defaultValue: 10,
+      // defaultValue: 10,
     },
     {
       type: "dropdown",
