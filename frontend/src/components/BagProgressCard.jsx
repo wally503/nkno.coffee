@@ -1,9 +1,9 @@
 // src/components/BagProgressCard.jsx
 
-import { Grid, Box, Card, Typography, CardContent } from "@mui/material";
+import { Grid, Box, Card, Typography, CardContent, Divider } from "@mui/material";
 import BagProgressBar from "./BagProgressBar";
 
-export default function BagProgressCard(){
+export default function BagProgressCard({beanData}){
     return (
         <>
             <Box sx={{
@@ -14,84 +14,106 @@ export default function BagProgressCard(){
                 border: '1px solid rgba(180, 140, 100, 0.5)',
                 borderRadius: 7,
             }}>
-                <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 2.5 }}>
+                {/* Bean / Roaster / Roast Type  row */}
+                <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1.5 }}>
                     <Typography variant="h5">
-                        {"Bean Name"}
+                        {beanData.bean_name}
                     </Typography>
                     <Typography variant="h5">
                         {"-"}
                     </Typography>
                     <Typography variant="h5">
-                        {"Roaster"}
+                        {beanData.roaster_name}
                     </Typography>
                     <Box sx={{ flexGrow: 1 }} />
                     <Typography variant="h6" color="text.secondary">
-                        {"Light Roast"}{" "}
-                        {true && (
-                            <Typography component="span" variant="body2" sx={{ color: 'text.disabled' }}>
-                                {"(Decaf)"}
+                        {beanData.roast_level_display ? `${beanData.roast_level_display} Roast` : "Unknown Roast"}
+                        {beanData.is_decaf && (
+                            <Typography component="span" variant="body2" sx={{ color: 'text.disabled', ml: 0.5 }}>
+                                (Decaf)
                             </Typography>
                         )}
                     </Typography>
                 </Box>
 
+                {/* Origin / Flavor Notes row */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, ml: 0, mr: 0, my: -1, mb: 0}}>
+                    <Typography
+                        variant="body2"
+                        sx={{ color: 'text.disabled', fontStyle: 'italic' }}
+                    >
+                        {beanData.origin_country_name ?? "Blend or Country Not Mentioned"}
+                    </Typography>
+                    <Box sx={{ flexGrow: 1 }} />
+                    <Typography
+                        variant="body2"
+                        sx={{ color: 'text.disabled', fontStyle: 'italic' }}
+                    >
+                        {beanData.flavor_notes?.length ? beanData.flavor_notes.join(', ') : "N/A"}
+                    </Typography>
+                </Box>
+
+                <Divider sx={{ width: '98%', mx: 'auto', opacity: 0.3, my: 0 }} />
+
                 {/* Roasted On / Opened On row */}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, ml: 2, mr: 10 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, ml: 1, mr: 1, mb: -1 }}>
                     <Typography variant="h6">
-                        Roasted On:
+                        Roasted:
                     </Typography>
                     <Typography variant="h6" color="text.secondary">
-                        { "Date Date" } ({"#"} days ago)
+                        { beanData.roasted_on ?? "N/A" }{ beanData.roasted_days_ago != null ? ` (${beanData.roasted_days_ago} days ago)` : "" }    
                     </Typography>
                     <Box sx={{ flexGrow: 1 }} />
                     <Typography variant="h6">
-                        Opened On:
+                        Opened:
                     </Typography>
                     <Typography variant="h6" color="text.secondary">
-                        { "Date Date" } ({"#"} days ago)
+                        { beanData.opened_on ?? "N/A" }{ beanData.opened_days_ago != null ? ` (${beanData.opened_days_ago} days ago)` : "" }
                     </Typography>
                 </Box>
 
                 {/* Grind row */}
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', ml: 5, mr: 20 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 3 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', ml: 5, mr: 10, my: 0 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
                         <Typography variant="base1">
-                            Espresso Grind:
+                            Espresso Grind(s):
                         </Typography>
                         <Typography variant="base1" color="text.secondary">
-                            {"min"} - {"max"}
+                            {beanData.espresso_grind}
                         </Typography>
                     </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 3 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
                         <Typography variant="base1">
-                            Pourover Grind:
+                            Pourover Grind(s):
                         </Typography>
                         <Typography variant="base1" color="text.secondary">
-                            {"min"} - {"max"}
+                            {beanData.pourover_grind}
                         </Typography>
                     </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 3 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
                         <Typography variant="base1">
-                            Aeropress Grind:
+                            Aeropress Grind(s):
                         </Typography>
                         <Typography variant="base1" color="text.secondary">
-                            {"min"} - {"max"}
+                            {beanData.aeropress_grind}
                         </Typography>
                     </Box>
                 </Box>
 
+                <Divider sx={{ width: '98%', mx: 'auto', opacity: 0.3, my: 0 }} />
+
                 {/* Progress bar row */}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, ml: 2, mb: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, ml: 2, mb: 0}}>
                     <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-                        <BagProgressBar />
+                        <BagProgressBar progValue={ beanData.percent_remaining } />
                     </Box>
                     <Box sx={{ flexShrink: 0, whiteSpace: 'nowrap' }}>
-                        <Typography variant="base1" color="text.secondary">
-                            {"200"}/{"300"}g remaining
+                        <Typography variant="base1" color="text.secondary" sx={{ color: 'text.disabled', fontStyle: 'italic' }}>
+                            { beanData.remaining_weight } / { beanData.total_weight }g remaining
                         </Typography>
                         <br/>
-                        <Typography variant="base1" color="text.secondary">
-                            {"30"}% remaining
+                        <Typography variant="base1" color="text.secondary" sx={{ color: 'text.disabled', fontStyle: 'italic' }}>
+                            { (beanData.percent_remaining).toFixed(1)  }% remaining
                         </Typography>
                     </Box>
                 </Box>

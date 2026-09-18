@@ -1,6 +1,7 @@
 import { Grid, Box, Card, Typography, CardContent } from "@mui/material";
 import CardPageBodyLayout from "../components/CardPageBodyLayout";
-import { getDailyBean, getLatestBean } from "../api/beansApi";
+import { getDailyBean, getLatestBean, getCurrentOpenBeans } from "../api/beansApi";
+import BagProgressCard from "../components/BagProgressCard";
 import * as React from "react";
 
 import PageTitle from "../components/PageTitle";
@@ -8,19 +9,22 @@ import PageTitle from "../components/PageTitle";
 export default function HomePage() {
     const [dailyBean, setDailyBean] = React.useState({});
     const [latestBean, setLatestBean] = React.useState({});
+    const [openBeans, setOpenBeans] = React.useState([]);
 
     React.useEffect(() => {
         const load = async () => {
-            const [daily, latest] = await Promise.all([
+            const [daily, latest, currentOpen] = await Promise.all([
                 getDailyBean(),
-                getLatestBean()
+                getLatestBean(),
+                getCurrentOpenBeans()
             ]);
             // console.log(daily.data);
             // console.log(latest.data);
-
+            console.log('open bean results:', currentOpen.results);  // <-- here, after the data actually exists
 
             setDailyBean(daily.data);
             setLatestBean(latest.data);
+            setOpenBeans(currentOpen.results);            
         };
         load().catch(console.error);
     },[]);
@@ -37,7 +41,14 @@ export default function HomePage() {
                     mx: 'auto',
                     width: '100%'
                 }}>
-                    <BagProgressCard/>
+                    {!openBeans || openBeans.length === 0 
+                        ? ''
+                        : openBeans.map((row) => {
+                            return (
+                                <BagProgressCard key={row.short_id} beanData={row} />
+                            )
+                        }
+                    )}
                 </Box>
             </CardPageBodyLayout>
         </>

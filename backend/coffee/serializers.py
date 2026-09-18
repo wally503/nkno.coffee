@@ -179,7 +179,6 @@ class OpenBagSerializer(serializers.ModelSerializer):
     short_id = serializers.CharField(read_only=True)
     bean_name = serializers.CharField(source='name')
     roaster_name = serializers.CharField(source='roaster.name')
-    roast_display = serializers.SerializerMethodField()
     roasted_on = serializers.DateField(source='roast_date')
     roasted_days_ago = serializers.SerializerMethodField()
     opened_on = serializers.SerializerMethodField()
@@ -191,22 +190,25 @@ class OpenBagSerializer(serializers.ModelSerializer):
     total_weight = serializers.DecimalField(source='bag_weight', max_digits=6, decimal_places=1)
     percent_remaining = serializers.SerializerMethodField()
     flavor_notes = serializers.SerializerMethodField()
+    roast_level_display = serializers.SerializerMethodField()
+    is_decaf = serializers.SerializerMethodField()
+    origin_country_name = serializers.CharField(source='origin_country.name', allow_null=True, read_only=True)
 
     class Meta:
         model = Bean
         fields = [
-            'short_id', 'bean_name', 'roaster_name', 'roast_display',
+            'short_id', 'bean_name', 'roaster_name', 'roast_level_display', 'is_decaf',
             'roasted_on', 'roasted_days_ago', 'opened_on', 'opened_days_ago',
             'espresso_grind', 'pourover_grind', 'aeropress_grind',
             'remaining_weight', 'total_weight', 'percent_remaining',
-            'flavor_notes',
+            'flavor_notes', 'origin_country_name'
         ]
 
-    def get_roast_display(self, obj):
-        label = obj.get_roast_level_display() if obj.roast_level else ""
-        if obj.caff_or_decaf != 'decaffeinated':
-            return f"{label} (Decaf)".strip() if label else "(Decaf)"
-        return label or None
+    def get_roast_level_display(self, obj):
+        return obj.get_roast_level_display() if obj.roast_level else None
+
+    def get_is_decaf(self, obj):
+        return obj.caff_or_decaf == 'decaffeinated'
 
     def _resolve_opened_date(self, obj):
         # """Returns a date object (not string) — used internally by both opened_on and opened_days_ago."""

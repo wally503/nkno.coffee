@@ -118,3 +118,13 @@ export async function markBeanFinished(shortId) {
         console.error(error.response?.data);
     }
 }
+
+export async function getCurrentOpenBeans() {
+    try {
+        const { data } = await axiosInstance.get(`coffee/beans/open`);
+        return data;
+    } catch (error){
+        console.error(error.response?.status);
+        console.error(error.response?.data);
+    }
+}
