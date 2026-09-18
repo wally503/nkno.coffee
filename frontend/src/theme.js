@@ -1,4 +1,5 @@
 import { createTheme } from "@mui/material/styles";
+import { lighten } from "@mui/material/styles";
 
 const theme = createTheme({
   palette: {
@@ -7,12 +8,18 @@ const theme = createTheme({
       main: "#8B5E3C",
     },
     divider: "rgba(255, 255, 255, 0.4)",
+    roast: {
+      light: lighten("#8B5E3C", 0.4),
+      medium: "rgba(180, 140, 100, 0.9)",
+      dark: "#2a1f1a",
+    },
   },
   typography: {
     fontFamily: "Poppins, sans-serif",
       h4: { color: "rgba(180, 140, 100, 0.9)" },
-  h5: { color: "rgba(180, 140, 100, 0.9)" },
-  h6: { color: "rgba(180, 140, 100, 0.9)" },
+      h5: { color: "rgba(180, 140, 100, 0.9)" },
+      h6: { color: "rgba(180, 140, 100, 0.9)" },
+      base1: { color: "rgba(180, 140, 100, 0.9)" },
 
   },
   components: {

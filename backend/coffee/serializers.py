@@ -1,6 +1,8 @@
 from .models import *
 from rest_framework import serializers
-
+from datetime import date
+from decimal import Decimal
+from brew.models import AeropressDetail, PouroverDetail, EspressoDetail, BagLifecycleEvent
 
 class RoasterSerializer(serializers.ModelSerializer):
     country = serializers.PrimaryKeyRelatedField(
@@ -152,3 +154,100 @@ class MapZoneSerializer(serializers.ModelSerializer):
 
 class BeanLifecycleSerializer(serializers.ModelSerializer):
     grams = serializers.DecimalField(max_digits=6, decimal_places=2)
+
+
+
+def _format_grind_value(rotations, position):
+    return f"{rotations}.{position}"
+
+
+def _grind_range(bean, detail_model):
+    qs = detail_model.objects.filter(brew_log__bean=bean)
+    low = qs.order_by('grind_rotations', 'grind_position').first()
+    if not low:
+        return "N/A"
+    high = qs.order_by('-grind_rotations', '-grind_position').first()
+
+    low_val = _format_grind_value(low.grind_rotations, low.grind_position)
+    if low.pk == high.pk:
+        return low_val
+    high_val = _format_grind_value(high.grind_rotations, high.grind_position)
+    return f"{low_val} - {high_val}"
+
+
+class OpenBagSerializer(serializers.ModelSerializer):
+    short_id = serializers.CharField(read_only=True)
+    bean_name = serializers.CharField(source='name')
+    roaster_name = serializers.CharField(source='roaster.name')
+    roast_display = serializers.SerializerMethodField()
+    roasted_on = serializers.DateField(source='roast_date')
+    roasted_days_ago = serializers.SerializerMethodField()
+    opened_on = serializers.SerializerMethodField()
+    opened_days_ago = serializers.SerializerMethodField()
+    espresso_grind = serializers.SerializerMethodField()
+    pourover_grind = serializers.SerializerMethodField()
+    aeropress_grind = serializers.SerializerMethodField()
+    remaining_weight = serializers.DecimalField(max_digits=6, decimal_places=1, read_only=True)
+    total_weight = serializers.DecimalField(source='bag_weight', max_digits=6, decimal_places=1)
+    percent_remaining = serializers.SerializerMethodField()
+    flavor_notes = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Bean
+        fields = [
+            'short_id', 'bean_name', 'roaster_name', 'roast_display',
+            'roasted_on', 'roasted_days_ago', 'opened_on', 'opened_days_ago',
+            'espresso_grind', 'pourover_grind', 'aeropress_grind',
+            'remaining_weight', 'total_weight', 'percent_remaining',
+            'flavor_notes',
+        ]
+
+    def get_roast_display(self, obj):
+        label = obj.get_roast_level_display() if obj.roast_level else ""
+        if obj.caff_or_decaf != 'decaffeinated':
+            return f"{label} (Decaf)".strip() if label else "(Decaf)"
+        return label or None
+
+    def _resolve_opened_date(self, obj):
+        # """Returns a date object (not string) — used internally by both opened_on and opened_days_ago."""
+        if obj.opened_date:
+            return obj.opened_date.date() if hasattr(obj.opened_date, 'date') else obj.opened_date
+
+        lifecycle = obj.lifecycle_events.filter(
+            event_type=BagLifecycleEvent.EventType.OPENED
+        ).order_by('date').first()
+        if lifecycle:
+            return lifecycle.date.date()
+
+        oldest_log = obj.brew_logs.order_by('date').first()
+        return oldest_log.date.date() if oldest_log else None
+
+    def get_opened_on(self, obj):
+        resolved = self._resolve_opened_date(obj)
+        return resolved.strftime('%Y-%m-%d') if resolved else None
+
+    def get_opened_days_ago(self, obj):
+        resolved = self._resolve_opened_date(obj)
+        return (date.today() - resolved).days if resolved else None
+
+    def get_roasted_days_ago(self, obj):
+        if not obj.roast_date:
+            return None
+        return (date.today() - obj.roast_date).days
+
+    def get_espresso_grind(self, obj):
+        return _grind_range(obj, EspressoDetail)
+
+    def get_pourover_grind(self, obj):
+        return _grind_range(obj, PouroverDetail)
+
+    def get_aeropress_grind(self, obj):
+        return _grind_range(obj, AeropressDetail)
+
+    def get_percent_remaining(self, obj):
+        if not obj.bag_weight:
+            return None
+        return round((obj.remaining_weight / obj.bag_weight) * 100, 1)
+
+    def get_flavor_notes(self, obj):
+        return [note.name for note in obj.flavor_notes.all()]

@@ -1,5 +1,6 @@
 from rest_framework.routers import DefaultRouter   
-from .views import RoasterViewSet, BeanViewSet, DrinkViewSet, CountriesViewSet, FlavorNotesViewSet, RegionsViewSet, MapzoneViewSet, BeanLifecycleViewSet
+from .views import RoasterViewSet, BeanViewSet, DrinkViewSet, CountriesViewSet, FlavorNotesViewSet, RegionsViewSet, MapzoneViewSet, BeanLifecycleViewSet,OpenBagListView
+from django.urls import path
 
 router = DefaultRouter()
 
@@ -14,4 +15,6 @@ router.register('mapzone', MapzoneViewSet)
 router.register('beanLifecycle', BeanLifecycleViewSet, basename='bean-lifecycle') 
 
 
-urlpatterns = router.urls
+urlpatterns = [
+    path('beans/open/', OpenBagListView.as_view(), name='open-bags'),    
+] + router.urls 

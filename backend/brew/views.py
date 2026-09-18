@@ -202,3 +202,4 @@ class EspressoDetailViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
         if self.action == 'retrieve':
             return EspressoDetailReadSerializer
         return EspressoDetailSerializer
+        

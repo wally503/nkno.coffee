@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.db.models import Count
 from django.db.models.functions import Coalesce, Greatest
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -234,3 +234,10 @@ class MapzoneViewSet(ListModelMixin, RetrieveModelMixin, viewsets.GenericViewSet
         if zone:
             queryset = queryset.filter(zone_name=zone)
         return queryset
+
+
+class OpenBagListView(generics.ListAPIView):
+    serializer_class = OpenBagSerializer
+
+    def get_queryset(self):
+        return Bean.objects.filter(finished=False).select_related('roaster')
