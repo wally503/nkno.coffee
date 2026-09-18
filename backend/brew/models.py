@@ -279,6 +279,7 @@ class PouroverDetail(BrewBaseMixin, models.Model):
     kettle = models.ForeignKey(Kettle, on_delete=models.PROTECT)
     water = models.DecimalField(max_digits=6, decimal_places=1)
     temp = models.DecimalField(max_digits=5, decimal_places=1)
+    stop_time = models.DurationField(null=True, blank=True)
 
     @property
     def total_poured(self):

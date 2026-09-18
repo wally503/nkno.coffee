@@ -195,7 +195,7 @@ export const espressoConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       options: ESPRESSO_STATIC_OPTIONS.paper_filter_used,
-      defaultValue: 'none',
+      defaultValue: 'not_used',
     },
     {
       type: "dropdown",

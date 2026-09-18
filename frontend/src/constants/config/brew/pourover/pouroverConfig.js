@@ -226,6 +226,27 @@ export const pouroverConfig = {
       required: false,
     },
 
+      {
+      type: "spacer",
+      size: { xs: 0, sm: 4, md: 4 },
+      color: "rgba(180, 140, 100, 0)",
+    },
+    {
+      type: "text_numeric",
+      name: "stop_time",
+      label: "Stop Time (Taken Off Cup)",
+      required: true,
+      size: { xs: 12, sm: 4, md: 4 },
+      placeholder: "2:18",
+      inputStyle: "duration",
+    },
+    {
+      type: "spacer",
+      size: { xs: 0, sm: 4, md: 4 },
+      color: "rgba(180, 140, 100, 0)",
+    },
+
+
     { type: "divider" },
 
     {

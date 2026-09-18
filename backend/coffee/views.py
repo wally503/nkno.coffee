@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.db.models import Count
 from django.db.models.functions import Coalesce, Greatest
+from django.db.models import F
 from rest_framework import viewsets, generics
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -240,4 +241,8 @@ class OpenBagListView(generics.ListAPIView):
     serializer_class = OpenBagSerializer
 
     def get_queryset(self):
-        return Bean.objects.filter(finished=False).select_related('roaster')
+        return (
+            Bean.objects.filter(finished=False)
+            .select_related('roaster')
+            .order_by(F('opened_date').desc(nulls_last=True))
+        )

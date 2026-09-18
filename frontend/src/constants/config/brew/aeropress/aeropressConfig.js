@@ -165,7 +165,7 @@ export const aeropressConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       placeholder: "5.5",
-      defaultValue: 7,
+      // defaultValue: 7,
     },
     {
       type: "dropdown",
@@ -218,8 +218,7 @@ export const aeropressConfig = {
       placeholder: "18",
     },
     { type: "divider" },
-
-        {
+    {
       type: "spacer",
       size: { xs: 0, sm: 2, md: 2 },
       color: "rgba(180, 140, 100, 0)",

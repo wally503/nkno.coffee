@@ -126,14 +126,25 @@ class AtomicDetailCreateMixin:
         return detail
 
     def update(self, instance, validated_data):
-        validated_data.pop('brew_log', None)  # immutable post-create
+        brew_log_data = validated_data.pop('brew_log', None)
         nested_data = self.pop_nested(validated_data, for_update=True)
 
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-        instance.save()
+        with transaction.atomic():
+            if brew_log_data:
+                # bean/style stay immutable; pull_number is read-only already
+                brew_log_data.pop('bean', None)
+                brew_log_data.pop('style', None)
+                brew_log = instance.brew_log
+                for attr, value in brew_log_data.items():
+                    setattr(brew_log, attr, value)
+                brew_log.save()
 
-        self.update_nested(instance, nested_data)
+            for attr, value in validated_data.items():
+                setattr(instance, attr, value)
+            instance.save()
+
+            self.update_nested(instance, nested_data)
+
         return instance
 
     # Hooks for the one nested many-field each style has, if any.
@@ -282,7 +293,7 @@ class PouroverDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSeriali
     kettle = serializers.SlugRelatedField(slug_field='short_id', queryset=Kettle.objects.all())
     brew_log = BrewLogSerializer()
     needs_bag_close_prompt = serializers.SerializerMethodField()
-
+    stop_time = MMSSDurationField(required=True)
     dripper = serializers.ChoiceField(choices=DripperChoice.choices, required=True)
 
     detail_model = PouroverDetail
@@ -308,6 +319,7 @@ class PouroverDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSeriali
             'grinder',
             'scale',
             'needs_bag_close_prompt',
+            'stop_time'
         ]
 
     def get_needs_bag_close_prompt(self, obj):
@@ -333,7 +345,8 @@ class PouroverDetailReadSerializer(serializers.ModelSerializer):
     scale = ScaleNestedSerializer(read_only=True)
     kettle = KettleNestedSerializer(read_only=True)
     pour_events = PouroverPourEventSerializer(many=True, read_only=True)
-
+    stop_time = MMSSDurationField() 
+    
     class Meta:
         model = PouroverDetail
         fields = [
@@ -356,6 +369,7 @@ class PouroverDetailReadSerializer(serializers.ModelSerializer):
             'pour_events',
             'total_poured',
             'is_balanced',
+            'stop_time'
         ]
 
 

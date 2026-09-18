@@ -1,4 +1,4 @@
-// src/pages/brew/aeropress/AddAeropress.jsx
+// src/pages/brew/aeropress/AeropressForm.jsx
 import * as React from "react";
 import BrewLogFormShell from "../shared/BrewLogFormShell";
 import { AEROPRESS_STATIC_OPTIONS, aeropressConfig } from "../../../constants/config/brew/aeropress/aeropressConfig";
@@ -11,6 +11,7 @@ import DialogueBox from "../../../components/DialogueBox";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import DefaultBodyLayout from "../../../components/DefaultBodyLayout";
 import Fade from '@mui/material/Fade';
+import dayjs from 'dayjs';
 
 export default function AeropressFormPage() {
   const [formData, setFormData] = React.useState({});
@@ -89,11 +90,11 @@ export default function AeropressFormPage() {
   const handleSubmit = async () => {
     try {
       const { bean, date, extraction_rating, notes, hoffmann_events, ...detailFields } = formData;
-
+      const normalizedDate = date ? dayjs(date).toISOString() : null;
       const payload = {
             ...detailFields,
             hoffmann_events,
-            brew_log: { bean, date, extraction_rating, notes, style: 'aeropress' },
+            brew_log: { bean, date: normalizedDate, extraction_rating, notes, style: 'aeropress' },
           };
 
       const res = shortid

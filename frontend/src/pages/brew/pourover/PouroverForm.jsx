@@ -1,4 +1,4 @@
-// src/pages/brew/pourover/AddPourover.jsx
+// src/pages/brew/pourover/PouroverForm.jsx
 import * as React from "react";
 import BrewLogFormShell from "../shared/BrewLogFormShell";
 import { POUROVER_STATIC_OPTIONS, pouroverConfig } from "../../../constants/config/brew/pourover/pouroverConfig";
@@ -11,6 +11,7 @@ import DialogueBox from "../../../components/DialogueBox";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import DefaultBodyLayout from "../../../components/DefaultBodyLayout";
 import Fade from '@mui/material/Fade';
+import dayjs from 'dayjs';
 
 export default function PouroverFormPage() {
   const [formData, setFormData] = React.useState({});
@@ -90,11 +91,11 @@ export default function PouroverFormPage() {
   const handleSubmit = async () => {
     try {
       const { bean, date, extraction_rating, notes, pour_events, ...detailFields } = formData;
-
+      const normalizedDate = date ? dayjs(date).toISOString() : null;
       const payload = {
             ...detailFields,
             pour_events,
-            brew_log: { bean, date, extraction_rating, notes, style: 'pourover' },
+            brew_log: { bean, date: normalizedDate, extraction_rating, notes, style: 'pourover' },
           };
 
       const res = shortid

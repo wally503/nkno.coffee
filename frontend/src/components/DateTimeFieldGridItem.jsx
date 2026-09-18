@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Grid, FormControl, FormHelperText } from '@mui/material';
-import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs from 'dayjs';
 import TextFieldGridItem from './TextFieldGridItem';
 
@@ -24,13 +24,15 @@ function addEditMode(item, onChange, value, mode, error) {
 
   return (
     <Grid size={item.size || { xs: 12 }}>
-      <MobileDateTimePicker
+      <DateTimePicker
         ampm={false}
+        format="MM/DD/YYYY HH:mm"
         label={item.label || ""}
         value={value ? dayjs(value) : null}
         closeOnSelect
-        onChange={(val) => onChange(item.name, val ? val.format('YYYY-MM-DD HH:mm') : null)}
-        value={value ? dayjs(value) : null}
+        onChange={(val) =>
+          onChange(item.name, val && val.isValid() ? val.format('YYYY-MM-DD HH:mm') : null)
+        }
         slotProps={{
           textField: {
             fullWidth: true,
@@ -44,8 +46,6 @@ function addEditMode(item, onChange, value, mode, error) {
             },
           },
         }}
-        error={!!error}
-        helperText={error?.[0]}
       />
       {item.required && (error ? null : <FormHelperText>Required</FormHelperText>)}
     </Grid>
