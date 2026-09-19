@@ -83,7 +83,10 @@ export const beansConfig = {
       id: "flavor_notes",
       label: "Flavor / Body Notes",
       minWidth: 180,
-      orderingField: null
+      orderingField: null,
+      render: (value) => value
+        ? value
+        : "-",
     },
     {
       id: "date_added",

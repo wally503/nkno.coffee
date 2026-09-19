@@ -56,7 +56,7 @@ export default function HoffmannEventList({ item, onChange, initialValues, mode,
 
   return (
     <Grid container>
-      <Grid size={{ xs: 12, sm: 10, md: 10 }} offset={{ sm: 2, md: 2 }}>
+      <Grid size={{ xs: 12, sm: 10, md: 10 }} offset={{ sm: 4, md: 4}}>
         {item?.label && (
           <Typography variant="subtitle2" sx={{ mb: 1, color: "text.secondary" }}>
             {item.label}
@@ -82,14 +82,14 @@ function addEditMode(event, index, handleChange, handleAdd, handleRemove, events
           placeholder="0:30"
           value={event.rotation_time}
           onChange={(e) => handleChange(index, 'rotation_time', e.target.value)}
-          sx={{ width: 200 }}
+          sx={{ width: 130 }}
         />
         <TextField
           label="Rotations"
           type="number"
           value={event.rotation_count}
           onChange={(e) => handleChange(index, 'rotation_count', e.target.value)}
-          sx={{ width: 200 }}
+          sx={{ width: 130 }}
         />
         <IconButton
           onClick={handleAdd}

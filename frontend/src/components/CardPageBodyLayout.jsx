@@ -19,7 +19,7 @@ export default function CardPageBodyLayout({ children, showBack = false }) {
         px: 4,
         py: 4,
         width: '100%',
-        height: 'calc(100vh - 69px)',
+        minHeight: 'calc(100vh - 69px)',
         position: 'relative',
       }}
     >

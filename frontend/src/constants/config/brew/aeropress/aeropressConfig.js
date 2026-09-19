@@ -226,7 +226,7 @@ export const aeropressConfig = {
     {
       type: "text_numeric",
       name: "press_time",
-      label: "End-to-End Press Time",
+      label: "Full Duration to Press Time",
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       placeholder: "2:18",
