@@ -16,11 +16,27 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: "Poppins, sans-serif",
-      h4: { color: "rgba(180, 140, 100, 0.9)" },
-      h5: { color: "rgba(180, 140, 100, 0.9)" },
-      h6: { color: "rgba(180, 140, 100, 0.9)" },
-      base1: { color: "rgba(180, 140, 100, 0.9)" },
-
+    h4: { color: "rgba(180, 140, 100, 0.9)" },
+    h5: { color: "rgba(180, 140, 100, 0.9)" },
+    h6: { color: "rgba(180, 140, 100, 0.9)" },
+    base1: { color: "rgba(180, 140, 100, 0.9)" },
+    homeCardBeanName: {
+      fontFamily: '"Kalam", cursive',
+      color: "rgba(180, 140, 100, 0.9)",
+      fontSize: '1.5rem',
+      fontWeight: 700,
+    },
+    homeCardFieldLabel: {
+      fontFamily: '"Kalam", cursive',
+      color: "rgba(180, 140, 100, 0.9)",
+      fontWeight: 700,
+      fontSize: '0.95rem',
+    },
+    homeCardFieldValue: {
+      fontFamily: '"Kalam", cursive',
+      color: "#ffffff",
+      fontSize: '0.95rem',
+    },
   },
   components: {
     MuiOutlinedInput: {

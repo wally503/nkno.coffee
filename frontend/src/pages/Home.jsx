@@ -32,7 +32,7 @@ export default function HomePage() {
     return (
         <>
             <CardPageBodyLayout sx={{ justifyContent: 'top' }}>
-                {/* <PageTitle title={" Home"} marginBottom={0} marginTop={-4}/> */}
+                <PageTitle title={" Home"} marginBottom={2} marginTop={-4}/>
                 <Box sx={{
                     display: 'flex',
                     gap: 3,
@@ -41,7 +41,7 @@ export default function HomePage() {
                     width: '100%',
                     alignItems: 'flex-start',
                     mt: -1,
-                    mb: -1.5
+                    mb: -2.5
                 }}>
                     {/* Side panel */}
                     <Box sx={{
@@ -52,7 +52,7 @@ export default function HomePage() {
                         p: 2,
                         border: '2px solid rgba(255, 255, 255, 0.3)',
                         borderRadius: 8,
-                        height: 'calc(100vh - 110px)',
+                        height: 'calc(100vh - 170px)',
                     }}>
                         {/* Density Calendar — placeholder for now, needs a brew-count-per-day endpoint */}
                         <Box sx={{ flex: 1, minHeight: 0, border: '1px solid rgba(180, 140, 100, 0.5)', borderRadius: 2, p: 2 }}>
@@ -81,7 +81,7 @@ export default function HomePage() {
                         p: 2,
                         border: '2px solid rgba(255, 255, 255, 0.3)',
                         borderRadius: 8,
-                        maxHeight: 'calc(100vh - 110px)',
+                        maxHeight: 'calc(100vh - 170px)',
                         overflowY: 'auto',
                         scrollbarWidth: 'none',        // Firefox
                         msOverflowStyle: 'none',       // old Edge/IE

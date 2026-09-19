@@ -16,17 +16,12 @@ export default function BagProgressCard({beanData}){
             }}>
                 {/* Bean / Roaster / Roast Type  row */}
                 <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1.5, mt: -.4 }}>
-                    <Typography variant="h5">
+                    <Typography variant="homeCardBeanName">
                         {beanData.bean_name}
                     </Typography>
-                    <Typography variant="h5">
-                        {"-"}
-                    </Typography>
-                    <Typography variant="h5">
-                        {beanData.roaster_name}
-                    </Typography>
+                    <Typography variant="body1" sx={{ color: 'text.secondary', fontStyle: 'italic' }}>{beanData.roaster_name}</Typography>
                     <Box sx={{ flexGrow: 1 }} />
-                    <Typography variant="h6" color="text.secondary">
+                    <Typography variant="homeCardFieldValue">
                         {beanData.roast_level_display ? `${beanData.roast_level_display} Roast` : "Unknown Roast"}
                         {beanData.is_decaf && (
                             <Typography component="span" variant="body2" sx={{ color: 'text.disabled', ml: 0.5 }}>
@@ -57,17 +52,17 @@ export default function BagProgressCard({beanData}){
 
                 {/* Roasted On / Opened On row */}
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, ml: 1, mr: 1, mb: -1 }}>
-                    <Typography variant="h6">
+                    <Typography variant="homeCardFieldLabel">
                         Roasted:
                     </Typography>
-                    <Typography variant="h6" color="text.secondary">
+                    <Typography variant="homeCardFieldValue">
                         { beanData.roasted_on ?? "N/A" }{ beanData.roasted_days_ago != null ? ` (${beanData.roasted_days_ago} days ago)` : "" }    
                     </Typography>
                     <Box sx={{ flexGrow: 1 }} />
-                    <Typography variant="h6">
+                    <Typography variant="homeCardFieldLabel">
                         Opened:
                     </Typography>
-                    <Typography variant="h6" color="text.secondary">
+                    <Typography variant="homeCardFieldValue">
                         { beanData.opened_on ?? "Not Yet Opened" }{ beanData.opened_days_ago != null ? ` (${beanData.opened_days_ago} days ago)` : "" }
                     </Typography>
                 </Box>
@@ -79,26 +74,26 @@ export default function BagProgressCard({beanData}){
                         {/* Grind row */}
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', ml: 1, mr: 1, my: 0 }}>
                             <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
-                                <Typography variant="base1">
+                                <Typography variant="homeCardFieldLabel">
                                     Espresso Grind(s):
                                 </Typography>
-                                <Typography variant="base1" color="text.secondary">
+                                <Typography variant="homeCardFieldValue">
                                     {beanData.espresso_grind}
                                 </Typography>
                             </Box>
                             <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
-                                <Typography variant="base1">
+                                <Typography variant="homeCardFieldLabel">
                                     Pourover Grind(s):
                                 </Typography>
-                                <Typography variant="base1" color="text.secondary">
+                                <Typography variant="homeCardFieldValue">
                                     {beanData.pourover_grind}
                                 </Typography>
                             </Box>
                             <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
-                                <Typography variant="base1">
+                                <Typography variant="homeCardFieldLabel">
                                     Aeropress Grind(s):
                                 </Typography>
-                                <Typography variant="base1" color="text.secondary">
+                                <Typography variant="homeCardFieldValue">
                                     {beanData.aeropress_grind}
                                 </Typography>
                             </Box>
@@ -112,7 +107,7 @@ export default function BagProgressCard({beanData}){
                                 <BagProgressBar progValue={ beanData.percent_remaining } />
                             </Box>
                             <Box sx={{ flexShrink: 0, whiteSpace: 'nowrap' }}>
-                                <Typography variant="base1" sx={{ color: 'text.disabled', fontStyle: 'italic' }}>
+                                <Typography variant="base1" sx={{ color: 'text.disabled', fontStyle: 'italic'}}>
                                     { beanData.remaining_weight } / { beanData.total_weight }g remaining
                                 </Typography>
                                 <br/>
