@@ -1,7 +1,7 @@
 import { Grid, Button, Box, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-export default function PageHeaderTitle({ title, hasBackButton, backRoute }) {
+export default function PageHeaderTitle({ title, hasBackButton, backRoute, marginBottom = 3, marginTop = 0 }) {
   const navigate = useNavigate();
   
   return (
@@ -18,7 +18,7 @@ export default function PageHeaderTitle({ title, hasBackButton, backRoute }) {
         </Grid>
       </Box>
       <Box sx={{ width: "100%", maxWidth: 1400, mb: "15px" }}>
-        <Grid sx={{ display: "flex", alignItems: "center", justifyContent: "center", mb: 3 }} size={{ xs: 4 }}>
+        <Grid sx={{ display: "flex", alignItems: "center", justifyContent: "center", mb: marginBottom, mt: marginTop }} size={{ xs: 4 }}>
           <Typography variant="h4">
             {title}
           </Typography>

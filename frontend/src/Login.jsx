@@ -24,6 +24,14 @@ export default function LoginPage() {
                         onChange={ (e) => setUserName(e.target.value) }
                         error={!!errors.username}
                         value={username}
+                        sx={{
+                            '& input:-webkit-autofill': {
+                                WebkitBoxShadow: '0 0 0 1000px #1c1c1c inset',
+                                WebkitTextFillColor: '#fff',
+                                caretColor: '#fff',
+                                borderRadius: 'inherit',
+                            },
+                        }}
                     />
                     </Box>
                     <FormHelperText error>{errors.username || ' '}</FormHelperText>
@@ -38,6 +46,14 @@ export default function LoginPage() {
                         error={!!errors.password}
                         value={password}
                         type="password"
+                        sx={{
+                            '& input:-webkit-autofill': {
+                                WebkitBoxShadow: '0 0 0 1000px #1c1c1c inset',
+                                WebkitTextFillColor: '#fff',
+                                caretColor: '#fff',
+                                borderRadius: 'inherit',
+                            },
+                        }}
                     />
                     </Box>
                     <FormHelperText error>{errors.password || ' '}</FormHelperText>

@@ -46,7 +46,14 @@ export default function NavDrawer() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: 'calc(100% - 64px)' }}>
       <CssBaseline />
-      <AppBar className="title-appbar-style" position="fixed" sx={{ backgroundColor: '#512929', zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+      <AppBar
+        className="title-appbar-style"
+        position="fixed"
+        sx={{
+          backgroundColor: '#3a261a', // deep espresso brown
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+        }}
+>
         <Toolbar className='title-container-align'>
           <div className="title-font" component="h1">
             nkno.coffee

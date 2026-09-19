@@ -32,66 +32,69 @@ export default function HomePage() {
     return (
         <>
             <CardPageBodyLayout sx={{ justifyContent: 'top' }}>
-                <PageTitle title={" Home"} />
+                {/* <PageTitle title={" Home"} marginBottom={0} marginTop={-4}/> */}
                 <Box sx={{
                     display: 'flex',
-                    flexDirection: 'column',
                     gap: 3,
-                    maxWidth: 1200,
+                    maxWidth: 1600,
                     mx: 'auto',
-                    width: '100%'
+                    width: '100%',
+                    alignItems: 'flex-start',
+                    mt: -1,
+                    mb: -1.5
                 }}>
-                    {!openBeans || openBeans.length === 0 
-                        ? ''
-                        : openBeans.map((row) => {
-                            return (
-                                <BagProgressCard key={row.short_id} beanData={row} />
-                            )
-                        }
-                    )}
+                    {/* Side panel */}
+                    <Box sx={{
+                        flex: '0 0 30%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 2,
+                        p: 2,
+                        border: '2px solid rgba(255, 255, 255, 0.3)',
+                        borderRadius: 8,
+                        height: 'calc(100vh - 110px)',
+                    }}>
+                        {/* Density Calendar — placeholder for now, needs a brew-count-per-day endpoint */}
+                        <Box sx={{ flex: 1, minHeight: 0, border: '1px solid rgba(180, 140, 100, 0.5)', borderRadius: 2, p: 2 }}>
+                            <Typography variant="h6">Brew Density</Typography>
+                            <Typography variant="body2" color="text.secondary">Coming soon</Typography>
+                        </Box>
+
+                        {/* Undecided — empty allocated slot */}
+                        <Box sx={{ flex: 1, minHeight: 0, border: '1px dashed rgba(180, 140, 100, 0.3)', borderRadius: 2, p: 2 }} />
+
+                        {/* Today's Bean */}
+                        <Box sx={{ flex: 1, minHeight: 0, border: '1px solid rgba(180, 140, 100, 0.5)', borderRadius: 2, p: 2 }}>
+                            <Typography variant="h6">Today's Bean</Typography>
+                            <Typography variant="body1">{dailyBean?.name ?? "—"}</Typography>
+                            <Typography variant="body2" color="text.secondary">{dailyBean?.roaster__name ?? ""}</Typography>
+                        </Box>
+                    </Box>
+
+                    {/* Cards */}
+                    <Box sx={{
+                        flex: '1 1 70%',
+                        minWidth: 0,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 3,
+                        p: 2,
+                        border: '2px solid rgba(255, 255, 255, 0.3)',
+                        borderRadius: 8,
+                        maxHeight: 'calc(100vh - 110px)',
+                        overflowY: 'auto',
+                        scrollbarWidth: 'none',        // Firefox
+                        msOverflowStyle: 'none',       // old Edge/IE
+                        '&::-webkit-scrollbar': {      // Chrome, Safari, new Edge
+                            display: 'none',
+                        },
+                    }}>
+                        {openBeans.map((row) => (
+                            <BagProgressCard key={row.short_id} beanData={row} />
+                        ))}
+                    </Box>
                 </Box>
             </CardPageBodyLayout>
         </>
     )
-
-    // return  (
-    //     <>
-    //         <CardPageBodyLayout>
-    //             <Box sx={{ display: 'flex', gap: 3, justifyContent: 'center', width: '100%' }}>
-    //                 <Card id={latestBean['id']} sx={{
-    //                         border: '1px solid rgba(180, 140, 100, 0.5)',
-    //                         transition: '0.2s',
-    //                         height: 'fit-content', 
-    //                         width: '70%',
-    //                         py: 20                         
-    //                     }}> 
-    //                     <Typography variant="h4" sx={{ py:3, textAlign:'Center'}}>
-    //                         Latest Bean
-    //                     </Typography>
-    //                     <CardContent sx={{ textAlign:'Center', justifyContent: 'center'}}>
-    //                         <Typography variant="h5">{latestBean['name']}</Typography>
-    //                         <Typography variant="body2">{latestBean['roaster__name']}</Typography>
-    //                         <Typography variant="body2">{latestBean['origin_country__name'] || '-'}</Typography>
-    //                     </CardContent>
-    //                 </Card>            
-    //                 <Card id={dailyBean['id']} sx={{
-    //                         border: '1px solid rgba(180, 140, 100, 0.5)',
-    //                         transition: '0.2s',
-    //                         height: 'fit-content', 
-    //                         width: '70%',
-    //                         py: 20                         
-    //                     }}> 
-    //                     <Typography variant="h4" sx={{ py:3, textAlign:'Center'}}>
-    //                         Bean of the Day
-    //                     </Typography>
-    //                     <CardContent sx={{ textAlign:'Center', justifyContent: 'center'}}>
-    //                         <Typography variant="h5">{dailyBean['name']}</Typography>
-    //                         <Typography variant="body2">{dailyBean['roaster__name']}</Typography>
-    //                         <Typography variant="body2">{dailyBean['origin_country__name'] || '-'}</Typography>
-    //                     </CardContent>
-    //                 </Card> 
-    //             </Box>
-    //         </CardPageBodyLayout>
-    //     </>
-    // )
 };

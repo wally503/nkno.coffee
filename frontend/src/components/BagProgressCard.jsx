@@ -1,6 +1,6 @@
 // src/components/BagProgressCard.jsx
 
-import { Grid, Box, Card, Typography, CardContent, Divider } from "@mui/material";
+import { Box, Typography, Divider } from "@mui/material";
 import BagProgressBar from "./BagProgressBar";
 
 export default function BagProgressCard({beanData}){
@@ -9,8 +9,8 @@ export default function BagProgressCard({beanData}){
             <Box sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                gap: 1,
-                p: 2,
+                gap: 0.75,
+                p: 1.5,
                 border: '1px solid rgba(180, 140, 100, 0.5)',
                 borderRadius: 7,
             }}>
@@ -77,7 +77,7 @@ export default function BagProgressCard({beanData}){
                 { beanData.opened_on && (
                     <>
                         {/* Grind row */}
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', ml: 5, mr: 10, my: 0 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', ml: 1, mr: 1, my: 0 }}>
                             <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
                                 <Typography variant="base1">
                                     Espresso Grind(s):
@@ -107,16 +107,16 @@ export default function BagProgressCard({beanData}){
                         <Divider sx={{ width: '98%', mx: 'auto', opacity: 0.3, my: 0 }} />
 
                         {/* Progress bar row */}
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, ml: 2, mb: 0}}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, ml: 1, mb: 0}}>
                             <Box sx={{ flexGrow: 1, minWidth: 0 }}>
                                 <BagProgressBar progValue={ beanData.percent_remaining } />
                             </Box>
                             <Box sx={{ flexShrink: 0, whiteSpace: 'nowrap' }}>
-                                <Typography variant="base1" color="text.secondary" sx={{ color: 'text.disabled', fontStyle: 'italic' }}>
+                                <Typography variant="base1" sx={{ color: 'text.disabled', fontStyle: 'italic' }}>
                                     { beanData.remaining_weight } / { beanData.total_weight }g remaining
                                 </Typography>
                                 <br/>
-                                <Typography variant="base1" color="text.secondary" sx={{ color: 'text.disabled', fontStyle: 'italic' }}>
+                                <Typography variant="base1" sx={{ color: 'text.disabled', fontStyle: 'italic' }}>
                                     { (beanData.percent_remaining).toFixed(1)  }% remaining
                                 </Typography>
                             </Box>
