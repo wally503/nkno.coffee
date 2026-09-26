@@ -4,8 +4,11 @@ services:
     volumes:
       - ./backend:/app
     ports:
-      - "8000:8000"
+      - "8100:8000"
     restart: unless-stopped
+    environment:
+      - DEV_AUTH_BYPASS=1
+      - DEBUG=True
   
   frontend:
     build: ./frontend

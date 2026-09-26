@@ -25,14 +25,16 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 import os
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "skey-default")
-DEBUG = os.environ.get("DEBUG", "False") == "True"
-
+if os.environ.get("DEBUG", "False") == "True":
+    DEBUG = True
+else:
+    DEBUG = False
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "backend"]
 
+DEV_AUTH_BYPASS = DEBUG and os.environ.get("DEV_AUTH_BYPASS") == "1"
 
 # Application definition
 
@@ -148,8 +150,10 @@ REST_FRAMEWORK = {
         'nkno_backend.authentication.CookieJWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ]
+        'rest_framework.permissions.AllowAny'
+        if DEV_AUTH_BYPASS
+        else 'rest_framework.permissions.IsAuthenticated',
+    ],
 }
 
 SIMPLE_JWT = {

@@ -203,3 +203,21 @@ class EspressoDetailViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
             return EspressoDetailReadSerializer
         return EspressoDetailSerializer
         
+
+# ---------------------------------------------------------------------------
+# Tags - Simple Remark Notations / Review Highlights
+# ---------------------------------------------------------------------------
+
+class BrewTagViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = BrewTagSerializer
+    pagination_class = None   # ~20 rows, no paging
+
+    def get_queryset(self):
+        qs = BrewTag.objects.all()
+        method = self.request.query_params.get("method")
+        if method:
+            # JSONField contains lookups are limited on SQLite, so filter in Python
+            ids = [t.id for t in qs if not t.methods or method in t.methods]
+            qs = qs.filter(id__in=ids)
+        return qs
+

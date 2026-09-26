@@ -186,6 +186,7 @@ class BrewLog(models.Model):
     pull_number = models.PositiveSmallIntegerField(blank=True)
     notes = models.TextField(blank=True)
     short_id = models.CharField(max_length=10, unique=True, blank=True)
+    tags = models.ManyToManyField("BrewTag", blank=True, related_name="brew_logs")
 
     def save(self, *args, **kwargs):
         if not self.short_id:
@@ -371,3 +372,29 @@ class BagLifecycleEvent(models.Model):
 
     def __str__(self):
         return f"{self.bean} – {self.get_event_type_display()} – {self.date}"
+
+
+# ---------------------------------------------------------------------------
+# Tags - Simple Remark Notations / Review Highlights
+# ---------------------------------------------------------------------------
+
+class BrewTag(models.Model):
+    class Category(models.TextChoices):
+        GREAT = "great", "Great"
+        PRO = "pro", "Pro"
+        OTHER = "other", "Other"
+        CON = "con", "Con"
+        CATASTROPHE = "catastrophe", "Catastrophe"
+
+    slug = models.SlugField(unique=True)
+    name = models.CharField(max_length=40)
+    category = models.CharField(max_length=16, choices=Category.choices)
+    methods = models.JSONField(default=list, blank=True)  # [] = all methods
+    color = models.CharField(max_length=9, blank=True)    # optional override
+    sort_order = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["sort_order", "name"]
+
+    def __str__(self):
+        return self.name

@@ -6,7 +6,8 @@ from .models import (
     BrewLog,
     AeropressDetail, HoffmannEvent,
     PouroverDetail, PouroverPourEvent,
-    ColdBrewDetail, BagLifecycleEvent, EspressoDetail
+    ColdBrewDetail, BagLifecycleEvent, EspressoDetail,
+    BrewTag
 )
 
 
@@ -35,6 +36,11 @@ class PouroverPourEventInline(admin.TabularInline):
 
 class PouroverDetailAdmin(admin.ModelAdmin):
     inlines = [PouroverPourEventInline]
+
+@admin.register(BrewTag)
+class BrewTagAdmin(admin.ModelAdmin):
+    list_display = ("name", "category", "methods", "sort_order")
+    list_filter = ("category",)
 
 
 admin.site.register(Grinder)

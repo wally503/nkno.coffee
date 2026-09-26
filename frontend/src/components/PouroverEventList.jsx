@@ -62,11 +62,11 @@ export default function PouroverEventList({ item, onChange, initialValues, mode,
             : events.map((event, index) =>
                 addEditMode(event, index, handleChange, handleAdd, handleRemove, events, error?.[index]))}
         </Grid>
-        {mode !== "view" && (
+        {/* {mode !== "view" && (
           <Box sx={{ mt: 0, fontSize: "0.85rem", color: "text.secondary" }}>
             Total poured: {totalPoured}ml
           </Box>
-        )}
+        )} */}
       </Grid>
     </Grid>
   );

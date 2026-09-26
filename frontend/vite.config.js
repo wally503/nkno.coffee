@@ -1,12 +1,13 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import svgr from 'vite-plugin-svgr';
+import svgr from 'vite-plugin-svgr'
+
+const target = process.env.API_TARGET || 'http://backend:8000'
 
 export default defineConfig({
   plugins: [react(), svgr()],
   server: {
-    proxy: {
-      '/api': 'http://backend:8000',
-    },
+    host: true,
+    proxy: { '/api': target },
   },
 })

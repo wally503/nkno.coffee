@@ -506,3 +506,22 @@ class EspressoDetailListSerializer(serializers.ModelSerializer):
 
     def get_grinder_name(self, obj):
         return obj.grinder.name if obj.grinder else '-'
+
+
+# ---------------------------------------------------------------------------
+# Tags - Simple Remark Notations / Review Highlights
+# ---------------------------------------------------------------------------
+
+class BrewTagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BrewTag
+        fields = ["slug", "name", "category", "color"]
+
+# read serializer
+tags = BrewTagSerializer(many=True, read_only=True)
+
+# write serializer
+tags = serializers.SlugRelatedField(
+    many=True, slug_field="slug",
+    queryset=BrewTag.objects.all(), required=False,
+)
