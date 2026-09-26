@@ -249,6 +249,23 @@ export const pouroverConfig = {
 
     { type: "divider" },
 
+
+
+    { 
+      type: 'tags', 
+      name: 'tags',  
+      label: "Tags",
+      method: 'pourover',
+      size: { xs: 12, sm: 6, md: 6 }, 
+      defaultValue: [],
+    },
+    {
+      type: "rating",
+      name: "extraction_rating",
+      label: "Extraction Rating",
+      required: true,
+      size: { xs: 12, sm: 6, md: 6 },
+    },
     {
       type: "long_text",
       name: "notes",
@@ -258,12 +275,5 @@ export const pouroverConfig = {
       placeholder: "Tasting notes, what you'd change next time",
     },
 
-    {
-      type: "rating",
-      name: "extraction_rating",
-      label: "Extraction Rating",
-      required: true,
-      size: { xs: 12, sm: 6, md: 6 },
-    },
   ],
 };

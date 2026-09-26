@@ -90,15 +90,16 @@ export default function EspressoFormPage() {
     grinder: data.grinder?.short_id ?? data.grinder,
     scale: data.scale?.short_id ?? data.scale,
     brew_log: data.brew_log?.id ?? data.brew_log,
+    tags: (data.brew_log?.tags ?? []).map(t => t.slug),
   });
 
   const handleSubmit = async () => {
     try {
-      const { bean, date, extraction_rating, notes, brew_log, ...detailFields } = formData;
+      const { bean, date, extraction_rating, notes, brew_log, tags = [], ...detailFields } = formData;
       const normalizedDate = date ? dayjs(date).toISOString() : null;
       const payload = {
             ...detailFields,
-            brew_log: { bean, date: normalizedDate, extraction_rating, notes, style: 'espresso' },
+            brew_log: { bean, date: normalizedDate, extraction_rating, notes, tags, style: 'espresso' },
           };
 
       const res = shortid

@@ -87,8 +87,9 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
                 Q(bean__name__icontains=search) | Q(notes__icontains=search)
             )
 
-        combined = [self._brew_log_row(b) for b in brew_qs] + \
-                [self._bag_event_row(e) for e in bag_qs]
+        combined = [self._brew_log_row(b) for b in brew_qs.prefetch_related('tags')] + \
+            [self._bag_event_row(e) for e in bag_qs]
+
 
         def sort_key(row):
             offset = TIEBREAK_OFFSET.get(row['style'], timedelta(0))
@@ -129,6 +130,7 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
             'days_since_roast': brew_log.days_since_roast,
             'grinder_name': detail.grinder.name if detail and detail.grinder else '-',
             'grind_setting': grind_setting,
+            'tags': BrewTagSerializer(brew_log.tags.all(), many=True).data,
         }
 
     def _bag_event_row(self, event):
@@ -147,6 +149,7 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
             'days_since_roast': None, # if 'opened' -> diff roast date / today
             'grinder_name': None,
             'grind_setting': None,
+            'tags': [],
         }
 
 

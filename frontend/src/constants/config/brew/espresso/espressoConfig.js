@@ -270,6 +270,23 @@ export const espressoConfig = {
     { type: "divider" },
 
 
+
+
+    { 
+      type: 'tags', 
+      name: 'tags',  
+      label: "Tags",
+      method: 'espresso',
+      size: { xs: 12, sm: 6, md: 6 }, 
+      defaultValue: [],
+    },
+        {
+      type: "rating",
+      name: "extraction_rating",
+      label: "Extraction Rating",
+      required: true,
+      size: { xs: 12, sm: 6, md: 6 },
+    },
     {
       type: "long_text",
       name: "notes",
@@ -277,13 +294,6 @@ export const espressoConfig = {
       required: false,
       size: { xs: 12 },
       placeholder: "Tasting notes, what you'd change next time",
-    },
-    {
-      type: "rating",
-      name: "extraction_rating",
-      label: "Extraction Rating",
-      required: true,
-      size: { xs: 12, sm: 6, md: 6 },
     },
   ],
 };

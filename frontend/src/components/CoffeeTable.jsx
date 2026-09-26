@@ -15,7 +15,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Grid, FormControl, FormHelperText, Box, Rating, Typography, TableSortLabel } from "@mui/material";
 import { ratingCustomIcons } from "./RatingGridItem";
 
-export default function CoffeeTable({columns, rows, totalCount, tableState, viewRoute}) {
+export default function CoffeeTable({
+  columns, rows, totalCount, tableState, viewRoute,
+  cellPx, cellPy,               // cell padding, in MUI spacing units (1 = 8px)
+  width = "90%", maxWidth = 2000,
+}) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(tableState.pageSize);
   const navigate = useNavigate();
@@ -41,15 +45,20 @@ export default function CoffeeTable({columns, rows, totalCount, tableState, view
     tableState.setPage(0);
   };
 
+  // Padding resolution: column setting > table-wide prop > MUI default
+  const cellSxFor = (column) => {
+    const px = column.px ?? cellPx;
+    const py = column.py ?? cellPy;
+    return {
+      ...(px !== undefined && { px }),
+      ...(py !== undefined && { py }),
+      ...(column.cellSx ?? {}),      // full escape hatch: pl, pr, whiteSpace, etc.
+    };
+  };
+
   if (!columns?.length) return null;
   return (
-    <Box
-        sx={{
-          width: "90%", 
-          maxWidth: 1400, 
-          mx: "auto" 
-        }}
-      >
+      <Box sx={{ width, maxWidth, mx: "auto" }}>
         <Paper>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 2 }}>
             <TextField placeholder="Search..." onChange={(e) => tableState.setSearch(e.target.value)} size="small" />
@@ -64,7 +73,7 @@ export default function CoffeeTable({columns, rows, totalCount, tableState, view
                       align={column.align}
                       style={{ top: 0, minWidth: column.minWidth, width: column.minWidth }}
                       onClick={() => column.orderingField !== null && tableState.handleOrderingChange(column.orderingField ?? column.id)}
-                      sx={{ cursor: column.orderingField === null ? 'default' : 'pointer' }}
+                      sx={{ cursor: column.orderingField === null ? 'default' : 'pointer', ...cellSxFor(column) }}
                     >
                       <TableSortLabel
                         active={column.orderingField !== null && (column.orderingField ?? column.id) === tableState.orderField}
@@ -110,7 +119,10 @@ export default function CoffeeTable({columns, rows, totalCount, tableState, view
                             <TableCell
                               key={column.id}
                               align={column.align}
-                              sx={row.rowSx?.color ? { color: row.rowSx.color } : undefined}
+                              sx={{
+                                ...cellSxFor(column),
+                                ...(row.rowSx?.color ? { color: row.rowSx.color } : {}),
+                              }}
                             >
                               {renderCell(column, value, row)}
                             </TableCell>

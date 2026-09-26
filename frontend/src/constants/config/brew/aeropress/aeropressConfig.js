@@ -263,14 +263,13 @@ export const aeropressConfig = {
 
 
     { type: "divider" },
-
-    {
-      type: "long_text",
-      name: "notes",
-      label: "Notes",
-      required: false,
-      size: { xs: 12 },
-      placeholder: "Tasting notes, what you'd change next time",
+    { 
+      type: 'tags', 
+      name: 'tags',  
+      label: "Tags",
+      method: 'aeropress',
+      size: { xs: 12, sm: 6, md: 6 }, 
+      defaultValue: [],
     },
     {
       type: "rating",
@@ -279,5 +278,14 @@ export const aeropressConfig = {
       required: true,
       size: { xs: 12, sm: 6, md: 6 },
     },
+    {
+      type: "long_text",
+      name: "notes",
+      label: "Notes",
+      required: false,
+      size: { xs: 12 },
+      placeholder: "Tasting notes, what you'd change next time",
+    },
+
   ],
 };

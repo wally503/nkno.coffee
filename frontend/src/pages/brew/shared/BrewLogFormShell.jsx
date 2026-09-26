@@ -9,6 +9,7 @@ import RatingGridItem from "../../../components/RatingGridItem";
 import HoffmannEventList from "../../../components/HoffmannEventList";
 import PouroverEventList from "../../../components/PouroverEventList";
 import PageTitle from "../../../components/PageTitle";
+import TagsGridItem from "../../../components/TagsGridItem";
 
 // Same shape as CoffeeLogFormShell: title / back button / field switch / save-or-edit button.
 // Kept as its own shell (not an extension of CoffeeLogFormShell) because brew forms need
@@ -44,6 +45,7 @@ export default function BrewLogFormShell({
               case "divider":      return buildDivider(index);
               case "spacer":       return buildSpacer(field, index);
               case "event_list":   return buildEventListField(field, formData, onFieldChange, mode, errors);
+              case "tags": return buildTagsField(field, formData, onFieldChange, mode, errors);
             }
           })}
         </Grid>
@@ -215,4 +217,15 @@ function buildEventListField(field, formData, onFieldChange, mode, errors) {
       />
     </Grid>
   );
+}
+
+function buildTagsField(field, formData, onFieldChange, mode, errors) {
+  return <TagsGridItem
+            key={field.name}
+            item={field}
+            value={formData[field.name] ?? []}
+            onChange={onFieldChange}
+            error={errors[field.name]}
+            mode={mode}
+          />;
 }

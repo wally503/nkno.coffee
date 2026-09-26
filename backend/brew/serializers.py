@@ -48,6 +48,22 @@ class BeanNestedSerializer(serializers.ModelSerializer):
         model = Bean
         fields = ['short_id', 'name', 'roaster']
 
+
+# ---------------------------------------------------------------------------
+# Tags - Simple Remark Notations / Review Highlights
+# ---------------------------------------------------------------------------
+
+class BrewTagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BrewTag
+        fields = ["slug", "name", "category", "color"]
+
+class BrewTagField(serializers.SlugRelatedField):
+    """Write: slug strings. Read: full tag objects."""
+    def to_representation(self, obj):
+        return BrewTagSerializer(obj).data
+
+
 # ---------------------------------------------------------------------------
 # BrewLog
 # ---------------------------------------------------------------------------
@@ -56,6 +72,10 @@ class BrewLogSerializer(serializers.ModelSerializer):
     bean = serializers.SlugRelatedField(slug_field='short_id', queryset=Bean.objects.all())
     days_since_roast = serializers.ReadOnlyField()
     days_since_opened = serializers.ReadOnlyField()
+    tags = BrewTagField(
+        many=True, slug_field='slug',
+        queryset=BrewTag.objects.all(), required=False,
+    )
 
     class Meta:
         model = BrewLog
@@ -69,6 +89,7 @@ class BrewLogListSerializer(serializers.ModelSerializer):
     detail_id = serializers.SerializerMethodField()
     days_since_roast = serializers.ReadOnlyField()
     days_since_opened = serializers.ReadOnlyField()
+    tags = BrewTagSerializer(many=True, read_only=True)
 
     class Meta:
         model = BrewLog
@@ -85,6 +106,7 @@ class BrewLogReadSerializer(serializers.ModelSerializer):
     bean = BeanNestedSerializer(read_only=True)
     days_since_roast = serializers.ReadOnlyField()
     days_since_opened = serializers.ReadOnlyField()
+    tags = BrewTagSerializer(many=True, read_only=True)
 
     class Meta:
         model = BrewLog
@@ -116,28 +138,35 @@ class AtomicDetailCreateMixin:
 
     def create(self, validated_data):
         brew_log_data = validated_data.pop('brew_log')
+        tags = brew_log_data.pop('tags', None)
         nested_data = self.pop_nested(validated_data)
 
         with transaction.atomic():
             brew_log = BrewLog.objects.create(**brew_log_data)
+            if tags is not None:
+                brew_log.tags.set(tags)
             detail = self.detail_model.objects.create(brew_log=brew_log, **validated_data)
             self.create_nested(detail, nested_data)
 
         return detail
 
+
     def update(self, instance, validated_data):
         brew_log_data = validated_data.pop('brew_log', None)
+        tags = brew_log_data.pop('tags', None) if brew_log_data else None
         nested_data = self.pop_nested(validated_data, for_update=True)
 
         with transaction.atomic():
             if brew_log_data:
-                # bean/style stay immutable; pull_number is read-only already
                 brew_log_data.pop('bean', None)
                 brew_log_data.pop('style', None)
                 brew_log = instance.brew_log
                 for attr, value in brew_log_data.items():
                     setattr(brew_log, attr, value)
                 brew_log.save()
+
+            if tags is not None:
+                instance.brew_log.tags.set(tags)
 
             for attr, value in validated_data.items():
                 setattr(instance, attr, value)
@@ -507,21 +536,3 @@ class EspressoDetailListSerializer(serializers.ModelSerializer):
     def get_grinder_name(self, obj):
         return obj.grinder.name if obj.grinder else '-'
 
-
-# ---------------------------------------------------------------------------
-# Tags - Simple Remark Notations / Review Highlights
-# ---------------------------------------------------------------------------
-
-class BrewTagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BrewTag
-        fields = ["slug", "name", "category", "color"]
-
-# read serializer
-tags = BrewTagSerializer(many=True, read_only=True)
-
-# write serializer
-tags = serializers.SlugRelatedField(
-    many=True, slug_field="slug",
-    queryset=BrewTag.objects.all(), required=False,
-)

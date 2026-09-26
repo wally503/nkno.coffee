@@ -86,16 +86,17 @@ export default function PouroverFormPage() {
     scale: data.scale?.short_id ?? data.scale,
     kettle: data.kettle?.short_id ?? data.kettle,
     brew_log: data.brew_log?.id ?? data.brew_log,
+    tags: (data.brew_log?.tags ?? []).map(t => t.slug),
   });
 
   const handleSubmit = async () => {
     try {
-      const { bean, date, extraction_rating, notes, pour_events, ...detailFields } = formData;
+      const { bean, date, extraction_rating, notes, pour_events, tags = [], ...detailFields } = formData;
       const normalizedDate = date ? dayjs(date).toISOString() : null;
       const payload = {
             ...detailFields,
             pour_events,
-            brew_log: { bean, date: normalizedDate, extraction_rating, notes, style: 'pourover' },
+            brew_log: { bean, date: normalizedDate, extraction_rating, notes, tags, style: 'pourover' },
           };
 
       const res = shortid

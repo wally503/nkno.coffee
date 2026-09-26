@@ -385,6 +385,7 @@ class BrewTag(models.Model):
         OTHER = "other", "Other"
         CON = "con", "Con"
         CATASTROPHE = "catastrophe", "Catastrophe"
+        AMAZING = "amazing", "Amazing"
 
     slug = models.SlugField(unique=True)
     name = models.CharField(max_length=40)

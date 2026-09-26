@@ -7,6 +7,7 @@ import SentimentSatisfiedIcon from '@mui/icons-material/SentimentSatisfied';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAltOutlined';
 import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
 import PropTypes from 'prop-types';
+import { RATING_COLORS } from '../constants/ratingStyles';
 
 const StyledRating = styled(Rating)(({ theme }) => ({
   '& .MuiRating-iconEmpty .MuiSvgIcon-root': {
@@ -16,23 +17,23 @@ const StyledRating = styled(Rating)(({ theme }) => ({
 
 export const ratingCustomIcons = {
   1: {
-    icon: <SentimentVeryDissatisfiedIcon color="error" />,
+    icon: <SentimentVeryDissatisfiedIcon sx={{ color: RATING_COLORS[1] }} />,
     label: 'Sad',
   },
   2: {
-    icon: <SentimentDissatisfiedIcon color="error" />,
+    icon: <SentimentDissatisfiedIcon sx={{ color: RATING_COLORS[2] }} />,
     label: 'Dissatisfied',
   },
   3: {
-    icon: <SentimentSatisfiedIcon color="warning" />,
+    icon: <SentimentSatisfiedIcon sx={{ color: RATING_COLORS[3] }} />,
     label: 'OK',
   },
   4: {
-    icon: <SentimentSatisfiedAltIcon color="success" />,
+    icon: <SentimentSatisfiedAltIcon sx={{ color: RATING_COLORS[4] }} />,
     label: 'Good',
   },
   5: {
-    icon: <SentimentVerySatisfiedIcon color="success" />,
+    icon: <SentimentVerySatisfiedIcon sx={{ color: RATING_COLORS[5] }} />,
     label: 'Awesome',
   },
 };

@@ -1,5 +1,6 @@
 // src/constants/config/brew/history/logConfig.js
 import { ratingCustomIcons } from '../../../../components/RatingGridItem';
+import TagCluster from '../../../../components/TagCluster'
 
 // Maps BrewLog.style values to their route segment. cold_brew -> cold-brew
 // (kebab in the URL, underscore in the model) is the one mismatch to remember.
@@ -10,6 +11,8 @@ export const STYLE_ROUTE_SEGMENT = {
   espresso: 'espresso',      // no route yet — mod kit pending
   milk_drink: 'milk-drink',  // no route yet — mod kit pending
 };
+
+const TAG_SIZE = 0.8 // 1 = full size, 0.75 is about compact, 0.65 is about dense
 
 export const logColumns = [
   {
@@ -67,6 +70,18 @@ export const logColumns = [
         );
       }
       return ratingCustomIcons[value]?.icon ?? <span style={{ opacity: 0.3 }}>{ratingCustomIcons[3].icon}</span>;
+    },
+  },
+  {
+    id: "tags",
+    label: "Tags",
+    minWidth: 240,
+    render: (value, row) => {
+      const tags = row.tags ?? [];
+      if (row.style === "bag_event" || tags.length === 0) {
+        return <span style={{ opacity: 0.6 }}>{'-'}</span>;
+      }
+      return <TagCluster tags={tags} density={TAG_SIZE} palette="table" />;
     },
   },
   {
