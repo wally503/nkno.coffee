@@ -234,7 +234,7 @@ export const pouroverConfig = {
     {
       type: "text_numeric",
       name: "stop_time",
-      label: "Stop Time (Taken Off Cup)",
+      label: "Stop Time (Removed From Vessel)",
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       placeholder: "2:18",

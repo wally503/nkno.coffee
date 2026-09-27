@@ -14,6 +14,8 @@ import { POUROVER_STATIC_OPTIONS } from '../constants/config/brew/pourover/pouro
 
 // Row shape: { pour_time: "0:30", pour_amount: 60, pour_style: "center" }
 const EMPTY_EVENT = { pour_time: '', pour_amount: '', pour_style: '' };
+const columnSx = { width: 90 };
+const rateSx = { width: 190 };
 
 export default function PouroverEventList({ item, onChange, initialValues, mode, error }) {
   const [events, setEvents] = useState(initialValues?.length ? initialValues : [EMPTY_EVENT]);
@@ -44,9 +46,7 @@ export default function PouroverEventList({ item, onChange, initialValues, mode,
     }
   };
 
-  const totalPoured = events
-    .filter(e => e.pour_amount)
-    .reduce((sum, e) => sum + Number(e.pour_amount || 0), 0);
+  const totalPoured = events.reduce((max, e) => Math.max(max, Number(e.pour_amount) || 0), 0);
 
   return (
     <Grid container>
@@ -87,9 +87,8 @@ function addEditMode(event, index, handleChange, handleAdd, handleRemove, events
   const endSeconds = startSeconds != null && durationSeconds != null
     ? startSeconds + durationSeconds
     : null;
-  const rate = durationSeconds && event.pour_amount
-    ? (Number(event.pour_amount) / durationSeconds).toFixed(1)
-    : null;
+  const r = pourRate(events, index);
+  const rate = r != null ? r.toFixed(1) : null;
 
   const rangeLabel = startSeconds != null && endSeconds != null
     ? `${event.pour_time} – ${fromSeconds(endSeconds)}${rate ? ` (${rate}g/s)` : ''}`
@@ -193,11 +192,31 @@ function toSeconds(duration) {
   return h * 3600 + m * 60 + s;
 }
 
+// m:ss, or h:mm:ss when it passes an hour
+function formatClock(totalSeconds) {
+  const h = Math.floor(totalSeconds / 3600);
+  const m = Math.floor((totalSeconds % 3600) / 60);
+  const s = totalSeconds % 60;
+  const mm = String(m).padStart(2, '0');
+  const ss = String(s).padStart(2, '0');
+  return h > 0 ? `${h}:${mm}:${ss}` : `${mm}:${ss}`;
+}
+
+// "00:40 – 00:56 (3.6g/s)"
+function pourRangeLabel(event, rate) {
+  const start = toSeconds(event.pour_time);
+  const dur = toSeconds(event.pour_duration);
+  if (start == null || dur == null) return null;
+  return `${formatClock(start)} – ${formatClock(start + dur)}${rate ? ` (${rate}g/s)` : ''}`;
+}
 function viewMode(events, totalPoured) {
   const styleLabel = (value) =>
     POUROVER_STATIC_OPTIONS.pour_style.find((opt) => opt.value === value)?.label || value;
 
   const columnSx = { width: 90 };
+
+  // Only complete rows; "previous pour" means the previous complete row
+  const valid = events.filter(e => e.pour_time && e.pour_amount);
 
   return (
     <Grid key="pourover-view" size={{ xs: 12, sm: 12, md: 12 }} sx={{ maxWidth: 580 }}>
@@ -222,29 +241,38 @@ function viewMode(events, totalPoured) {
         <Box sx={columnSx}>Rate</Box>
         <Box sx={{ flex: 1, textAlign: "right" }}>Style</Box>
       </Box>
-      {events
-        .filter(e => e.pour_time && e.pour_amount)
-        .map((e, index) => {
-          const seconds = toSeconds(e.pour_duration);
-          const rate = seconds ? (Number(e.pour_amount) / seconds).toFixed(1) : null;
-          return (
-            <Box
-              key={index}
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                py: 0.5,
-                borderBottom: "1px solid rgba(255,255,255,0.08)"
-              }}
-            >
-              <Box sx={columnSx}>{e.pour_time}</Box>
-              <Box sx={columnSx}>{e.pour_amount}g</Box>
-              <Box sx={columnSx}>{e.pour_duration}</Box>
-              <Box sx={columnSx}>{rate ? ` (${rate}g/s)` : ''}</Box>
-              <Box sx={{ flex: 1, textAlign: "right" }}>{styleLabel(e.pour_style)}</Box>
-            </Box>
-          );
-        })}
+      {valid.map((e, index) => {
+        const r = pourRate(valid, index);
+        const rate = r != null ? r.toFixed(1) : null;
+        return (
+          <Box
+            key={index}
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              py: 0.5,
+              borderBottom: "1px solid rgba(255,255,255,0.08)"
+            }}
+          >
+            <Box sx={columnSx}>{e.pour_time}</Box>
+            <Box sx={columnSx}>{e.pour_amount}g</Box>
+            <Box sx={columnSx}>{e.pour_duration}</Box>
+            <Box sx={rateSx}>{pourRangeLabel(e, rate) ?? e.pour_time}</Box>
+            <Box sx={{ flex: 1, textAlign: "right" }}>{styleLabel(e.pour_style)}</Box>
+          </Box>
+        );
+      })}
     </Grid>
   );
+}
+
+// pour_amount is a cumulative scale reading, so a pour's own water is the
+// change from the previous reading (the first pour starts from 0).
+function pourRate(events, index) {
+  const ev = events[index];
+  const seconds = toSeconds(ev.pour_duration);
+  if (!seconds || !ev.pour_amount) return null;
+  const prev = index > 0 ? Number(events[index - 1].pour_amount) || 0 : 0;
+  const delta = Number(ev.pour_amount) - prev;
+  return delta >= 0 ? delta / seconds : null;   // a negative change (re-tare) gives no rate
 }
