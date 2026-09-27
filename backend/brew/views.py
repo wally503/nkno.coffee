@@ -61,7 +61,13 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
     ).all()
     lookup_field = 'short_id'
     filter_backends = [OrderingFilter, SearchFilter]
-    search_fields = ['bean__name', 'notes']
+    search_fields = [
+        'bean__name', 'style', 'tags__name',
+        'aeropress_detail__grinder__name',
+        'pourover_detail__grinder__name',
+        'coldbrew_detail__grinder__name',
+        'espresso_detail__grinder__name',
+    ]
     ordering_fields = ['date', 'extraction_rating', 'pull_number']
     pagination_class = DynamicPageSizePagination
 
@@ -83,10 +89,10 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
         if bean:
             bag_qs = bag_qs.filter(bean__short_id=bean)
         if search:
-            bag_qs = bag_qs.filter(
-                Q(bean__name__icontains=search) | Q(notes__icontains=search)
-            )
-
+            for term in search.split():
+                bag_qs = bag_qs.filter(
+                    Q(bean__name__icontains=term)
+                )
         combined = [self._brew_log_row(b) for b in brew_qs.prefetch_related('tags')] + \
             [self._bag_event_row(e) for e in bag_qs]
 

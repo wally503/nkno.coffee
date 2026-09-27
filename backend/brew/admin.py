@@ -42,7 +42,6 @@ class BrewTagAdmin(admin.ModelAdmin):
     list_display = ("name", "category", "methods", "sort_order")
     list_filter = ("category",)
 
-
 admin.site.register(Grinder)
 admin.site.register(Scale)
 admin.site.register(Kettle)

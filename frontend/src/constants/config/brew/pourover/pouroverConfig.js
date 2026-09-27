@@ -260,11 +260,16 @@ export const pouroverConfig = {
       defaultValue: [],
     },
     {
+      type: "spacer",
+      size: { xs: 0, sm: 1, md: 1 },
+      color: "rgba(180, 140, 100, 0)",
+    },
+    {
       type: "rating",
       name: "extraction_rating",
       label: "Extraction Rating",
       required: true,
-      size: { xs: 12, sm: 6, md: 6 },
+      size: { xs: 12, sm: 5, md: 5 },
     },
     {
       type: "long_text",

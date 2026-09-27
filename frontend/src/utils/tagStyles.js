@@ -1,5 +1,29 @@
 import { TAG_PALETTES, CATEGORY_ORDER } from '../constants/tags'
 
+// ---- category org ---------------------------------------------------------
+
+export const CATEGORY_SECTION = {
+  amazing:     'Positive',
+  pro:         'Positive',
+  great:       'Positive',
+  other:       'Neutral',
+  con:         'Negative',
+  catastrophe: 'Mistakes',
+}
+
+const SECTION_ORDER = ['Positive', 'Neutral', 'Negative', 'Mistakes']
+
+export function groupTags(tags) {
+  const sorted = sortTags(tags)
+  const buckets = new Map()
+  for (const t of sorted) {
+    const section = CATEGORY_SECTION[t.category] ?? 'Neutral'
+    if (!buckets.has(section)) buckets.set(section, { section, tags: [] })
+    buckets.get(section).tags.push(t)
+  }
+  return SECTION_ORDER.map(s => buckets.get(s)).filter(Boolean)
+}
+
 // ---- color helpers ---------------------------------------------------------
 
 // Blend a hex color toward black (keep = 1 unchanged, 0.7 = 30% darker)
@@ -62,3 +86,4 @@ export function sortTags(tags) {
     (a, b) => CATEGORY_ORDER.indexOf(a.category) - CATEGORY_ORDER.indexOf(b.category)
   )
 }
+

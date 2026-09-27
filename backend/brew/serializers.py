@@ -91,7 +91,7 @@ class BrewLogListSerializer(serializers.ModelSerializer):
     days_since_opened = serializers.ReadOnlyField()
     tags = BrewTagSerializer(many=True, read_only=True)
 
-    class Meta:
+    class Meta: 
         model = BrewLog
         fields = ['short_id', 'bean_name', 'style', 'style_display', 'date', 'extraction_rating', 'pull_number', 'detail_id', 'tags','days_since_roast', 'days_since_opened']
 
