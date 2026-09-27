@@ -1,7 +1,7 @@
 //src/constants/tags.js
 export const TAG_PALETTES = {
   default: {
-    amazing:      { color: '#9B8AFB', border: '1px solid',  glow: false },
+    amazing:      { color: '#9B8AFB', border: '3px double',  glow: false },
     great:        { color: '#307840', border: '3px double', glow: false },
     pro:          { color: '#307840', border: '1px solid',  glow: false },
     other:        { color: '#707070', border: '1px solid',  glow: false },
@@ -10,7 +10,7 @@ export const TAG_PALETTES = {
   },
   // Lighter versions of the same hues, for the log tables
   table: {
-    amazing:      { color: '#B7ABFF', border: '1px solid',  glow: false },
+    amazing:      { color: '#B7ABFF', border: '3px double',  glow: false },
     great:        { color: '#5FBF77', border: '3px double', glow: false },
     pro:          { color: '#5FBF77', border: '1px solid',  glow: false },
     other:        { color: '#A8A8A8', border: '1px solid',  glow: false },

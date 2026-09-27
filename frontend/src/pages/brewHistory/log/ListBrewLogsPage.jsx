@@ -4,7 +4,7 @@ import PageHeaderTitle from "../../../components/PageTitle";
 import { useTableState } from "../../../hooks/useTableState";
 import CoffeeTable from "../../../components/CoffeeTable";
 import { defaultBrewLogsTableList } from "../../../api/brewApi";
-import { logColumns, STYLE_ROUTE_SEGMENT } from "../../../constants/config/brew/history/logConfig";
+import { logConfig, STYLE_ROUTE_SEGMENT } from "../../../constants/config/brew/history/logConfig";
 import { BAG_EVENT_ROW_SX_OPEN, BAG_EVENT_ROW_SX_CLOSE } from "../../../constants/tableStyles";
 import DefaultBodyLayout from "../../../components/DefaultBodyLayout";
 
@@ -46,8 +46,12 @@ export default function ListBrewLogsPage() {
       <DefaultBodyLayout>
         <PageHeaderTitle title={"Brew Log"} hasBackButton={true} backRoute={"/history"} />
         <CoffeeTable
-          columns={logColumns}
+          columns={logConfig.tableColumns}
           rows={decoratedRows}
+          cellPx={logConfig.tableSettings.cellPx}
+          cellPy={logConfig.tableSettings.cellPy}            
+          width={logConfig.tableSettings.width}
+          maxWidth={logConfig.tableSettings.maxWidth}
           totalCount={totalCount}
           tableState={logTableState}
           viewRoute={viewRoute}

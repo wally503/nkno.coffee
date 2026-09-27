@@ -12,13 +12,19 @@ export const STYLE_ROUTE_SEGMENT = {
   milk_drink: 'milk-drink',  // no route yet — mod kit pending
 };
 
-const TAG_SIZE = 0.8 // 1 = full size, 0.75 is about compact, 0.65 is about dense
+const TAG_SIZE = 0.87 // 1 = full size, 0.75 is about compact, 0.65 is about dense
 
+export const logTableSettings = { 
+      width: "93%", 
+      maxWidth: 1800, 
+      cellPx: 2,
+      cellPy: 2, 
+  }
 export const logColumns = [
   {
     id: "date",
     label: "Date",
-    minWidth: 140,
+    minWidth: 120,
     orderingField: "date",
     render: (value) => value
       ? new Date(value).toLocaleString("en-CA", {
@@ -34,13 +40,14 @@ export const logColumns = [
   {
     id: "bean_name",
     label: "Bean",
-    minWidth: 150,
+    px: 0.3,
+    minWidth: 140,
     orderingField: null, // BrewLogViewSet.ordering_fields doesn't include bean__name yet
   },
   {
     id: "style_display",
     label: "Style",
-    minWidth: 110,
+    minWidth: 85,
     orderingField: null, // ordering_fields doesn't include style yet
   },
   {
@@ -52,13 +59,13 @@ export const logColumns = [
   {
     id: "grind_setting",
     label: "Setting",
-    minWidth: 90,
+    minWidth: 70,
     orderingField: null, // ordering_fields doesn't include style yet
   },
   {
     id: "extraction_rating",
     label: "Rating",
-    minWidth: 90,
+    minWidth: 60,
     orderingField: "extraction_rating",
     render: (value, row) => {
       if (row.style === "bag_event") {
@@ -75,7 +82,7 @@ export const logColumns = [
   {
     id: "tags",
     label: "Tags",
-    minWidth: 240,
+    minWidth: 200,
     render: (value, row) => {
       const tags = row.tags ?? [];
       if (row.style === "bag_event" || tags.length === 0) {
@@ -87,7 +94,7 @@ export const logColumns = [
   {
     id: "pull_number",
     label: "Pull #",
-    minWidth: 70,
+    minWidth: 73,
     orderingField: "pull_number",
   },
   {
@@ -103,3 +110,5 @@ export const logColumns = [
     orderingField: null,
   },
 ];
+
+export const logConfig = { tableSettings: logTableSettings, tableColumns: logColumns }
