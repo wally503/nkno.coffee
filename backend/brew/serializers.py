@@ -93,7 +93,7 @@ class BrewLogListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BrewLog
-        fields = ['short_id', 'bean_name', 'style', 'style_display', 'date', 'extraction_rating', 'pull_number', 'detail_id', 'days_since_roast', 'days_since_opened']
+        fields = ['short_id', 'bean_name', 'style', 'style_display', 'date', 'extraction_rating', 'pull_number', 'detail_id', 'tags','days_since_roast', 'days_since_opened']
 
     def get_bean_name(self, obj):
         return obj.bean.name if obj.bean else '-'
