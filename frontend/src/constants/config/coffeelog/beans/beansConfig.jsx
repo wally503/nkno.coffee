@@ -312,6 +312,8 @@ processTypes: [
     { label: "Anaerobic Washed", value: "anaerobic_washed" },
     { label: "Honey", value: "honey" },
     { label: "Washed & Natural", value: "washed_natural" },
+    { label: "Fermented", value: "fermented" },
+    { label: "Unique", value: "unique" },
   ],
   caffeineFlags: [
     { label: "Caffeinated", value: 'caffeinated' },

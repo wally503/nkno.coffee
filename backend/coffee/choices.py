@@ -11,6 +11,8 @@ class WashingStyle(models.TextChoices):
     WASHED_NATURAL = 'washed_natural', 'Washed & Natural'
     ANAEROBIC_NATURAL = 'anaerobic_natural', 'Anaerobic Natural'
     ANAEROBIC_WASHED = 'anaerobic_washed', 'Anaerobic Washed'
+    FERMENTED = 'fermented', 'Fermented'
+    UNIQUE = 'unique', 'Unique'
     
 class OrganicOrNot(models.TextChoices):
     ORGANIC = 'organic', 'Organic'
