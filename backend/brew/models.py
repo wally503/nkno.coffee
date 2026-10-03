@@ -14,6 +14,7 @@ class Style(models.TextChoices):
     AEROPRESS = 'aeropress', 'Aeropress'
     POUROVER = 'pourover', 'Pourover'
     COLD_BREW = 'cold_brew', 'Cold Brew'
+    CUPPING = 'cupping', 'Cupping'
 
 
 class WaterType(models.TextChoices):
@@ -324,6 +325,19 @@ class ColdBrewDetail(BrewBaseMixin, models.Model):
 
     def __str__(self):
         return f"Cold Brew – {self.brew_log}"
+
+
+# ---------------------------------------------------------------------------
+# Cupping
+# ---------------------------------------------------------------------------
+
+class CuppingDetail(BrewBaseMixin, models.Model):
+    brew_log = models.OneToOneField(BrewLog, on_delete=models.CASCADE, related_name="cupping_detail")
+    water = models.DecimalField(max_digits=6, decimal_places=1)
+    steep_time = models.DurationField()
+
+    def __str__(self):
+        return f"Cupping – {self.brew_log}"
 
 
 # ---------------------------------------------------------------------------

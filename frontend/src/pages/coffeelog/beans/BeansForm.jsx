@@ -2,7 +2,7 @@
 import * as React from "react";
 import CoffeeLogFormShell from "../shared/CoffeeLogFormShell";
 import { BEANS_STATIC_OPTIONS, beansConfig   } from "../../../constants/config/coffeelog/beans/beansConfig";
-import { beansCountries, beansNotes, beansRoasters, submitBeans, getBeanById, updateBean } from "../../../api/beansApi";
+import { beansCountries, beansNotes, beansRoasters, submitBeans, getBeanById, updateBean, beansProcesses } from "../../../api/beansApi";
 import { brewsByBean } from "../../../api/brewApi";
 import { BAG_EVENT_ROW_SX_OPEN, BAG_EVENT_ROW_SX_CLOSE } from "../../../constants/tableStyles";
 import DialogueBox from "../../../components/DialogueBox";
@@ -51,16 +51,18 @@ export default function BeansFormPage() {
 
   React.useEffect(() => {
     const load = async () => {
-      const [roasters, countries, notes] = await Promise.all([
+      const [roasters, countries, notes, processes] = await Promise.all([
           beansRoasters(),
           beansCountries(),
-          beansNotes()
+          beansNotes(),
+          beansProcesses()
         ]);
-      setOptions({...BEANS_STATIC_OPTIONS, roasters, countries, notes});
+      setOptions({...BEANS_STATIC_OPTIONS, roasters, countries, notes, processes});
       if (shortid){
         const { data } = await getBeanById(shortid);
         console.log('testin data', data);
         console.log('allnotes', notes);
+        console.log('processes', processes);
         if(data){
           const noteLabels = data.flavor_notes.map(id => 
           notes.find(n => n.value === id)?.label

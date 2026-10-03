@@ -8,7 +8,7 @@ const brewStyleOptions = [
   { id: 'espresso', title: 'Espresso', description: 'Add a new Espresso brew', path: 'espresso/add', cardStyle: 'default' },
   { id: 'aeropress', title: 'Aeropress', description: 'Add a new Aeropress brew', path: 'aeropress/add', cardStyle: 'default' },
   { id: 'pourover', title: 'Pourover', description: 'Add a new Pourover brew', path: 'pourover/add', cardStyle: 'default' },
-  { id: 'cold_brew', title: 'Cold Brew', description: 'Add a new Cold Brew batch', path: 'cold-brew/add', cardStyle: 'default' },
+  // { id: 'cold_brew', title: 'Cold Brew', description: 'Add a new Cold Brew batch', path: 'cold-brew/add', cardStyle: 'default' },
 ];
 
 export default function PickBrewStyle() {

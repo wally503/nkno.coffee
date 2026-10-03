@@ -69,9 +69,10 @@ export const beansConfig = {
       orderingField: "roast_level"
     },
     {
-      id: "washing_style",
+      id: "process",
       label: "Process",
       minWidth: 85,
+      orderingField: "process__name"
     },
     {
       id: "elevation",
@@ -147,12 +148,12 @@ export const beansConfig = {
     },
     {
       type: "dropdown",
-      name: "washing_style",
+      name: "process",
       label: "Process",
       required: false,
       disableNudge: true,
       size: { xs: 12, sm: 4, md: 4 },
-      optionSource: "processTypes",
+      optionSource: "processes",
     },
     {
       type: "dropdown",
@@ -300,21 +301,22 @@ export const BEANS_STATIC_OPTIONS = {
     { label: "Medium", value: "medium" },
     { label: "Medium-Dark", value: "medium_dark" },
     { label: "Dark", value: "dark" },
+    { label: "Unknown", value: "unknown" },
   ],
   organicFlags: [
     { label: "Organic", value: 'organic' },
     { label: "Non-organic", value: 'not_organic' },
   ],
-processTypes: [
-    { label: "Washed", value: "washed" },
-    { label: "Natural", value: "natural" },
-    { label: "Anaerobic Natural", value: "anaerobic_natural" },
-    { label: "Anaerobic Washed", value: "anaerobic_washed" },
-    { label: "Honey", value: "honey" },
-    { label: "Washed & Natural", value: "washed_natural" },
-    { label: "Fermented", value: "fermented" },
-    { label: "Unique", value: "unique" },
-  ],
+// processTypes: [
+//     { label: "Washed", value: "washed" },
+//     { label: "Natural", value: "natural" },
+//     { label: "Anaerobic Natural", value: "anaerobic_natural" },
+//     { label: "Anaerobic Washed", value: "anaerobic_washed" },
+//     { label: "Honey", value: "honey" },
+//     { label: "Washed & Natural", value: "washed_natural" },
+//     { label: "Fermented", value: "fermented" },
+//     { label: "Unique", value: "unique" },
+//   ],
   caffeineFlags: [
     { label: "Caffeinated", value: 'caffeinated' },
     { label: "Decaffeinated", value: 'decaffeinated' },

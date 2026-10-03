@@ -4,15 +4,15 @@ class CaffOrDecaf(models.TextChoices):
     CAFFEINATED = 'caffeinated', 'Caffeinated'
     DECAF = 'decaffeinated', 'Decaffeinated'
 
-class WashingStyle(models.TextChoices):
-    WASHED = 'washed', 'Washed'
-    NATURAL = 'natural', 'Natural'
-    HONEY = 'honey', 'Honey'
-    WASHED_NATURAL = 'washed_natural', 'Washed & Natural'
-    ANAEROBIC_NATURAL = 'anaerobic_natural', 'Anaerobic Natural'
-    ANAEROBIC_WASHED = 'anaerobic_washed', 'Anaerobic Washed'
-    FERMENTED = 'fermented', 'Fermented'
-    UNIQUE = 'unique', 'Unique'
+# class WashingStyle(models.TextChoices):
+#     WASHED = 'washed', 'Washed'
+#     NATURAL = 'natural', 'Natural'
+#     HONEY = 'honey', 'Honey'
+#     WASHED_NATURAL = 'washed_natural', 'Washed & Natural'
+#     ANAEROBIC_NATURAL = 'anaerobic_natural', 'Anaerobic Natural'
+#     ANAEROBIC_WASHED = 'anaerobic_washed', 'Anaerobic Washed'
+#     FERMENTED = 'fermented', 'Fermented'
+#     UNIQUE = 'unique', 'Unique'
     
 class OrganicOrNot(models.TextChoices):
     ORGANIC = 'organic', 'Organic'
@@ -29,3 +29,4 @@ class RoastLevel(models.TextChoices):
     MEDIUM = 'medium', 'Medium'
     MEDIUM_DARK = 'medium_dark', 'Medium-Dark'
     DARK = 'dark', 'Dark'
+    UNKNOWN = 'unknown', 'Unknown'

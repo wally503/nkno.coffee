@@ -5,7 +5,7 @@ from .views import (
     GrinderViewSet, ScaleViewSet, KettleViewSet,
     BrewLogViewSet,
     AeropressDetailViewSet, PouroverDetailViewSet, ColdBrewDetailViewSet,
-    EspressoDetailViewSet, BrewTagViewSet
+    EspressoDetailViewSet, BrewTagViewSet, CuppingDetailViewSet
 )
 
 router = DefaultRouter()
@@ -17,6 +17,7 @@ router.register('aeropress', AeropressDetailViewSet)
 router.register('pourover', PouroverDetailViewSet)
 router.register('coldbrew', ColdBrewDetailViewSet)
 router.register('espresso', EspressoDetailViewSet)
+router.register('espresso', CuppingDetailViewSet)
 router.register('tags', BrewTagViewSet, basename='brew-tag')
 
 urlpatterns = router.urls

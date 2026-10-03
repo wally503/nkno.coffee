@@ -440,6 +440,27 @@ class ColdBrewDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSeriali
 
 
 # ---------------------------------------------------------------------------
+# Cupping
+# ---------------------------------------------------------------------------
+
+class CuppingDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSerializer):
+    brew_log = BrewLogSerializer()
+    grinder = serializers.SlugRelatedField(slug_field='short_id', queryset=Grinder.objects.all())
+    scale = serializers.SlugRelatedField(slug_field='short_id', queryset=Scale.objects.all())
+    needs_bag_close_prompt = serializers.SerializerMethodField()
+
+    detail_model = CuppingDetail
+
+    class Meta:
+        model = CuppingDetail
+        fields = '__all__'
+
+    def get_needs_bag_close_prompt(self, obj):
+        return getattr(obj, '_bag_close_prompt', False)
+
+
+
+# ---------------------------------------------------------------------------
 # Espresso
 # ---------------------------------------------------------------------------
 

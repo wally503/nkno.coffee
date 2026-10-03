@@ -1,11 +1,20 @@
 from django.db import models
 from django.utils import timezone
-from .choices import CaffOrDecaf, WashingStyle, OrganicOrNot, BusinessType, RoastLevel
+from .choices import CaffOrDecaf, OrganicOrNot, BusinessType, RoastLevel
 import nanoid
 from decimal import Decimal
 from django.db.models import Sum
 
 # Create your models here.
+
+class Process(models.Model):
+    name = models.CharField(max_length=200, unique=True)
+
+    class Meta:
+        verbose_name_plural = 'processes'
+
+    def __str__(self):
+        return self.name
 
 class Countries(models.Model):
     name = models.CharField(max_length=200, unique=True)
@@ -80,9 +89,14 @@ class Bean(models.Model):
         null=True,
         blank=True,
     ) 
+    process = models.ForeignKey(
+        Process,
+        on_delete=models.SET_NULL, 
+        null=True,
+        blank=True,
+    ) 
     roast_level = roast_level = models.CharField(max_length=50, blank=True, null=True, choices=RoastLevel.choices)
     organic_or_not = models.CharField(max_length=20, blank=True, choices=OrganicOrNot.choices)
-    washing_style = models.CharField(max_length=50, blank=True, choices=WashingStyle.choices)
     caff_or_decaf = models.CharField(max_length=20, choices=CaffOrDecaf.choices)
     purchase_date = models.DateField(null=True, blank=True)
     roast_date = models.DateField(null=True, blank=True)
@@ -123,9 +137,8 @@ class Bean(models.Model):
             )
 
     def recalculate_used_weight(self):
-        from brew.models import EspressoDetail, AeropressDetail, PouroverDetail
-        # add ColdBrewDetail once it exists
-
+        from brew.models import EspressoDetail, AeropressDetail, PouroverDetail, ColdBrewDetail, CuppingDetail
+        
         total = Decimal('0')
         for model in [EspressoDetail, AeropressDetail, PouroverDetail]:
             total += model.objects.filter(brew_log__bean=self).aggregate(

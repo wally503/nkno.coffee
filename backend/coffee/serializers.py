@@ -60,10 +60,10 @@ class BeanListSerializer(serializers.ModelSerializer):
     elevation = serializers.SerializerMethodField()
     roaster = serializers.SerializerMethodField()
     origin_country = serializers.SerializerMethodField()
-    washing_style = serializers.SerializerMethodField()
     organic_or_not = serializers.SerializerMethodField()
     roast_level = serializers.SerializerMethodField()
     had_as_drink = serializers.SerializerMethodField()
+    process = serializers.SerializerMethodField()
 
     def get_flavor_notes(self, obj):
         notes = obj.flavor_notes.all()
@@ -86,9 +86,6 @@ class BeanListSerializer(serializers.ModelSerializer):
     def get_origin_country(self, obj):
         return obj.origin_country.name if obj.origin_country else '-'
     
-    def get_washing_style(self, obj):
-        return obj.get_washing_style_display() if obj.washing_style else '-'
-
     def get_organic_or_not(self, obj):
         return obj.get_organic_or_not_display() if obj.organic_or_not else '-'
 
@@ -98,9 +95,12 @@ class BeanListSerializer(serializers.ModelSerializer):
     def get_had_as_drink(self, obj):
         return obj.drink_set.exists()
 
+    def get_process(self, obj):
+        return obj.process.name if obj.process else '-'
+
     class Meta:
         model = Bean
-        fields = ['id', 'name', 'roaster', 'origin_country', 'roast_level', 'organic_or_not', 'washing_style', 'flavor_notes', 'elevation', 'short_id', 'purchase_date', 'date_added', 'comments', "purchased", "had_as_drink"]
+        fields = ['id', 'name', 'roaster', 'origin_country', 'roast_level', 'organic_or_not', 'flavor_notes', 'elevation', 'short_id', 'purchase_date', 'date_added', 'comments', "purchased", "had_as_drink", 'process']
 
 class DrinkSerializer(serializers.ModelSerializer):
     class Meta:
@@ -126,6 +126,11 @@ class DrinkListSerializer(serializers.ModelSerializer):
         model = Drink
         fields = ['id', 'drink', 'rating', 'notes', 'roaster', 'bean', 'venue',
                   'short_id', 'drink_date', 'date_added']
+
+class ProcessesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Process
+        fields = '__all__'
 
 class CountriesSerializer(serializers.ModelSerializer):
     class Meta:

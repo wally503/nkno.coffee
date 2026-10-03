@@ -1,5 +1,5 @@
 from rest_framework.routers import DefaultRouter   
-from .views import RoasterViewSet, BeanViewSet, DrinkViewSet, CountriesViewSet, FlavorNotesViewSet, RegionsViewSet, MapzoneViewSet, BeanLifecycleViewSet,OpenBagListView
+from .views import RoasterViewSet, BeanViewSet, DrinkViewSet, CountriesViewSet, FlavorNotesViewSet, RegionsViewSet, MapzoneViewSet, BeanLifecycleViewSet,OpenBagListView, ProcessesViewSet
 from django.urls import path
 
 router = DefaultRouter()
@@ -12,6 +12,7 @@ router.register('drinks', DrinkViewSet)
 router.register('countries', CountriesViewSet)
 router.register('notes', FlavorNotesViewSet)
 router.register('mapzone', MapzoneViewSet)
+router.register('process', ProcessesViewSet)
 router.register('beanLifecycle', BeanLifecycleViewSet, basename='bean-lifecycle') 
 
 

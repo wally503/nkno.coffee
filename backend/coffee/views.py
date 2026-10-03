@@ -61,8 +61,8 @@ class BeanViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
     serializer_class = BeanSerializer
     lookup_field = 'short_id'
     filter_backends = [OrderingFilter, SearchFilter]
-    search_fields = ['name', 'roaster__name', 'origin_country__name', 'roast_level', 'washing_style', 'flavor_notes__name', 'purchased']
-    ordering_fields = ['name', 'roaster__name', 'origin_country__name', 'roast_level', 'washing_style', 'date_added']  # whitelist what's sortable
+    search_fields = ['name', 'roaster__name', 'origin_country__name', 'roast_level', 'process', 'flavor_notes__name', 'purchased']
+    ordering_fields = ['name', 'roaster__name', 'origin_country__name', 'roast_level', 'process', 'date_added']  # whitelist what's sortable
     ordering = ['-date_added']  # default ordering
     
     def create(self, request):
@@ -197,7 +197,12 @@ class DrinkViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
                 return DrinkListSerializer
             case _:
                 return DrinkSerializer    
-    
+
+class ProcessesViewSet(ListModelMixin, RetrieveModelMixin, viewsets.GenericViewSet):
+    queryset = Process.objects.all()
+    serializer_class = ProcessesSerializer
+    pagination_class = LargeDynamicPageSizePagination
+
 class CountriesViewSet(ListModelMixin, RetrieveModelMixin, viewsets.GenericViewSet):
     queryset = Countries.objects.all()
     serializer_class = CountriesSerializer

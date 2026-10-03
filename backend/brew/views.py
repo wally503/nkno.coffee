@@ -58,6 +58,7 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
         'pourover_detail__grinder',
         'aeropress_detail__grinder',
         'coldbrew_detail__grinder',
+        'cupping_detail__grinder'
     ).all()
     lookup_field = 'short_id'
     filter_backends = [OrderingFilter, SearchFilter]
@@ -67,6 +68,7 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
         'pourover_detail__grinder__name',
         'coldbrew_detail__grinder__name',
         'espresso_detail__grinder__name',
+        'cupping_detail__grinder__name',
     ]
     ordering_fields = ['date', 'extraction_rating', 'pull_number']
     pagination_class = DynamicPageSizePagination
@@ -196,6 +198,14 @@ class ColdBrewDetailViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
     lookup_field = 'brew_log__short_id'
     lookup_url_kwarg = 'short_id' 
     serializer_class = ColdBrewDetailSerializer
+    filter_backends = [OrderingFilter, SearchFilter]
+
+
+class CuppingDetailViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
+    queryset = CuppingDetail.objects.select_related('brew_log', 'grinder', 'scale').all()
+    lookup_field = 'brew_log__short_id'
+    lookup_url_kwarg = 'short_id' 
+    serializer_class = CuppingDetailSerializer
     filter_backends = [OrderingFilter, SearchFilter]
 
 
