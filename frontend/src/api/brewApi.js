@@ -194,3 +194,74 @@ export async function brewsByBean(bean_short_id, page = 0, pageSize = 10, search
         console.error(error.response.data)
     }
 }
+
+
+// --- Cupping CRUD ----------------------------------------------------------
+
+export async function submitCupping(formData) {
+    try {
+        const { data } = await axiosInstance.post('brew/cupping/', formData);
+        return data;
+    } catch (error) {
+        if (error.response?.status === 400) {
+            throw error.response.data;
+        }
+        throw error;
+    }
+}
+
+export async function getCuppingById(id) {
+    try {
+        return await axiosInstance.get('brew/cupping/' + id)
+    } catch (error) {
+        console.error(error.response?.status);
+        console.error(error.response?.data);
+    }
+}
+
+export async function updateCupping(id, formData) {
+    try {
+        const { data } = await axiosInstance.put('brew/cupping/' + id + '/', formData);
+        return data;
+    } catch (error) {
+        if (error.response?.status === 400) {
+            throw error.response.data;
+        }
+        throw error;
+    }
+}
+
+// --- Cold Brew CRUD --------------------------------------------------------
+
+export async function submitColdbrew(formData) {
+    try {
+        const { data } = await axiosInstance.post('brew/coldbrew/', formData);
+        return data;
+    } catch (error) {
+        if (error.response?.status === 400) {
+            throw error.response.data;
+        }
+        throw error;
+    }
+}
+
+export async function getColdbrewById(id) {
+    try {
+        return await axiosInstance.get('brew/coldbrew/' + id)
+    } catch (error) {
+        console.error(error.response?.status);
+        console.error(error.response?.data);
+    }
+}
+
+export async function updateColdbrew(id, formData) {
+    try {
+        const { data } = await axiosInstance.put('brew/coldbrew/' + id + '/', formData);
+        return data;
+    } catch (error) {
+        if (error.response?.status === 400) {
+            throw error.response.data;
+        }
+        throw error;
+    }
+}

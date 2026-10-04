@@ -11,7 +11,8 @@
 import EspressoFormPage from '../../../../pages/brew/espresso/EspressoForm';
 import AeropressFormPage from '../../../../pages/brew/aeropress/AeropressForm';
 import PouroverFormPage from '../../../../pages/brew/pourover/PouroverForm';
-// import ColdBrewFormPage from '../../../../pages/brew/coldBrew/AddColdBrew';
+import ColdbrewFormPage from '../../../../pages/brew/coldbrew/ColdbrewForm';
+import CuppingFormPage from '../../../../pages/brew/cupping/CuppingForm';
 
 export const newBrewRouteList = [
   {
@@ -54,6 +55,32 @@ export const newBrewRouteList = [
   },
 
   // Cold Brew slots in here once its form page exists, same three-route shape.
+
+  { 
+    path: 'cupping/add', 
+    element: <CuppingFormPage /> 
+  },
+  { 
+    path: 'cupping/edit/:shortid', 
+    element: <CuppingFormPage /> 
+  },
+  { 
+    path: 'cupping/view/:shortid', 
+    element: <CuppingFormPage /> 
+  },
+
+  { 
+    path: 'cold-brew/add', 
+    element: <ColdbrewFormPage /> 
+  },
+  { 
+    path: 'cold-brew/edit/:shortid', 
+    element: <ColdbrewFormPage /> 
+  },
+  { 
+    path: 'cold-brew/view/:shortid', 
+    element: <ColdbrewFormPage /> 
+  },
 
   // Espresso / Milk Drink intentionally omitted — no route until the
   // mod kit lands and EspressoDetail/MilkDrinkDetail actually exist.
