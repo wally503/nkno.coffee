@@ -130,14 +130,13 @@ export const coldbrewConfig = {
     },
     {
       type: "text_numeric",
-      name: "settle_time",
-      label: "Settle Time",
+      name: "steep_hours",
+      label: "Steep (hours)",
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
-      placeholder: "10:00",
-      inputStyle: "duration",   // MM:SS only, max 99:59 (see note)
+      placeholder: "24",
+      defaultValue: 24,
     },
-
     { type: "divider" },
     {
       type: 'tags',

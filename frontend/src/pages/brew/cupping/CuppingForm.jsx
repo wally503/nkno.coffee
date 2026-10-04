@@ -86,6 +86,7 @@ export default function CuppingFormPage() {
     kettle: data.kettle?.short_id ?? data.kettle,
     brew_log: data.brew_log?.id ?? data.brew_log,
     tags: (data.brew_log?.tags ?? []).map(t => t.slug),
+    notes: data.brew_log?.notes,
   });
 
   const handleSubmit = async () => {
@@ -95,7 +96,7 @@ export default function CuppingFormPage() {
       const payload = {
             ...detailFields,
             hoffmann_events,
-            brew_log: { bean, date: normalizedDate, extraction_rating, notes, tags, style: 'aeropress' },
+            brew_log: { bean, date: normalizedDate, extraction_rating, notes, tags, style: 'cupping' },
           };
 
       const res = shortid
@@ -142,7 +143,7 @@ export default function CuppingFormPage() {
             />
             <DialogueBox
               title={"Saving Brew"}
-              message={"Aeropress brew was successfully saved!"}
+              message={"Cupping brew was successfully saved!"}
               open={saveDialogue}
               onCloseParent={() => { setSaveDialogue(false); navigate('/history/log'); }}
             />

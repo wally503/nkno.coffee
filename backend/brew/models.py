@@ -321,7 +321,7 @@ class ColdBrewDetail(BrewBaseMixin, models.Model):
     brew_log = models.OneToOneField(BrewLog, on_delete=models.CASCADE, related_name="coldbrew_detail")
     filter_style = models.CharField(max_length=20, choices=ColdBrewFilterStyle.choices)
     water = models.DecimalField(max_digits=6, decimal_places=1)
-    settle_time = models.DurationField()
+    steep_hours = models.DecimalField(max_digits=4, decimal_places=1)
 
     def __str__(self):
         return f"Cold Brew – {self.brew_log}"

@@ -17,7 +17,7 @@ router.register('aeropress', AeropressDetailViewSet)
 router.register('pourover', PouroverDetailViewSet)
 router.register('coldbrew', ColdBrewDetailViewSet)
 router.register('espresso', EspressoDetailViewSet)
-router.register('espresso', CuppingDetailViewSet)
+router.register('cupping', CuppingDetailViewSet)
 router.register('tags', BrewTagViewSet, basename='brew-tag')
 
 urlpatterns = router.urls

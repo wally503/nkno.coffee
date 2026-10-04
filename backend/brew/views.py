@@ -200,6 +200,10 @@ class ColdBrewDetailViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
     serializer_class = ColdBrewDetailSerializer
     filter_backends = [OrderingFilter, SearchFilter]
 
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return ColdBrewDetailReadSerializer
+        return ColdBrewDetailSerializer
 
 class CuppingDetailViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
     queryset = CuppingDetail.objects.select_related('brew_log', 'grinder', 'scale').all()
@@ -207,6 +211,11 @@ class CuppingDetailViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
     lookup_url_kwarg = 'short_id' 
     serializer_class = CuppingDetailSerializer
     filter_backends = [OrderingFilter, SearchFilter]
+
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return CuppingDetailReadSerializer
+        return CuppingDetailSerializer
 
 
 class EspressoDetailViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):

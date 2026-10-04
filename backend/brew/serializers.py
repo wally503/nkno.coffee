@@ -438,6 +438,19 @@ class ColdBrewDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSeriali
     def get_needs_bag_close_prompt(self, obj):
         return getattr(obj, '_bag_close_prompt', False)
 
+class ColdBrewDetailReadSerializer(serializers.ModelSerializer):
+    brew_log = BrewLogReadSerializer(read_only=True)
+    grinder = GrinderNestedSerializer(read_only=True)
+    scale = ScaleNestedSerializer(read_only=True)
+
+    class Meta:
+        model = ColdBrewDetail
+        fields = [
+            'brew_log', 'grinder', 'scale',
+            'grind_rotations', 'grind_position', 'water_type',
+            'weight', 'filter_style', 'water', 'steep_hours',
+        ]
+
 
 # ---------------------------------------------------------------------------
 # Cupping
@@ -459,6 +472,19 @@ class CuppingDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSerializ
         return getattr(obj, '_bag_close_prompt', False)
 
 
+class CuppingDetailReadSerializer(serializers.ModelSerializer):
+    brew_log = BrewLogReadSerializer(read_only=True)
+    grinder = GrinderNestedSerializer(read_only=True)
+    scale = ScaleNestedSerializer(read_only=True)
+    steep_time = MMSSDurationField()
+
+    class Meta:
+        model = CuppingDetail
+        fields = [
+            'brew_log', 'grinder', 'scale',
+            'grind_rotations', 'grind_position', 'water_type',
+            'weight', 'water', 'steep_time',
+        ]
 
 # ---------------------------------------------------------------------------
 # Espresso

@@ -8,7 +8,8 @@ export const STYLE_ROUTE_SEGMENT = {
   aeropress: 'aeropress',
   pourover: 'pourover',
   cold_brew: 'cold-brew',
-  espresso: 'espresso',      // no route yet — mod kit pending
+  espresso: 'espresso',
+  cupping: 'cupping',
   milk_drink: 'milk-drink',  // no route yet — mod kit pending
 };
 

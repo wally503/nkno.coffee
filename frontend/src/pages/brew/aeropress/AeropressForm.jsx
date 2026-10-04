@@ -86,6 +86,7 @@ export default function AeropressFormPage() {
     kettle: data.kettle?.short_id ?? data.kettle,
     brew_log: data.brew_log?.id ?? data.brew_log,
     tags: (data.brew_log?.tags ?? []).map(t => t.slug),
+    notes: data.brew_log?.notes,
   });
 
   const handleSubmit = async () => {

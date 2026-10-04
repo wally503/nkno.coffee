@@ -138,9 +138,9 @@ class Bean(models.Model):
 
     def recalculate_used_weight(self):
         from brew.models import EspressoDetail, AeropressDetail, PouroverDetail, ColdBrewDetail, CuppingDetail
-        
+
         total = Decimal('0')
-        for model in [EspressoDetail, AeropressDetail, PouroverDetail]:
+        for model in [EspressoDetail, AeropressDetail, PouroverDetail, ColdBrewDetail, CuppingDetail]:
             total += model.objects.filter(brew_log__bean=self).aggregate(
                 total=Sum('weight')
             )['total'] or Decimal('0')

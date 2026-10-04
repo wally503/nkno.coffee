@@ -94,6 +94,7 @@ export const cuppingConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       placeholder: "5.5",
+      defaultValue: '7',
     },
     {
       type: "spacer",
