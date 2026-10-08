@@ -461,7 +461,8 @@ class CuppingDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSerializ
     grinder = serializers.SlugRelatedField(slug_field='short_id', queryset=Grinder.objects.all())
     scale = serializers.SlugRelatedField(slug_field='short_id', queryset=Scale.objects.all())
     needs_bag_close_prompt = serializers.SerializerMethodField()
-
+    kettle = serializers.SlugRelatedField(slug_field='short_id', queryset=Kettle.objects.all())
+    
     detail_model = CuppingDetail
 
     class Meta:
@@ -476,16 +477,17 @@ class CuppingDetailReadSerializer(serializers.ModelSerializer):
     brew_log = BrewLogReadSerializer(read_only=True)
     grinder = GrinderNestedSerializer(read_only=True)
     scale = ScaleNestedSerializer(read_only=True)
+    kettle = KettleNestedSerializer(read_only=True)
     steep_time = MMSSDurationField()
 
     class Meta:
         model = CuppingDetail
         fields = [
-            'brew_log', 'grinder', 'scale',
+            'brew_log', 'grinder', 'scale', 'kettle',
             'grind_rotations', 'grind_position', 'water_type',
             'weight', 'water', 'steep_time',
         ]
-
+        
 # ---------------------------------------------------------------------------
 # Espresso
 # ---------------------------------------------------------------------------

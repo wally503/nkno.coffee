@@ -51,6 +51,15 @@ export const cuppingConfig = {
     { type: "divider" },
 
     // shared fields (from BrewBaseMixin)
+        {
+      type: "dropdown",
+      name: "kettle",
+      label: "Kettle",
+      required: true,
+      size: { xs: 12, sm: 4, md: 4 },
+      optionSource: "kettles",
+      defaultValue: '1MRGE9cw',
+    },
     {
       type: "dropdown",
       name: "scale",
@@ -96,11 +105,11 @@ export const cuppingConfig = {
       placeholder: "5.5",
       defaultValue: '7',
     },
-    {
-      type: "spacer",
-      size: { xs: 0, sm: 2, md: 2 },
-      color: "rgba(180, 140, 100, 0)",
-    },
+    // {
+    //   type: "spacer",
+    //   size: { xs: 0, sm: 2, md: 2 },
+    //   color: "rgba(180, 140, 100, 0)",
+    // },
     {
       type: "text_numeric",
       name: "weight",

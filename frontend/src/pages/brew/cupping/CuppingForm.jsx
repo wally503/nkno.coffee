@@ -91,11 +91,10 @@ export default function CuppingFormPage() {
 
   const handleSubmit = async () => {
     try {
-      const { bean, date, extraction_rating, notes, hoffmann_events, tags = [], ...detailFields } = formData;
+      const { bean, date, extraction_rating, notes, tags = [], ...detailFields } = formData;
       const normalizedDate = date ? dayjs(date).toISOString() : null;
       const payload = {
             ...detailFields,
-            hoffmann_events,
             brew_log: { bean, date: normalizedDate, extraction_rating, notes, tags, style: 'cupping' },
           };
 

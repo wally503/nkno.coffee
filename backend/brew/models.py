@@ -335,6 +335,7 @@ class CuppingDetail(BrewBaseMixin, models.Model):
     brew_log = models.OneToOneField(BrewLog, on_delete=models.CASCADE, related_name="cupping_detail")
     water = models.DecimalField(max_digits=6, decimal_places=1)
     steep_time = models.DurationField()
+    kettle = models.ForeignKey(Kettle, on_delete=models.PROTECT)
 
     def __str__(self):
         return f"Cupping – {self.brew_log}"

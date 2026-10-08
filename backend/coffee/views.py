@@ -61,8 +61,8 @@ class BeanViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
     serializer_class = BeanSerializer
     lookup_field = 'short_id'
     filter_backends = [OrderingFilter, SearchFilter]
-    search_fields = ['name', 'roaster__name', 'origin_country__name', 'roast_level', 'process', 'flavor_notes__name', 'purchased']
-    ordering_fields = ['name', 'roaster__name', 'origin_country__name', 'roast_level', 'process', 'date_added']  # whitelist what's sortable
+    search_fields = ['name', 'roaster__name', 'origin_country__name', 'roast_level', 'process__name', 'flavor_notes__name', 'purchased']
+    ordering_fields = ['name', 'roaster__name', 'origin_country__name', 'roast_level', 'process__name', 'date_added']  # whitelist what's sortable
     ordering = ['-date_added']  # default ordering
     
     def create(self, request):
