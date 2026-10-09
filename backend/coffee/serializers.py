@@ -50,10 +50,15 @@ class BeanSerializer(serializers.ModelSerializer):
     #     child=serializers.CharField(),
     #     required=False
     # )
+    finished_date = serializers.DateTimeField(write_only=True, required=False, allow_null=True)
 
     class Meta:
         model = Bean
         fields = '__all__'
+
+    def update(self, instance, validated_data):
+        instance._finished_date = validated_data.pop('finished_date', None)
+        return super().update(instance, validated_data)
 
 class BeanListSerializer(serializers.ModelSerializer):
     flavor_notes = serializers.SerializerMethodField()

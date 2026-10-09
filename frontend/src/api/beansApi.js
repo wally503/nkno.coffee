@@ -119,9 +119,12 @@ export async function getLatestBean(){
     }
 }
 
-export async function markBeanFinished(shortId) {
+export async function markBeanFinished(shortId, timestamp) {
     try {
-        const { data } = await axiosInstance.patch(`coffee/beans/${shortId}/`, { finished: true });
+        if (import.meta.env.DEV) {
+            console.log("bean finished timestamp: ", timestamp)
+        }
+        const { data } = await axiosInstance.patch(`coffee/beans/${shortId}/`, { finished: true, finished_date: timestamp});
         return data;
     } catch (error) {
         console.error(error.response?.status);

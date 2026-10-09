@@ -151,7 +151,7 @@ export default function CuppingFormPage() {
               message={"This bag is nearly out — want to mark it as finished?"}
               open={bagCloseDialogue}
               onCloseParent={() => setBagCloseDialogue(false)}
-              onConfirm={() => markBeanFinished(pendingBeanShortId)} 
+              onConfirm={() => markBeanFinished(pendingBeanShortId, formData.brew_log?.date)} 
               confirmLabel="Yes, Close Bag"
               cancelLabel="No, Not yet"
             />

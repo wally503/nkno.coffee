@@ -133,7 +133,7 @@ class Bean(models.Model):
             BagLifecycleEvent.objects.create(
                 bean=self,
                 event_type=BagLifecycleEvent.EventType.FINISHED,
-                date=timezone.now(),
+                date=getattr(self, '_finished_date', None) or timezone.now(),
             )
 
     def recalculate_used_weight(self):

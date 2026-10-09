@@ -2,7 +2,7 @@
 import * as React from "react";
 import CoffeeLogFormShell from "../shared/CoffeeLogFormShell";
 import { BEANS_STATIC_OPTIONS, beansConfig   } from "../../../constants/config/coffeelog/beans/beansConfig";
-import { beansCountries, beansNotes, beansRoasters, submitBeans, getBeanById, updateBean, beansProcesses } from "../../../api/beansApi";
+import { beansCountries, beansNotes, beansRoasters, submitBeans, getBeanById, updateBean, beansProcesses, markBeanFinished } from "../../../api/beansApi";
 import { brewsByBean } from "../../../api/brewApi";
 import { BAG_EVENT_ROW_SX_OPEN, BAG_EVENT_ROW_SX_CLOSE } from "../../../constants/tableStyles";
 import DialogueBox from "../../../components/DialogueBox";
@@ -16,12 +16,14 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import CoffeeTable from "../../../components/CoffeeTable";
+import CloseBagDialog from "../../../components/CloseBagDialog";
 
 export default function BeansFormPage() {
   const [formData, setFormData] = React.useState({});
   const [options, setOptions] = React.useState(null);
   const [errors, setErrors] = React.useState({});
   const [saveDialogue, setSaveDialogue] = React.useState(false);
+  const [bagCloseDialogue, setBagCloseDialogue] = React.useState(false);
 
   const [tabValue, setTabValue] = React.useState("1");
   const brewTableState = useTableState('date');
@@ -90,15 +92,38 @@ export default function BeansFormPage() {
   const handleSubmit = async () => {
     try {
       const payload = { ...formData };  
-      console.log("result formdate for beans:", formData)
+      if (import.meta.env.DEV) {
+        console.log("result formdate for beans:", formData)
+      }
       const res = shortid 
         ? await updateBean(shortid, payload) 
         : await submitBeans(payload);
       setSaveDialogue(true);
-      console.log("Add beans result:", res);
+      if (import.meta.env.DEV) {
+        console.log("Add beans result:", res);
+      }
     } catch(err){
-      console.log(err);
+      if (import.meta.env.DEV) {
+        console.log(err);
+      }
       setErrors(err);
+    }
+  };
+
+  const handleBagClose = async (time) => {
+    try {
+      if (import.meta.env.DEV) {
+        console.log("attempting bag close w time: ", time)
+      }
+      const res = await markBeanFinished(shortid, time) // change to close bag update api call for soft update
+      setSaveDialogue(true);
+      if (import.meta.env.DEV) {
+        console.log("clean close of bag", res);
+      }
+    } catch(err){
+      if (import.meta.env.DEV) {
+        console.log(err);
+      }
     }
   };
 
@@ -124,12 +149,18 @@ export default function BeansFormPage() {
               onEdit={() => navigate(`/coffeeLog/beans/edit/${shortid}`)}
               errors={errors}
               mode={mode}
+              onBeanClose={formData.short_id && !formData.finished ? () => setBagCloseDialogue(true) : null}
             />
             <DialogueBox 
               title={"Saving Beans"}
               message={"Beans were successfully saved!"}
               open={saveDialogue}
-              onCloseParent={() => { setSaveDialogue(false); navigate('/coffeeLog/beans/list') } }
+              onCloseParent={() => { setSaveDialogue(false); navigate('/coffeeLog/beans/list')}}
+            />
+            <CloseBagDialog 
+              open={bagCloseDialogue} 
+              onClose={() => {setBagCloseDialogue(false);}} 
+              onConfirm={handleBagClose}
             />
             { mode === "view" && beanViewTables() }
           </DefaultBodyLayout>
