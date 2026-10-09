@@ -19,7 +19,8 @@ class CatalogViewSet(ListModelMixin, RetrieveModelMixin, viewsets.GenericViewSet
 # ---------------------------------------------------------------------------
 
 TIEBREAK_OFFSET = {
-    'bag_event': timedelta(microseconds=-1),
+    'opened': timedelta(microseconds=-1),
+    'finished': timedelta(microseconds=+1),
 }
 
 # ---------------------------------------------------------------------------
@@ -100,7 +101,7 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
 
 
         def sort_key(row):
-            offset = TIEBREAK_OFFSET.get(row['style'], timedelta(0))
+            offset = TIEBREAK_OFFSET.get(row.get('event_type'), timedelta(0))
             return row['date'] + offset
 
         combined.sort(key=sort_key, reverse=ordering.startswith('-'))
