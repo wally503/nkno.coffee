@@ -26,6 +26,7 @@ export default function EspressoFormPage() {
   const [saveDialogue, setSaveDialogue] = React.useState(false);
   const [bagCloseDialogue, setBagCloseDialogue] = React.useState(false);
   const [pendingBeanShortId, setPendingBeanShortId] = React.useState(null);
+  const [pendingBrewDate, setPendingBrewDate] = React.useState(null);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -110,6 +111,7 @@ export default function EspressoFormPage() {
 
       if (res?.needs_bag_close_prompt) {
         setPendingBeanShortId(bean);
+        setPendingBrewDate(res.brew_log?.date);
         setBagCloseDialogue(true);
       }
 
@@ -155,7 +157,7 @@ export default function EspressoFormPage() {
               message={"This bag is nearly out — want to mark it as finished?"}
               open={bagCloseDialogue}
               onCloseParent={() => setBagCloseDialogue(false)}
-              onConfirm={() => markBeanFinished(pendingBeanShortId, formData.brew_log?.date)} 
+              onConfirm={() => markBeanFinished(pendingBeanShortId, pendingBrewDate)} 
               confirmLabel="Yes, Close Bag"
               cancelLabel="No, Not yet"
             />
