@@ -4,8 +4,52 @@ from .choices import CaffOrDecaf, OrganicOrNot, BusinessType, RoastLevel
 import nanoid
 from decimal import Decimal
 from django.db.models import Sum
+from django.core.exceptions import ValidationError
 
-# Create your models here.
+class VesselType(models.Model):
+    name = models.CharField(max_length=200, unique=True)
+    has_identifier = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.name}"
+
+class Vessel(models.Model):
+    current_bean = models.OneToOneField(
+        "Bean",                  # string, so definition order doesn't matter
+        null=True, blank=True,
+        on_delete=models.CASCADE,
+        related_name="bag_vessel",
+    )
+    visual_identifier = models.CharField(max_length=200, null=True, blank=True)
+    vessel_type = models.ForeignKey(
+        VesselType,
+        on_delete=models.PROTECT
+    )
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["vessel_type__name", "visual_identifier"]  # default sort order
+        verbose_name_plural = "vessels"                   # label in admin
+        constraints = [
+            models.UniqueConstraint(
+                fields=['visual_identifier', 'vessel_type'], 
+                name='visual_identifier_per_vessel_type'
+            )
+        ]
+
+    def clean(self):
+        if not self.vessel_type_id:
+            return
+        if not self.visual_identifier and self.vessel_type.has_identifier is True:
+            raise ValidationError("Invalid vessel. Type rule says associated Vessels requires an identifier.")
+        if self.visual_identifier and self.vessel_type.has_identifier is False:
+            raise ValidationError("Invalid vessel. Type rule says associated Vessels cannot have an identifier.")
+
+    def __str__(self):
+        if not self.visual_identifier:
+            return f"{self.vessel_type.name}"
+        return f"{self.vessel_type.name} – {self.visual_identifier}"
 
 class Process(models.Model):
     name = models.CharField(max_length=200, unique=True)
