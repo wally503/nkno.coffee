@@ -107,6 +107,7 @@ export default function AeropressFormPage() {
 
       if (res?.needs_bag_close_prompt) {
         setPendingBeanShortId(bean);
+        setPendingBrewDate(res.brew_log?.date);
         setBagCloseDialogue(true);
       }
 
@@ -152,7 +153,7 @@ export default function AeropressFormPage() {
               message={"This bag is nearly out — want to mark it as finished?"}
               open={bagCloseDialogue}
               onCloseParent={() => setBagCloseDialogue(false)}
-              onConfirm={() => markBeanFinished(pendingBeanShortId, formData.brew_log?.date)} 
+              onConfirm={() => markBeanFinished(pendingBeanShortId, pendingBrewDate)} 
               confirmLabel="Yes, Close Bag"
               cancelLabel="No, Not yet"
             />

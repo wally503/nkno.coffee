@@ -13,7 +13,11 @@ export const POUROVER_STATIC_OPTIONS = {
   ],
   pour_style: [
     { label: 'Center Focused', value: 'center' },
-    { label: 'Spiral', value: 'spiral'},
+    { label: 'Full-Size Spiral', value: 'spiral'},
+    { label: 'Pulse, Center Focused', value: 'pl_center' },
+    { label: 'Pulse, Full Spiral', value: 'pl_full_spiral'},
+    { label: 'Pulse, Small Spirals', value: 'pl_sm_spiral' },
+    { label: 'Other, Check Notes', value: 'other' },
   ],
   water_type: [
     { label: 'Straight Distilled', value: 'distilled' },

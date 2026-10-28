@@ -1,21 +1,21 @@
 //src/constants/tags.js
 export const TAG_PALETTES = {
   default: {
-    amazing:      { color: '#9B8AFB', border: '3px double',  glow: false },
-    great:        { color: '#307840', border: '3px double', glow: false },
+    amazing:      { color: '#9B8AFB', border: '4px double',  glow: false },
+    great:        { color: '#307840', border: '4px double', glow: false },
     pro:          { color: '#307840', border: '1px solid',  glow: false },
     other:        { color: '#4269a1', border: '1px solid',  glow: false },
     con:          { color: '#801d1d', border: '1px solid',  glow: false },
-    catastrophe:  { color: '#770633', border: '3px double', glow: true  },
+    catastrophe:  { color: '#770633', border: '4px double', glow: true  },
   },
   // Lighter versions of the same hues, for the log tables
   table: {
-    amazing:      { color: '#B7ABFF', border: '3px double',  glow: false },
-    great:        { color: '#5FBF77', border: '3px double', glow: false },
+    amazing:      { color: '#B7ABFF', border: '4px double',  glow: false },
+    great:        { color: '#5FBF77', border: '4px double', glow: false },
     pro:          { color: '#5FBF77', border: '1px solid',  glow: false },
     other:        { color: '#7B96BD', border: '1px solid',  glow: false },
     con:          { color: '#E06A6A', border: '1px solid',  glow: false },
-    catastrophe:  { color: '#E0508A', border: '3px double', glow: true  },
+    catastrophe:  { color: '#E0508A', border: '4px double', glow: true  },
   },
 }
 

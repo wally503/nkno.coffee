@@ -213,13 +213,13 @@ function viewMode(events, totalPoured) {
   const styleLabel = (value) =>
     POUROVER_STATIC_OPTIONS.pour_style.find((opt) => opt.value === value)?.label || value;
 
-  const columnSx = { width: 90 };
+  const columnSx = { width: 120 };
 
   // Only complete rows; "previous pour" means the previous complete row
   const valid = events.filter(e => e.pour_time && e.pour_amount);
 
   return (
-    <Grid key="pourover-view" size={{ xs: 12, sm: 12, md: 12 }} sx={{ maxWidth: 580 }}>
+    <Grid key="pourover-view" size={{ xs: 12, sm: 12, md: 12 }} sx={{ maxWidth: 800 }}>
       <Typography variant="caption" sx={{ color: "text.secondary" }}>
         Pour Events (total: {totalPoured}g)
       </Typography>
