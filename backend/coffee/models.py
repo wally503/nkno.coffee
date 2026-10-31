@@ -10,6 +10,7 @@ class VesselType(models.Model):
     name = models.CharField(max_length=200, unique=True)
     has_identifier = models.BooleanField(default=True)
     is_active = models.BooleanField(default=True)
+    freezable = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.name}"
@@ -274,6 +275,7 @@ class LotSplit(models.Model):
     )
     stored_weight = models.DecimalField(max_digits=7, decimal_places=2)
     remaining_weight = models.DecimalField(max_digits=7, decimal_places=2)
+    leftover_weight = models.DecimalField(max_digits=7, decimal_places=2,null=True, blank=True)
     frozen_at = models.DateTimeField(null=True, blank=True)
     thawed_at = models.DateTimeField(null=True, blank=True)
     opened_at = models.DateTimeField(null=True, blank=True)
@@ -375,6 +377,16 @@ class LotSplit(models.Model):
                 errors["remaining_weight"] = "Can't be negative."
             elif self.remaining_weight > self.stored_weight:
                 errors["remaining_weight"] = "Can't exceed stored weight."
+        if self.leftover_weight is not None and self.leftover_weight <= 0:
+                errors["leftover_weight"] = "If giving leftover weight, must be greater than 0. Otherwise make it null."
+
+        # Vessel Audit
+        if self.vessel:
+            if self._state.adding and not self.vessel.is_active:
+                errors["vessel"] = "This vessel is retired."
+            if not self.vessel.vessel_type.freezable:
+                if bool(self.frozen_at) != bool(self.thawed_at):
+                    errors["vessel"] = "Needs both freeze and thaw dates, or neither."
 
         if errors:
             raise ValidationError(errors)
