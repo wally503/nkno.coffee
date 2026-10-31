@@ -93,6 +93,11 @@ export default function NavDrawer() {
             <NavBarItem icon={<AddCircleOutlineIcon/>} route="/brew" label="New Brew" />
             <NavBarItem icon={<HistoryIcon/>} route="/history" label="Brew History" />
 
+            <Divider sx={{ mx: 2, my: 1, opacity: 0.4 }} />
+
+            <NavBarItem icon={<AddCircleOutlineIcon/>} route="/lotManagement" label="Manage Lots" />
+            <NavBarItem icon={<HistoryIcon/>} route="/lotOverview" label="Lot Overview" />
+
           </List>    
         </Box>
         {/* bottom bar */}

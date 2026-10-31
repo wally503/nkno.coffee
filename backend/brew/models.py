@@ -1,6 +1,7 @@
 # brew/models.py
 
 from django.db import models
+from django.db.models import Sum, Q, F
 import nanoid
 
 
@@ -414,3 +415,48 @@ class BrewTag(models.Model):
 
     def __str__(self):
         return self.name
+
+
+
+# ---------------------------------------------------------------------------
+# Lot Bridge - Binds back to coffee's lot tracking
+# ---------------------------------------------------------------------------
+
+class LotBrewBridge(models.Model):
+    brew = models.ForeignKey(
+        BrewLog,
+        null=False, 
+        blank=False,
+        on_delete=models.CASCADE,
+    )
+    lot = models.ForeignKey(
+        "coffee.LotSplit",
+        null=False, 
+        blank=False,
+        on_delete=models.PROTECT,
+    )
+    grams = models.DecimalField(max_digits=7, decimal_places=2, null=False, blank=False)
+    is_closing = models.BooleanField(default=False)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['brew'],
+                name='single_lot_close_event',
+                condition=Q(is_closing=True)
+            ),
+            models.UniqueConstraint(
+                fields=['brew','lot'],
+                name='one_brew_only',
+            ),
+            models.CheckConstraint(
+                name='grams_gt_0',
+                condition=Q(grams__gt=0)
+            ),
+        ]
+
+    def __str__(self):
+        where = self.lot.vessel or "Original bag"
+        closed = "(Close)" if self.is_closing else ""
+        return f"{self.brew.bean.name}: {where} @{self.brew.date} {closed}"
+    

@@ -7,7 +7,7 @@ from .models import (
     AeropressDetail, HoffmannEvent,
     PouroverDetail, PouroverPourEvent,
     ColdBrewDetail, BagLifecycleEvent, EspressoDetail,
-    BrewTag, CuppingDetail
+    BrewTag, CuppingDetail, LotBrewBridge
 )
 
 
@@ -49,6 +49,19 @@ admin.site.register(BrewLog, BrewLogAdmin)
 admin.site.register(AeropressDetail, AeropressDetailAdmin)
 admin.site.register(PouroverDetail, PouroverDetailAdmin)
 admin.site.register(ColdBrewDetail)
-admin.site.register(BagLifecycleEvent)
+
+@admin.register(BagLifecycleEvent)
+class BagLifecycleEventAdmin(admin.ModelAdmin):
+    list_display = ["date", "bean", "event_type", "notes"]
+    list_filter = ["event_type"]
+    search_fields = ["bean__name", "notes"]
+    ordering = ["-date"]
+    date_hierarchy = "date"
+    
 admin.site.register(EspressoDetail)
 admin.site.register(CuppingDetail)
+
+@admin.register(LotBrewBridge)
+class LotBrewBridgeAdmin(admin.ModelAdmin):
+    list_display = ["brew", "lot", "grams", "is_closing"]
+    list_filter = ["is_closing"]
