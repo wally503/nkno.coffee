@@ -1,12 +1,14 @@
 from rest_framework import serializers, viewsets
 from .models import LotSplit
-
+from django.utils import timezone
 
 class LotSplitSerializer(serializers.ModelSerializer):
     bean_name = serializers.SerializerMethodField()
     vessel_label = serializers.SerializerMethodField()
     close_reason_name = serializers.SerializerMethodField()
     state = serializers.SerializerMethodField()
+    age_days = serializers.SerializerMethodField()
+    open_days = serializers.SerializerMethodField()
 
     class Meta:
         model = LotSplit
@@ -14,8 +16,26 @@ class LotSplitSerializer(serializers.ModelSerializer):
             "id", "bean", "bean_name", "vessel", "vessel_label", "state",
             "stored_weight", "remaining_weight", "leftover_weight",
             "frozen_at", "thawed_at", "opened_at", "closed_at",
-            "close_reason_name",
+            "age_days", "open_days", "close_reason_name",
         ]
+
+    def get_age_days(self, lot):
+        roast = lot.bean.roast_date
+        if roast is None:
+            return None
+        if lot.frozen_at is not None and lot.thawed_at is None:
+            return None   # still frozen
+        now = timezone.now()
+        total = (timezone.localdate() - roast).days
+        frozen_days = 0
+        if lot.frozen_at is not None and lot.thawed_at is not None:
+            frozen_days = (lot.thawed_at - lot.frozen_at).days
+        return total - frozen_days
+
+    def get_open_days(self, lot):
+        if lot.opened_at is None or lot.closed_at is not None:
+            return None
+        return (timezone.now() - lot.opened_at).days
 
     def get_bean_name(self, lot):
         return lot.bean.name

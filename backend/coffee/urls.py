@@ -1,8 +1,10 @@
 from rest_framework.routers import DefaultRouter   
-from .views import RoasterViewSet, BeanViewSet, DrinkViewSet, CountriesViewSet, FlavorNotesViewSet, RegionsViewSet, MapzoneViewSet, BeanLifecycleViewSet,OpenBagListView, ProcessesViewSet
+from .views import (RoasterViewSet, BeanViewSet, DrinkViewSet, CountriesViewSet, FlavorNotesViewSet, 
+                        RegionsViewSet, MapzoneViewSet, BeanLifecycleViewSet,OpenBagListView, ProcessesViewSet)
 from django.urls import path
 from coffee.lots_api import LotSplitViewSet
 from brew.events_api import LifecycleEventViewSet
+from coffee.bean_stock_api import BeanStockViewSet
 
 router = DefaultRouter()
 
@@ -19,6 +21,7 @@ router.register('beanLifecycle', BeanLifecycleViewSet, basename='bean-lifecycle'
 
 router.register("lots", LotSplitViewSet, basename="lot")
 router.register("lifecycle-events", LifecycleEventViewSet, basename="lifecycle-event")
+router.register("bean-stock", BeanStockViewSet, basename="bean-stock")
 
 urlpatterns = [
     path('beans/open/', OpenBagListView.as_view(), name='open-bags'),    

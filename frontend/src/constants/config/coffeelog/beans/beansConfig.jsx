@@ -1,4 +1,4 @@
-// src/constants/forms/beansConfig.jsx
+// src/constants/config/coffelog/beans/beansConfig.jsx
 import { COFFEELOG_BASE } from './_base';
 import LocalCafeIcon from '@mui/icons-material/LocalCafe';
 import Tooltip from '@mui/material/Tooltip'

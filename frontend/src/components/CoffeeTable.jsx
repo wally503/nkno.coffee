@@ -9,16 +9,20 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
+import Collapse from "@mui/material/Collapse";
 import PageHeaderTitle from "./PageTitle";
 import TextField from "@mui/material/TextField";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Grid, FormControl, FormHelperText, Box, Rating, Typography, TableSortLabel } from "@mui/material";
 import { ratingCustomIcons } from "./RatingGridItem";
+import { cellFor } from "./table/tableCells";
 
 export default function CoffeeTable({
   columns, rows, totalCount, tableState, viewRoute,
-  cellPx, cellPy,               // cell padding, in MUI spacing units (1 = 8px)
+  cellPx, cellPy,
   width = "90%", maxWidth = 2000,
+  renderDetail,
+  lotCellFor,
 }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(tableState.pageSize);
@@ -96,41 +100,24 @@ export default function CoffeeTable({
                     <TableCell colSpan={columns.length} align="center" sx={{ fontStyle: 'italic' }}>- No data found -</TableCell>
                 </TableRow>
                 :
-                rows
-                  .map((row) => {
-                    return (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        tabIndex={-1}
-                        key={row.short_id}
-                        sx={row.rowSx}
-                        onClick={() => {
-                          const path = typeof viewRoute === 'function'
-                            ? viewRoute(row)
-                            : `${viewRoute}/${row.short_id}`;
-                          if (!path) return;
-                          navigate(path, { state: { backRoute: location.pathname } });
-                        }}
-                      >
-                        {columns.map((column) => {
-                          const value = row[column.id];
-                          return (
-                            <TableCell
-                              key={column.id}
-                              align={column.align}
-                              sx={{
-                                ...cellSxFor(column),
-                                ...(row.rowSx?.color ? { color: row.rowSx.color } : {}),
-                              }}
-                            >
-                              {renderCell(column, value, row)}
-                            </TableCell>
-                          );
-                        })}
-                      </TableRow>
-                    );
-                  })}
+                rows.map((row) => (
+                  <CoffeeTableRow
+                    key={row.short_id}
+                    row={row}
+                    columns={columns}
+                    cellSxFor={cellSxFor}
+                    renderCell={renderCell}
+                    renderDetail={renderDetail}
+                    lotCellFor={lotCellFor}
+                    onRowClick={() => {
+                      const path = typeof viewRoute === 'function'
+                        ? viewRoute(row)
+                        : `${viewRoute}/${row.short_id}`;
+                      if (!path) return;
+                      navigate(path, { state: { backRoute: location.pathname } });
+                    }}
+                  />
+                ))}
               </TableBody>
             </Table>
           </TableContainer>
@@ -147,13 +134,70 @@ export default function CoffeeTable({
       </Box>
   );
 
-  function renderCell(column, value, row) {
-    if (column.id === "rating") 
+  // Order: rating-by-id, then render, then type, then format, then the plain default
+  function renderCell(column, value, row, ctx) {
+    if (column.id === "rating")
       return ratingCustomIcons[value]?.icon ?? <span style={{ opacity: 0.3 }}>{ratingCustomIcons[3].icon}</span>;
-    if (column.render) 
-      return column.render(value, row);
-    if (column.format && typeof value === "number") 
+    if (column.render)
+      return column.render(value, row, ctx);
+    if (column.type) {
+      const Cell = cellFor(column.type);
+      return <Cell value={value} row={row} column={column} ctx={ctx} />;
+    }
+    if (column.format && typeof value === "number")
       return column.format(value);
     return value ?? "-";
   }
+}
+
+function CoffeeTableRow({ row, columns, cellSxFor, renderCell, renderDetail, lotCellFor, onRowClick }) {
+  const [open, setOpen] = React.useState(false);
+  const ctx = { open, toggle: () => setOpen((current) => !current) };
+
+  return (
+    <React.Fragment>
+      <TableRow
+        hover
+        role="checkbox"
+        tabIndex={-1}
+        sx={{ ...row.rowSx, "& td": { borderTop: "2px solid rgba(166, 124, 82, 0.45)" } }}
+        onClick={onRowClick}
+      >
+        {columns.map((column) => {
+          const value = row[column.id];
+          return (
+            <TableCell
+              key={column.id}
+              align={column.align}
+              sx={{
+                ...cellSxFor(column),
+                ...(row.rowSx?.color ? { color: row.rowSx.color } : {}),
+              }}
+            >
+              {renderCell(column, value, row, ctx)}
+            </TableCell>
+          );
+        })}
+      </TableRow>
+      {open && renderDetail && renderDetail(row).map((lot) => (
+        <TableRow
+          key={`lot-${lot.id}`}
+          sx={{
+            backgroundColor: "rgba(0, 0, 0, 0.18)",
+            "& td": { borderBottom: "1px dashed rgba(255, 252, 238, 0.12)" },
+          }}
+        >
+          {columns.map((column, index) => (
+            <TableCell
+              key={column.id}
+              align={column.align}
+              sx={{ ...cellSxFor(column), ...(index === 1 ? { pl: 5 } : {}), fontSize: "0.85rem", opacity: 0.9 }}
+            >
+              {lotCellFor(column, lot)}
+            </TableCell>
+          ))}
+        </TableRow>
+      ))}
+    </React.Fragment>
+  );
 }
