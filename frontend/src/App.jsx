@@ -26,6 +26,11 @@ import LoginPage from './Login';
 import Layout from './Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 
+
+// --- TEMP: Lots Dump ---
+import LotsDump from "./pages/LotsDump";
+
+
 function App() {
   return (
     <Routes>
@@ -60,6 +65,9 @@ function App() {
               <Route key={path} path={path} element={element} />
             ))}
           </Route>
+
+          {/* TEMP: Lots Dump Table */}
+          <Route path="/lots-dump" element={<LotsDump />} />
         </Route>
       </Route>
     </Routes>
