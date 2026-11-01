@@ -6,6 +6,11 @@ from django.utils import timezone
 from datetime import timedelta
 from django.core.exceptions import ValidationError
 from coffee.enums import LotState, LifecycleKind
+from brew.models import BagLifecycleEvent
+test_started = timezone.now()
+
+def wipe_test_events():
+    BagLifecycleEvent.objects.filter(date__gte=test_started).delete()
 
 FAUX_WEIGHT = Decimal("123.45") 
 
@@ -37,7 +42,6 @@ def step(label, fn, should_work):
         worked = False
         if worked != should_work:
             print(e)
-        worked = False
     print(("PASS " if worked == should_work else "FAIL ") + label)
 
 try:
@@ -55,6 +59,7 @@ try:
     step("freeze closed", lambda: freeze_lot(lot), False)
     step("thaw closed", lambda: thaw_lot(lot), False)
 finally:
+    wipe_test_events()
     lot.delete()
 
 
@@ -71,7 +76,7 @@ def works(fn, lot):
     try:
         fn(lot)
         return True
-    except Exception as e:
+    except ValidationError as e:
         ok = False
         if not ok:
             print(e)
@@ -99,6 +104,7 @@ print("PASS" if works(open_lot, lots[0]) else "FAIL", "open first lot")
 print("PASS" if works(open_lot, lots[1]) else "FAIL", "open second lot")
 print("PASS" if not works(open_lot, lots[2]) else "FAIL", "third lot refused")
 
+wipe_test_events()
 LotSplit.objects.filter(bean=bean, stored_weight=FAUX_WEIGHT).delete()
 
 
@@ -140,6 +146,7 @@ def create_lot_check(label, expect_ok, **kwargs):
             print(e)
     print(("PASS " if ok == expect_ok else "FAIL ") + label)
     if lot is not None:
+        wipe_test_events()
         lot.delete()
 
 print('Tests for Bad Parameters:')
@@ -300,7 +307,7 @@ create_lot_check(
     opened_at=now,
     state = LotState.OPEN)
 
-
+wipe_test_events()
 
 print()
 print('##################################')
@@ -318,6 +325,7 @@ def d(n):
     return now - timedelta(days=n)
 
 def cleanup():
+    wipe_test_events()
     LotSplit.objects.filter(vessel__vessel_type__name=TYPE_NAME).delete()
     Vessel.objects.filter(vessel_type__name=TYPE_NAME).delete()
     VesselType.objects.filter(name=TYPE_NAME).delete()
@@ -379,6 +387,7 @@ def run(label, expect_ok, setup, act, check=None):
     print(("PASS " if passed else "FAIL ") + label)
     if note:
         print("     " + note)
+    wipe_test_events()
     LotSplit.objects.exclude(pk__in=before).delete()
     for pk, flag in finished_flags.items():
         Bean.objects.filter(pk=pk).update(finished=flag)

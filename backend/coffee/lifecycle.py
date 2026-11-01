@@ -1,13 +1,13 @@
 from django.db import transaction
 from django.utils import timezone
 from django.core.exceptions import ValidationError
-from .models import LotSplit, Bean, CloseReason
+from .models import LotSplit, Bean, CloseReason, Vessel
 from collections.abc import Iterable
 from enum import Enum
 from decimal import Decimal
 from dataclasses import dataclass
 from .enums import LotState, LifecycleKind, Granularity
-from brew.lifecycle_log import log_lifecycle_event
+from brew.lifecycle_log import log_group, log_lot_change
 
 @dataclass
 class LotTarget:
@@ -65,7 +65,7 @@ def mark_bean_finished_if_done(bean: Bean) -> None:
     bean.finished = not has_open
     bean.save(update_fields=["finished"])
 
-def close_lot(lot: LotSplit, reason: CloseReason, closed_at=None, leftover=None, update_bean=True):
+def close_lot(lot: LotSplit, reason: CloseReason, closed_at=None, leftover=None, update_bean=True, parent_event=None):
     closed_at = closed_at or timezone.now()
     with transaction.atomic():
         if lot.closed_at is not None:
@@ -83,11 +83,15 @@ def close_lot(lot: LotSplit, reason: CloseReason, closed_at=None, leftover=None,
         lot.close_reason = reason
         lot.closed_at = closed_at
         lot.save()
+      
+        kind = LifecycleKind.TRANSFERRED if reason.carries_weight else LifecycleKind.FINISHED
+        log_lot_change(lot, kind, closed_at, parent_event)
 
         if update_bean:
             mark_bean_finished_if_done(lot.bean)
+        return lot
 
-def thaw_lot(lot: LotSplit, thawed_at=None):
+def thaw_lot(lot: LotSplit, thawed_at=None, parent_event=None):
     thawed_at = thawed_at or timezone.now()
     with transaction.atomic():
         if lot.closed_at is not None:
@@ -100,18 +104,25 @@ def thaw_lot(lot: LotSplit, thawed_at=None):
             raise ValidationError("Lot was already opened, cannot thaw.")
         lot.thawed_at = thawed_at
         lot.save()
+        log_lot_change(lot, LifecycleKind.THAWED, thawed_at, parent_event)
+
         return lot
 
 def batch_thaw(lots: Iterable[LotSplit], thawed_at=None):
     thawed_at = thawed_at or timezone.now()
+    lots = list(lots)
+    if not lots:
+        raise ValidationError("No lots supplied to open.")
     thawed: list[LotSplit] = []
     with transaction.atomic():
+        parent_event = log_group(lots[0].bean, LifecycleKind.THAWED, thawed_at, f"Thawed {len(lots)} lots")
+
         for lot in lots:
-            result = thaw_lot(lot, thawed_at)
+            result = thaw_lot(lot, thawed_at, parent_event)
             thawed.append(result)
     return thawed
 
-def freeze_lot(lot: LotSplit, frozen_at=None):
+def freeze_lot(lot: LotSplit, frozen_at=None, parent_event=None):
     frozen_at = frozen_at or timezone.now()
     with transaction.atomic():
         if lot.closed_at is not None:
@@ -124,18 +135,25 @@ def freeze_lot(lot: LotSplit, frozen_at=None):
             raise ValidationError("Lot was already frozen, cannot freeze again.")
         lot.frozen_at = frozen_at
         lot.save()
+        log_lot_change(lot, LifecycleKind.FROZEN, frozen_at, parent_event)
+
         return lot
 
 def batch_freeze(lots: Iterable[LotSplit], frozen_at=None):
     frozen_at = frozen_at or timezone.now()
+    lots = list(lots)
+    if not lots:
+        raise ValidationError("No lots supplied to open.")
     frozen: list[LotSplit] = []
     with transaction.atomic():
+        parent_event = log_group(lots[0].bean, LifecycleKind.FROZEN, frozen_at, f"Froze {len(lots)} lots")
+
         for lot in lots:
-            result = freeze_lot(lot, frozen_at)
+            result = freeze_lot(lot, frozen_at, parent_event)
             frozen.append(result)
     return frozen
 
-def open_lot(lot: LotSplit, opened_at=None, parent_lot=None):
+def open_lot(lot: LotSplit, opened_at=None, parent_event=None):
     opened_at = opened_at or timezone.now()
     with transaction.atomic():
         if lot.closed_at is not None:
@@ -155,15 +173,7 @@ def open_lot(lot: LotSplit, opened_at=None, parent_lot=None):
         
         lot.opened_at = opened_at
         lot.save()
-        log_lifecycle_event(
-            bean=lot.bean, 
-            kind=LifecycleKind.OPENED, 
-            at=lot.opened_at, 
-            granularity=Granularity.GRANULAR,
-            lot=lot,
-            summary=f"Opened {lot.vessel or "Original bag"}",
-            parent=parent_lot
-        )
+        log_lot_change(lot, LifecycleKind.OPENED, opened_at, parent_event)
         return lot
 
 def batch_open(lots: Iterable[LotSplit], opened_at=None):
@@ -173,15 +183,9 @@ def batch_open(lots: Iterable[LotSplit], opened_at=None):
         raise ValidationError("No lots supplied to open.")
     opened: list[LotSplit] = []
     with transaction.atomic():
-        parent = log_lifecycle_event(
-            bean=lots[0].bean,
-            kind=LifecycleKind.OPENED,
-            at=opened_at,
-            granularity=Granularity.BULK,
-            summary=f"Opened {len(lots)} lots",
-        )
+        parent_event = log_group(lots[0].bean, LifecycleKind.OPENED, opened_at, f"Opened {len(lots)} lots")
         for lot in lots:
-            result = open_lot(lot, opened_at, parent)
+            result = open_lot(lot, opened_at, parent_event)
             opened.append(result)
     return opened
 
@@ -276,26 +280,28 @@ def transfer_lot(lot: LotSplit, targets: list[LotTarget], transferred_at=None) -
     transferred_at = transferred_at or timezone.now()
     result_lot: list[LotSplit] = []
     with transaction.atomic():
-        # Update Source Lot - Runs first to avoid vessel clash
-        leftover_weight = lot.remaining_weight - lots_weight_sum
         transfer_reason = CloseReason.objects.get(name=TRANSFER_REASON_NAME)
-        close_lot(lot=lot, reason=transfer_reason, closed_at=transferred_at,leftover=leftover_weight, update_bean=False)
 
-        # Create Targets
+        # 1. The group row, built first so everything else can point at it
+        parts = []
         for t in targets:
-            t_frozen_at, t_thawed_at, t_opened_at = transfer_lot_assign_dates(t, lot, transferred_at)
-            new_lot = create_lot(
-                bean=lot.bean,
-                vessel=t.vessel,
-                weight=t.weight,
-                state=t.state,
-                frozen_at=t_frozen_at,
-                thawed_at=t_thawed_at,
-                opened_at=t_opened_at
-            )
+            parts.append(f"{t.vessel or 'Original bag'} {t.weight}g")
+        parent_event = log_group(lot.bean, LifecycleKind.TRANSFERRED, transferred_at,
+                                "Transferred to " + ", ".join(parts))
+
+        # 2. Close the source (writes its own child row, pointing at the group)
+        close_lot(lot, transfer_reason, closed_at=transferred_at,
+                update_bean=False, parent_event=parent_event)
+
+        # 3. Create each target, with a child row each
+        for t in targets:
+            d = transfer_lot_assign_dates(t, lot, transferred_at)
+            new_lot = create_lot(bean=lot.bean, vessel=t.vessel, weight=t.weight,
+                                state=t.state, frozen_at=d[0], thawed_at=d[1], opened_at=d[2])
+            log_lot_change(new_lot, LifecycleKind.TRANSFERRED, transferred_at,
+                        parent_event, detail=f"({t.weight}g)")
             result_lot.append(new_lot)
-        
-        # Run to preserve Non-done state over possible close_lot mishap on save
+
         mark_bean_finished_if_done(lot.bean)
     return result_lot
 
@@ -351,17 +357,23 @@ def merge_lots(sources: list[LotSplit], target: LotTarget, merged_at=None) -> Lo
                 break
         new_opened = base_source_lot.opened_at or merge_close_at
 
-        for s in sources:
-            close_lot(lot=s, reason=transfer_reason, closed_at=merge_close_at, update_bean=False)
+        # 1. The group row
+        parent_event = log_group(
+            base_source_lot.bean, LifecycleKind.MERGED, merge_close_at,
+            f"Merged {len(sources)} lots into {target.vessel or 'Original bag'} ({target.weight}g)")
 
+        # 2. Close each source, with a child row each
+        for s in sources:
+            close_lot(s, transfer_reason, closed_at=merge_close_at,
+                      update_bean=False, parent_event=parent_event)
+
+        # 3. Create the merged lot, with one child row
         new_lot = create_lot(
-            bean=base_source_lot.bean,
-            vessel=target.vessel,
-            weight=target.weight,
-            state=LotState.OPEN,
-            frozen_at=base_source_lot.frozen_at,
-            thawed_at=base_source_lot.thawed_at,
-            opened_at=new_opened,
-        )
+            bean=base_source_lot.bean, vessel=target.vessel, weight=target.weight,
+            state=LotState.OPEN, frozen_at=base_source_lot.frozen_at,
+            thawed_at=base_source_lot.thawed_at, opened_at=new_opened)
+        log_lot_change(new_lot, LifecycleKind.MERGED, merge_close_at,
+                       parent_event, detail=f"({target.weight}g)")
+
         mark_bean_finished_if_done(base_source_lot.bean)
     return new_lot
