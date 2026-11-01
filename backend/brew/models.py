@@ -5,7 +5,6 @@ from django.db.models import Sum, Q, F
 import nanoid
 from coffee.enums import LifecycleKind
 
-
 # ---------------------------------------------------------------------------
 # Choices
 # ---------------------------------------------------------------------------
@@ -205,9 +204,11 @@ class BrewLog(models.Model):
         if is_new and self.bean.opened_date is None:
             self.bean.opened_date = self.date
             self.bean.save(update_fields=['opened_date'])
+            
+            # open_lot()
             BagLifecycleEvent.objects.create(
                 bean=self.bean,
-                event_type=BagLifecycleEvent.EventType.OPENED,
+                event_type=LifecycleKind.OPENED,
                 date=self.date,
             )
 

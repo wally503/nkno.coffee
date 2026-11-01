@@ -2,8 +2,8 @@ from .models import *
 from rest_framework import serializers
 from datetime import date
 from decimal import Decimal
-from brew.models import AeropressDetail, PouroverDetail, EspressoDetail, BagLifecycleEvent
-from .lifecycle import create_lot
+from brew.models import AeropressDetail, PouroverDetail, EspressoDetail, BagLifecycleEvent, LifecycleKind
+from .enums import LifecycleKind 
 
 class RoasterSerializer(serializers.ModelSerializer):
     country = serializers.PrimaryKeyRelatedField(
@@ -233,7 +233,7 @@ class OpenBagSerializer(serializers.ModelSerializer):
             return obj.opened_date.date() if hasattr(obj.opened_date, 'date') else obj.opened_date
 
         lifecycle = obj.lifecycle_events.filter(
-            event_type=BagLifecycleEvent.EventType.OPENED
+            event_type=LifecycleKind.OPENED
         ).order_by('date').first()
         if lifecycle:
             return lifecycle.date.date()

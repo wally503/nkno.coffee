@@ -5,6 +5,7 @@ import nanoid
 from decimal import Decimal
 from django.db.models import Sum, Q, F
 from django.core.exceptions import ValidationError
+from .enums import LifecycleKind
 
 class VesselType(models.Model):
     name = models.CharField(max_length=200, unique=True)
@@ -177,7 +178,7 @@ class Bean(models.Model):
             from brew.models import BagLifecycleEvent
             BagLifecycleEvent.objects.create(
                 bean=self,
-                event_type=BagLifecycleEvent.EventType.FINISHED,
+                event_type=LifecycleKind.FINISHED,
                 date=getattr(self, '_finished_date', None) or timezone.now(),
             )
 
