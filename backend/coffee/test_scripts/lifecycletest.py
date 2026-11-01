@@ -1,9 +1,11 @@
-from coffee.models import LotSplit, Bean, CloseReason
-from coffee.lifecycle import freeze_lot, thaw_lot, open_lot, close_lot, LotState, create_lot
+from coffee.models import LotSplit, Bean, Vessel, VesselType, CloseReason
+from coffee.lifecycle import  (freeze_lot, thaw_lot, create_lot, open_lot, close_lot, transfer_lot, merge_lots,
+                              LotTarget)
 from decimal import Decimal
 from django.utils import timezone
 from datetime import timedelta
 from django.core.exceptions import ValidationError
+from coffee.enums import LotState, LifecycleKind
 
 FAUX_WEIGHT = Decimal("123.45") 
 
@@ -31,7 +33,10 @@ def step(label, fn, should_work):
     try:
         fn()
         worked = True
-    except Exception:
+    except Exception as e:
+        worked = False
+        if worked != should_work:
+            print(e)
         worked = False
     print(("PASS " if worked == should_work else "FAIL ") + label)
 
@@ -66,8 +71,11 @@ def works(fn, lot):
     try:
         fn(lot)
         return True
-    except Exception:
-        return False
+    except Exception as e:
+        ok = False
+        if not ok:
+            print(e)
+        return ok
 
 bean = Bean.objects.first()
 LotSplit.objects.filter(bean=bean, stored_weight=FAUX_WEIGHT).delete()
@@ -291,3 +299,198 @@ create_lot_check(
     thawed_at=two_days_ago,
     opened_at=now,
     state = LotState.OPEN)
+
+
+
+print()
+print('##################################')
+print('# Transfer and Merge Tests       #')
+print('##################################')
+print()
+
+TYPE_NAME = "ZZ TEST TYPE"
+W = Decimal("88.00")    # a whole lot
+P1 = Decimal("40.00")   # merge source 1
+P2 = Decimal("48.00")   # merge source 2 (P1 + P2 = W)
+
+now = timezone.now()
+def d(n):
+    return now - timedelta(days=n)
+
+def cleanup():
+    LotSplit.objects.filter(vessel__vessel_type__name=TYPE_NAME).delete()
+    Vessel.objects.filter(vessel_type__name=TYPE_NAME).delete()
+    VesselType.objects.filter(name=TYPE_NAME).delete()
+
+cleanup()
+
+# A bean with no unclosed bag lot, and a close reason that isn't "Transferred"
+bean = None
+for b in Bean.objects.all():
+    if not LotSplit.objects.filter(bean=b, vessel__isnull=True, closed_at__isnull=True).exists():
+        bean = b
+        break
+reason = CloseReason.objects.filter(carries_weight=False, is_active=True).first()
+if bean is None or reason is None:
+    print("Need a bean with no unclosed bag lot, and a non-weight-carrying CloseReason.")
+    raise SystemExit
+
+other_bean = Bean.objects.exclude(pk=bean.pk).first()
+finished_flags = {bean.pk: bean.finished}
+if other_bean is not None:
+    finished_flags[other_bean.pk] = other_bean.finished
+
+# Throwaway vessels
+vt = VesselType.objects.create(name=TYPE_NAME, has_identifier=True, freezable=True)
+A = Vessel.objects.create(vessel_type=vt, visual_identifier="ZZ-A")
+B = Vessel.objects.create(vessel_type=vt, visual_identifier="ZZ-B")
+C = Vessel.objects.create(vessel_type=vt, visual_identifier="ZZ-C")
+
+def make(vessel, state=LotState.SEALED, weight=W, the_bean=None, **dates):
+    return create_lot(bean=the_bean or bean, vessel=vessel, weight=weight, state=state, **dates)
+
+def tg(vessel, weight, state=LotState.OPEN):
+    return LotTarget(vessel=vessel, weight=weight, state=state)
+
+def closed_lot():
+    lot = make(None)
+    close_lot(lot, reason, update_bean=False)
+    return lot
+
+def twice():
+    lot = make(B, weight=P1)
+    return [lot, lot]
+
+def run(label, expect_ok, setup, act, check=None):
+    before = set(LotSplit.objects.values_list("pk", flat=True))
+    ctx = setup()
+    saved = False
+    note = ""
+    try:
+        result = act(ctx)
+        saved = True
+        if check is not None:
+            note = check(ctx, result) or ""
+    except ValidationError as e:
+        note = "; ".join(e.messages)
+    if saved and not expect_ok:
+        note = "was saved but should have been refused"
+    passed = (saved == expect_ok) and not (saved and note)
+    print(("PASS " if passed else "FAIL ") + label)
+    if note:
+        print("     " + note)
+    LotSplit.objects.exclude(pk__in=before).delete()
+    for pk, flag in finished_flags.items():
+        Bean.objects.filter(pk=pk).update(finished=flag)
+
+print("Transfer, should save:")
+run("bag lot into an airscape", True,
+    lambda: make(None),
+    lambda lot: transfer_lot(lot, [tg(A, W)]),
+    lambda lot, res: None if (lot.closed_at and len(res) == 1 and res[0].vessel == A and res[0].opened_at) else "source not closed, or target wrong")
+
+run("bag lot split: airscape + bag partial", True,
+    lambda: make(None),
+    lambda lot: transfer_lot(lot, [tg(A, Decimal("60.00")), tg(None, Decimal("28.00"))]),
+    lambda lot, res: None if (lot.closed_at and len(res) == 2) else "expected a closed source and two new lots")
+
+run("open source: target keeps opened_at", True,
+    lambda: make(B, LotState.OPEN, opened_at=d(3)),
+    lambda lot: transfer_lot(lot, [tg(A, W)]),
+    lambda lot, res: None if res[0].opened_at == lot.opened_at else "opened_at was changed")
+
+print()
+print("Transfer, should be refused:")
+run("single target in the source's own vessel", False,
+    lambda: make(B, LotState.OPEN, opened_at=d(1)),
+    lambda lot: transfer_lot(lot, [tg(B, W)]))
+
+run("two targets in the same vessel", False,
+    lambda: make(None),
+    lambda lot: transfer_lot(lot, [tg(A, Decimal("44.00")), tg(A, Decimal("44.00"))]))
+
+run("targets add up to far less", False,
+    lambda: make(None),
+    lambda lot: transfer_lot(lot, [tg(A, Decimal("20.00"))]))
+
+run("targets add up to far more", False,
+    lambda: make(None),
+    lambda lot: transfer_lot(lot, [tg(A, Decimal("120.00"))]))
+
+run("no targets", False,
+    lambda: make(None),
+    lambda lot: transfer_lot(lot, []))
+
+run("frozen source", False,
+    lambda: make(B, LotState.FROZEN, frozen_at=d(2)),
+    lambda lot: transfer_lot(lot, [tg(A, W)]))
+
+run("closed source", False,
+    closed_lot,
+    lambda lot: transfer_lot(lot, [tg(A, W)]))
+
+run("THAWED target (transfers always open)", False,
+    lambda: make(None),
+    lambda lot: transfer_lot(lot, [tg(A, W, LotState.THAWED)]))
+
+run("open source with a FROZEN target", False,
+    lambda: make(B, LotState.OPEN, opened_at=d(1)),
+    lambda lot: transfer_lot(lot, [tg(A, W, LotState.FROZEN)]))
+
+print()
+print("Merge, should save:")
+run("two sealed lots into an airscape", True,
+    lambda: [make(B, weight=P1), make(C, weight=P2)],
+    lambda srcs: merge_lots(srcs, tg(A, W)),
+    lambda srcs, res: None if (all(s.closed_at for s in srcs) and res.vessel == A and res.stored_weight == W) else "sources not closed, or new lot wrong")
+
+run("one open source: merged lot keeps its opened_at", True,
+    lambda: [make(B, LotState.OPEN, weight=P1, opened_at=d(2)), make(C, weight=P2)],
+    lambda srcs: merge_lots(srcs, tg(A, W)),
+    lambda srcs, res: None if res.opened_at == srcs[0].opened_at else "opened_at is wrong")
+
+run("matching freeze history carries over", True,
+    lambda: [make(B, LotState.THAWED, weight=P1, frozen_at=d(5), thawed_at=d(3)),
+             make(C, LotState.THAWED, weight=P2, frozen_at=d(5), thawed_at=d(3))],
+    lambda srcs: merge_lots(srcs, tg(A, W)),
+    lambda srcs, res: None if (res.frozen_at == d(5) and res.thawed_at == d(3)) else "freeze dates not carried over")
+
+run("target reuses one of the sources' vessels", True,
+    lambda: [make(B, weight=P1), make(C, weight=P2)],
+    lambda srcs: merge_lots(srcs, tg(B, W)),
+    lambda srcs, res: None if res.vessel == B else "new lot is in the wrong vessel")
+
+print()
+print("Merge, should be refused:")
+run("only one source", False,
+    lambda: [make(B, weight=P1)],
+    lambda srcs: merge_lots(srcs, tg(A, P1)))
+
+run("different freeze histories", False,
+    lambda: [make(B, LotState.THAWED, weight=P1, frozen_at=d(5), thawed_at=d(3)), make(C, weight=P2)],
+    lambda srcs: merge_lots(srcs, tg(A, W)))
+
+run("same lot listed twice", False,
+    twice,
+    lambda srcs: merge_lots(srcs, tg(A, Decimal("80.00"))))
+
+run("target state is not OPEN", False,
+    lambda: [make(B, weight=P1), make(C, weight=P2)],
+    lambda srcs: merge_lots(srcs, tg(A, W, LotState.SEALED)))
+
+run("target weight doesn't match the sources", False,
+    lambda: [make(B, weight=P1), make(C, weight=P2)],
+    lambda srcs: merge_lots(srcs, tg(A, Decimal("50.00"))))
+
+run("one source is closed", False,
+    lambda: [closed_lot(), make(B, weight=P2)],
+    lambda srcs: merge_lots(srcs, tg(A, P2)))
+
+if other_bean is not None:
+    run("sources from different beans", False,
+        lambda: [make(B, weight=P1), make(C, weight=P2, the_bean=other_bean)],
+        lambda srcs: merge_lots(srcs, tg(A, W)))
+
+cleanup()
+print()
+print("Done.")

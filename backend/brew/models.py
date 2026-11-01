@@ -3,6 +3,7 @@
 from django.db import models
 from django.db.models import Sum, Q, F
 import nanoid
+from coffee.enums import LifecycleKind
 
 
 # ---------------------------------------------------------------------------
@@ -370,18 +371,31 @@ class EspressoDetail(BrewBaseMixin, models.Model):
 # -----------------------------------------------------------------------------
 
 class BagLifecycleEvent(models.Model):
-    class EventType(models.TextChoices):
-        OPENED = 'opened', 'Opened'
-        FINISHED = 'finished', 'Finished'
-
     bean = models.ForeignKey(
         "coffee.Bean",
         on_delete=models.CASCADE,
         related_name="lifecycle_events",
     )
-    event_type = models.CharField(max_length=20, choices=EventType.choices)
+    event_type = models.CharField(
+        max_length=20,
+        choices=[(k.value, k.name.title()) for k in LifecycleKind],
+    )
     date = models.DateTimeField()
     notes = models.TextField(blank=True)
+    lot = models.ForeignKey(
+        "coffee.LotSplit",
+        null=True, blank=True,
+        on_delete=models.PROTECT,
+        related_name="events",
+    )
+    parent = models.ForeignKey(
+        "self",
+        null=True, blank=True,
+        on_delete=models.CASCADE,
+        related_name="children",
+    )
+    granularity = models.CharField(max_length=10, default="bag")
+    summary = models.CharField(max_length=300, blank=True, default="")
 
     class Meta:
         ordering = ['-date']

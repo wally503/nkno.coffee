@@ -3,6 +3,7 @@ from rest_framework import serializers
 from datetime import date
 from decimal import Decimal
 from brew.models import AeropressDetail, PouroverDetail, EspressoDetail, BagLifecycleEvent
+from .lifecycle import create_lot
 
 class RoasterSerializer(serializers.ModelSerializer):
     country = serializers.PrimaryKeyRelatedField(
@@ -59,6 +60,12 @@ class BeanSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance._finished_date = validated_data.pop('finished_date', None)
         return super().update(instance, validated_data)
+    
+    def create(self, validated_data) -> Bean:
+        with transaction.atomic():
+            bean: Bean = super().create(validated_data)
+            create_lot(bean=bean, vessel=None, weight=bean.bag_weight, state=LotState.SEALED)
+            return bean
 
 class BeanListSerializer(serializers.ModelSerializer):
     flavor_notes = serializers.SerializerMethodField()
