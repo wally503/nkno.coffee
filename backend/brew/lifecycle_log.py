@@ -23,6 +23,7 @@ def log_lifecycle_event(bean: Bean, kind: LifecycleKind, at, granularity: Granul
             parent=parent,
             summary=summary
         )
+        event.save()
     return event
 
 def log_lot_change(lot, kind, at, parent=None, detail=""):
