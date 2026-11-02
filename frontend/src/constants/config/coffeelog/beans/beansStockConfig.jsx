@@ -20,7 +20,7 @@ export const beanStockColumns = [
       <div>
         <div style={{ fontSize: "1rem", fontWeight: 500, marginBottom: 8 }}>{value}</div>
         <div style={{ maxWidth: 300 }}>
-          <StateBarCell value={row.lots} />
+          <StateBarCell value={row.lots} finished={row.finished_lots} />
         </div>
       </div>
     ),

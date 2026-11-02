@@ -32,7 +32,7 @@ import LotsDump from "./pages/LotsDump";
 
 // --- Bean Stock ---
 import ListBeanStockPage from "./pages/beanStock/ListBeanStockPage";
-
+import RearrangePage from "./pages/beanStock/RearrangePage";
 
 function App() {
   return (
@@ -74,6 +74,7 @@ function App() {
 
           {/* TEMP: List Beans Stock */}
           <Route path="/bean-stock" element={<ListBeanStockPage />} />
+          <Route path="/bean-stock/:beanShortId/rearrange" element={<RearrangePage />} />
         </Route>
       </Route>
     </Routes>

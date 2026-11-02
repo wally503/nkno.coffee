@@ -4,6 +4,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { thawLot, freezeLot, openLot } from "../../api/lotActionsApi";
+import { useNavigate } from "react-router-dom";
 
 // What each state allows. Edit labels or add entries here and nowhere else.
 const ACTIONS = {
@@ -27,6 +28,7 @@ const ACTIONS = {
 };
 
 export default function LotActions({ lot, onChange }) {
+  const navigate = useNavigate();
   const [anchor, setAnchor] = React.useState(null);
   const [error, setError] = React.useState("");
   const items = ACTIONS[lot.state] ?? [];
@@ -81,12 +83,14 @@ export default function LotActions({ lot, onChange }) {
         {items.map((item) => (
             <MenuItem
             key={item.label}
-            sx={{
-                fontSize: "0.85rem",
-                color: "#e3d3bd",
-                "&:hover": { backgroundColor: "rgba(166, 124, 82, 0.22)" },
+            onClick={() => {
+                if (item.go) {
+                setAnchor(null);
+                navigate(`/bean-stock/${lot.bean_short_id}/rearrange?source=${lot.id}&mode=${item.go}`);
+                return;
+                }
+                runAction(item.run);
             }}
-            onClick={() => runAction(item.run)}
             >
             {item.label}
             </MenuItem>

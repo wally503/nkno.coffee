@@ -17,13 +17,14 @@ class BeanStockSerializer(serializers.ModelSerializer):
     states = serializers.SerializerMethodField()
     open_days = serializers.SerializerMethodField()
     days_since_roast = serializers.SerializerMethodField()
+    finished_lots = serializers.SerializerMethodField()
 
     class Meta:
         model = Bean
         fields = [
             "id", "short_id", "name", "lots",
             "total_stored", "total_remaining", "states",
-            "open_days", "days_since_roast",
+            "open_days", "days_since_roast", 'finished_lots'
         ]
 
     def get_lots(self, bean):
@@ -33,6 +34,8 @@ class BeanStockSerializer(serializers.ModelSerializer):
     def get_total_stored(self, bean):
         total = Decimal("0")
         for lot in bean.stock_lots:
+            total += lot.stored_weight
+        for lot in bean.finished_lots:
             total += lot.stored_weight
         return f"{total:.2f}"
 
@@ -68,6 +71,8 @@ class BeanStockSerializer(serializers.ModelSerializer):
             return None
         return (timezone.localdate() - bean.roast_date).days
 
+    def get_finished_lots(self, bean):
+        return LotSplitSerializer(bean.finished_lots, many=True).data
 
 class BeanStockViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = BeanStockSerializer
@@ -82,12 +87,21 @@ class BeanStockViewSet(viewsets.ReadOnlyModelViewSet):
         unclosed_lots = (
             LotSplit.objects
             .filter(closed_at__isnull=True)
-            .select_related("vessel", "vessel__vessel_type")
+            .select_related("bean", "vessel", "vessel__vessel_type", "close_reason")
             .order_by("id")
+        )
+        finished_lots = (
+            LotSplit.objects
+            .filter(closed_at__isnull=False, close_reason__name="Finished")
+            .select_related("bean", "vessel", "vessel__vessel_type", "close_reason")
+            .order_by("closed_at")
         )
         return (
             Bean.objects
             .annotate(has_unclosed_lot=Exists(has_unclosed))
             .filter(has_unclosed_lot=True)
-            .prefetch_related(Prefetch("lotsplit_set", queryset=unclosed_lots, to_attr="stock_lots"))
+            .prefetch_related(
+                Prefetch("lotsplit_set", queryset=unclosed_lots, to_attr="stock_lots"),
+                Prefetch("lotsplit_set", queryset=finished_lots, to_attr="finished_lots"),
+            )
         )

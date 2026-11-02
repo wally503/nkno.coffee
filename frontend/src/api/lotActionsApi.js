@@ -10,6 +10,6 @@ async function post(path) {
     }
 }
 
-export const thawLot = (id) => post(`lots/${id}/thaw/`);
-export const freezeLot = (id) => post(`lots/${id}/freeze/`);
-export const openLot = (id) => post(`lots/${id}/open/`);
+export const thawLot = (id) => post(`coffee/lots/${id}/thaw/`);
+export const freezeLot = (id) => post(`coffee/lots/${id}/freeze/`);
+export const openLot = (id) => post(`coffee/lots/${id}/open/`);

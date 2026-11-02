@@ -5,6 +5,7 @@ from django.urls import path
 from coffee.lots_api import LotSplitViewSet
 from brew.events_api import LifecycleEventViewSet
 from coffee.bean_stock_api import BeanStockViewSet
+from coffee.vessels_api import VesselViewSet
 
 router = DefaultRouter()
 
@@ -18,7 +19,7 @@ router.register('notes', FlavorNotesViewSet)
 router.register('mapzone', MapzoneViewSet)
 router.register('process', ProcessesViewSet)
 router.register('beanLifecycle', BeanLifecycleViewSet, basename='bean-lifecycle') 
-
+router.register("vessels", VesselViewSet, basename="vessel")
 router.register("lots", LotSplitViewSet, basename="lot")
 router.register("lifecycle-events", LifecycleEventViewSet, basename="lifecycle-event")
 router.register("bean-stock", BeanStockViewSet, basename="bean-stock")

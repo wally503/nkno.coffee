@@ -61,45 +61,49 @@ export function ExpanderCell({ ctx }) {
 }
 
 // value = the bean's lots: [{ id, state, vessel_label, stored_weight, remaining_weight }]
-export function StateBarCell({ value, height = 16 }) {
+export function StateBarCell({ value, finished = [], height = 16 }) {
   const lots = value ?? [];
+  const done = finished ?? [];
   let totalStored = 0;
-  for (const lot of lots) {
+  for (const lot of [...lots, ...done]) {
     totalStored += Number(lot.stored_weight);
   }
   if (totalStored === 0) return "-";
 
+  const segments = [
+    ...lots.map((lot) => ({ lot, kind: "stock" })),
+    ...done.map((lot) => ({ lot, kind: "done" })),
+  ];
+
   return (
     <Box
       sx={{
-        display: "flex",
-        gap: "2px",
-        width: "100%",
-        height,
-        borderRadius: `${height / 2}px`,
-        overflow: "hidden",
+        display: "flex", gap: "2px", width: "100%", height,
+        borderRadius: `${height / 2}px`, overflow: "hidden",
         backgroundColor: "rgba(0, 0, 0, 0.55)",
       }}
     >
-      {lots.map((lot) => {
+      {segments.map(({ lot, kind }) => {
         const stored = Number(lot.stored_weight);
         const remaining = Number(lot.remaining_weight);
-        const fillPct = stored > 0 ? Math.min(100, (remaining / stored) * 100) : 0;
-        const color = STATE_COLORS[lot.state] ?? STATE_COLORS.sealed;
+        const isDone = kind === "done";
+        const fillPct = isDone ? 100 : (stored > 0 ? Math.min(100, (remaining / stored) * 100) : 0);
+        const color = isDone ? "#3a3530" : (STATE_COLORS[lot.state] ?? STATE_COLORS.sealed);
+        const label = isDone
+          ? `${lot.vessel_label} · Finished · ${stored}g`
+          : `${lot.vessel_label} · ${titleCase(lot.state)} · ${remaining}g / ${stored}g`;
         return (
-          <Tooltip
-            key={lot.id}
-            title={`${lot.vessel_label} · ${titleCase(lot.state)} · ${remaining}g / ${stored}g`}
-          >
-            <Box
-              sx={{
-                flexGrow: stored,
-                flexBasis: 0,
-                height: "100%",
-                backgroundColor: "#3a3a3a",
-              }}
-            >
-              <Box sx={{ width: `${fillPct}%`, height: "100%", backgroundColor: color }} />
+          <Tooltip key={lot.id} title={label}>
+            <Box sx={{ flexGrow: stored, flexBasis: 0, height: "100%", backgroundColor: "#2e2e2e" }}>
+              <Box
+                sx={{
+                  width: `${fillPct}%`, height: "100%", backgroundColor: color,
+                  ...(isDone && {
+                    backgroundImage:
+                      "repeating-linear-gradient(135deg, rgba(255,255,255,0.07) 0 4px, transparent 4px 8px)",
+                  }),
+                }}
+              />
             </Box>
           </Tooltip>
         );
