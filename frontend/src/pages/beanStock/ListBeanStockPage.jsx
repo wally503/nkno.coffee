@@ -39,8 +39,9 @@ export default function ListBeanStockPage() {
         totalCount={totalCount}
         tableState={stockTableState}
         viewRoute={`${beansConfig.base}/view`}
-        renderDetail={(row) => row.lots}
-        lotCellFor={(column, lot) => beanStockConfig.lotCells[column.id]?.(lot) ?? ""}
+        renderDetail={(row) => [...row.lots].reverse()}
+        lotCellFor={(column, lot, ctx) => beanStockConfig.lotCells[column.id]?.(lot, ctx) ?? ""}
+        rowClickable={false}
       />
     </DefaultBodyLayout>
   );

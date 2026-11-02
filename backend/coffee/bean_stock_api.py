@@ -8,7 +8,7 @@ from .lots_api import LotSplitSerializer
 from .lifecycle import state_of
 
 STATE_ORDER = ["open", "thawed", "frozen", "sealed"]
-
+RANK = {"open": 2, "thawed": 1, "frozen": 0, "sealed": 3}
 
 class BeanStockSerializer(serializers.ModelSerializer):
     lots = serializers.SerializerMethodField()
@@ -27,7 +27,8 @@ class BeanStockSerializer(serializers.ModelSerializer):
         ]
 
     def get_lots(self, bean):
-        return LotSplitSerializer(bean.stock_lots, many=True).data
+        ordered = sorted(bean.stock_lots, key=lambda lot: RANK[state_of(lot).value])
+        return LotSplitSerializer(ordered, many=True).data
 
     def get_total_stored(self, bean):
         total = Decimal("0")
@@ -49,7 +50,7 @@ class BeanStockSerializer(serializers.ModelSerializer):
         parts = []
         for name in STATE_ORDER:
             if name in counts:
-                parts.append(f"{counts[name]} {name}")
+                parts.append(f"{counts[name]} {name.title()}")
         return " · ".join(parts)
 
     def get_open_days(self, bean):

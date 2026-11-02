@@ -4,12 +4,13 @@ import IconButton from "@mui/material/IconButton";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { ratingCustomIcons } from "../RatingGridItem";
+import BeanActions from "./BeanActions";
 
 const STATE_COLORS = {
-  frozen: "#2b5fa8",
-  thawed: "#1f9db8",
-  open: "#4c9a1a",
-  sealed: "#8a7a68",
+  frozen: "#324a68",
+  thawed: "#335f69",
+  open: "#486634",
+  sealed: "#5c554b",
 };
 
 export function TextCell({ value }) {
@@ -60,7 +61,7 @@ export function ExpanderCell({ ctx }) {
 }
 
 // value = the bean's lots: [{ id, state, vessel_label, stored_weight, remaining_weight }]
-export function StateBarCell({ value }) {
+export function StateBarCell({ value, height = 16 }) {
   const lots = value ?? [];
   let totalStored = 0;
   for (const lot of lots) {
@@ -69,7 +70,17 @@ export function StateBarCell({ value }) {
   if (totalStored === 0) return "-";
 
   return (
-    <Box sx={{ display: "flex", gap: "2px", width: "100%" }}>
+    <Box
+      sx={{
+        display: "flex",
+        gap: "2px",
+        width: "100%",
+        height,
+        borderRadius: `${height / 2}px`,
+        overflow: "hidden",
+        backgroundColor: "rgba(0, 0, 0, 0.55)",
+      }}
+    >
       {lots.map((lot) => {
         const stored = Number(lot.stored_weight);
         const remaining = Number(lot.remaining_weight);
@@ -78,14 +89,14 @@ export function StateBarCell({ value }) {
         return (
           <Tooltip
             key={lot.id}
-            title={`${lot.vessel_label} · ${lot.state} · ${remaining}g / ${stored}g`}
+            title={`${lot.vessel_label} · ${titleCase(lot.state)} · ${remaining}g / ${stored}g`}
           >
             <Box
               sx={{
-                flexGrow: stored, flexBasis: 0, height: 14,
-                borderRadius: "3px", overflow: "hidden",
-                backgroundColor: "rgba(255, 252, 238, 0.10)",
-                border: `1px solid ${color}`,
+                flexGrow: stored,
+                flexBasis: 0,
+                height: "100%",
+                backgroundColor: "#3a3a3a",
               }}
             >
               <Box sx={{ width: `${fillPct}%`, height: "100%", backgroundColor: color }} />
@@ -105,8 +116,12 @@ const CELLS = {
   rating: RatingCell,
   expander: ExpanderCell,
   stateBar: StateBarCell,
+  actions: BeanActions,
 };
 
 export function cellFor(type) {
   return CELLS[type] ?? TextCell;
 }
+
+export const titleCase = (text) =>
+  text ? text.charAt(0).toUpperCase() + text.slice(1) : text;

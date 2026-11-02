@@ -1,5 +1,8 @@
 // src/constants/config/coffeelog/beans/beansStockConfig.jsx
-import { StateBarCell } from "../../../../components/table/tableCells";
+import LotActions from "../../../../components/table/LotActions";
+import { StateBarCell, titleCase } from "../../../../components/table/tableCells";
+
+console.log("beanStockConfig loaded v2");
 
 export const beanStockTableSettings = {
   width: "93%",
@@ -10,17 +13,18 @@ export const beanStockTableSettings = {
 
 export const beanStockColumns = [
   { id: "_expand", label: "", minWidth: 48, orderingField: null, type: "expander" },
-{
-  id: "name", label: "Bean", minWidth: 320,
-  render: (value, row) => (
-    <div>
-      <div style={{ fontSize: "1rem", fontWeight: 500, marginBottom: 6 }}>{value}</div>
-      <div style={{ maxWidth: 500, marginLeft: 24 }}>
-        <StateBarCell value={row.lots} />
+  { id: "_actions", label: "", minWidth: 140, orderingField: null, type: "actions" },
+  {
+    id: "name", label: "Bean", minWidth: 340,
+    render: (value, row) => (
+      <div>
+        <div style={{ fontSize: "1rem", fontWeight: 500, marginBottom: 8 }}>{value}</div>
+        <div style={{ maxWidth: 300 }}>
+          <StateBarCell value={row.lots} />
+        </div>
       </div>
-    </div>
-  ),
-},
+    ),
+  },
 //   { id: "lots", label: "Lots", minWidth: 260, orderingField: null, type: "stateBar" },
   {
     id: "remaining",
@@ -29,9 +33,25 @@ export const beanStockColumns = [
     orderingField: null,
     render: (_, row) => `${row.total_remaining} / ${row.total_stored} g`,
   },
-  { id: "states", label: "States", minWidth: 160, orderingField: null },
-  { id: "open_days", label: "Open For (days)", minWidth: 100, orderingField: null },
-  { id: "days_since_roast", label: "Days Since Roast", minWidth: 100, orderingField: null },
+  { 
+    id: "states", 
+    label: "States", 
+    minWidth: 160, 
+    orderingField: null 
+  },
+  {
+    id: "open_days",
+    label: "Open For (days)",
+    minWidth: 100,
+    orderingField: null,
+    render: () => "-",
+  },
+  { 
+    id: "days_since_roast", 
+    label: "Days Since Roast", 
+    minWidth: 100, 
+    orderingField: null 
+  },
 ];
 
 export const beanStockConfig = {
@@ -47,9 +67,12 @@ export const beanStockLotCells = {
   name:             (lot) => `${lot.vessel_label}`,
   lots:             (lot) => lot.state,
   remaining:        (lot) => `${lot.remaining_weight} / ${lot.stored_weight} g`,
-  states:           (lot) => lot.state,
-  open_days:        (lot) => lot.open_days ?? "-",
-  days_since_roast: (lot) => lot.age_days ?? "-",
+  states:           (lot) => titleCase(lot.state),
+  open_days:        (lot) => lot.state === "open" ? (lot.open_days ?? "-") : "-",
+  days_since_roast: (lot) => lot.state === "open" ? (lot.age_days ?? "-") : "-",
+  _actions:         (lot, ctx) => <LotActions lot={lot} onChange={ctx.refresh} />,
+  // _actions: () => "TEST"
 };
 
 beanStockConfig.lotCells = beanStockLotCells;
+console.log("lotCells keys:", Object.keys(beanStockConfig.lotCells ?? {}));

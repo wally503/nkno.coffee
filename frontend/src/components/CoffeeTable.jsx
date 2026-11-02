@@ -23,6 +23,8 @@ export default function CoffeeTable({
   width = "90%", maxWidth = 2000,
   renderDetail,
   lotCellFor,
+  reload,
+  rowClickable = true,
 }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(tableState.pageSize);
@@ -109,6 +111,8 @@ export default function CoffeeTable({
                     renderCell={renderCell}
                     renderDetail={renderDetail}
                     lotCellFor={lotCellFor}
+                    reload={reload}
+                    rowClickable={rowClickable}
                     onRowClick={() => {
                       const path = typeof viewRoute === 'function'
                         ? viewRoute(row)
@@ -150,9 +154,9 @@ export default function CoffeeTable({
   }
 }
 
-function CoffeeTableRow({ row, columns, cellSxFor, renderCell, renderDetail, lotCellFor, onRowClick }) {
+function CoffeeTableRow({ row, columns, cellSxFor, renderCell, renderDetail, lotCellFor, reload, onRowClick, rowClickable }) {
   const [open, setOpen] = React.useState(false);
-  const ctx = { open, toggle: () => setOpen((current) => !current) };
+  const ctx = { open, toggle: () => setOpen((current) => !current), refresh: reload };
 
   return (
     <React.Fragment>
@@ -161,7 +165,7 @@ function CoffeeTableRow({ row, columns, cellSxFor, renderCell, renderDetail, lot
         role="checkbox"
         tabIndex={-1}
         sx={{ ...row.rowSx, "& td": { borderTop: "2px solid rgba(166, 124, 82, 0.45)" } }}
-        onClick={onRowClick}
+        onClick={rowClickable ? onRowClick : undefined}
       >
         {columns.map((column) => {
           const value = row[column.id];
@@ -193,7 +197,7 @@ function CoffeeTableRow({ row, columns, cellSxFor, renderCell, renderDetail, lot
               align={column.align}
               sx={{ ...cellSxFor(column), ...(index === 1 ? { pl: 5 } : {}), fontSize: "0.85rem", opacity: 0.9 }}
             >
-              {lotCellFor(column, lot)}
+              {lotCellFor(column, lot, ctx)}
             </TableCell>
           ))}
         </TableRow>

@@ -15,6 +15,7 @@ export const activeBeansConfig = {
         orderingField: null, 
         type: "expander" 
     },
+    
     { 
         id: "name", 
         label: "Bean", 

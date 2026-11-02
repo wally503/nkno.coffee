@@ -25,6 +25,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import IconButton from '@mui/material/IconButton';
 import LocalCafeIcon from '@mui/icons-material/LocalCafe'; 
+import FormatLineSpacingIcon from '@mui/icons-material/FormatLineSpacing';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import HistoryIcon from '@mui/icons-material/History';
 import { Divider } from '@mui/material';
@@ -85,8 +86,7 @@ export default function NavDrawer() {
             <Divider sx={{ mx: 2, my: 1, opacity: 0.4 }} />
 
             <NavBarItem icon={<CoffeeIcon/>} route="/coffeeLog" label="Coffee Log" />
-            <NavBarItem icon={<AddLocationAltIcon/>} route="/maps" label="Maps" />
-            <NavBarItem icon={<AssessmentIcon/>} route="/logHistory" label="Log History" />
+            <NavBarItem icon={<FormatLineSpacingIcon/>} route="/bean-stock" label="Bean Stock" />
 
             <Divider sx={{ mx: 2, my: 1, opacity: 0.4 }} />
 
@@ -95,8 +95,7 @@ export default function NavDrawer() {
 
             <Divider sx={{ mx: 2, my: 1, opacity: 0.4 }} />
 
-            <NavBarItem icon={<AddCircleOutlineIcon/>} route="/lotManagement" label="Manage Lots" />
-            <NavBarItem icon={<HistoryIcon/>} route="/lotOverview" label="Lot Overview" />
+            <NavBarItem icon={<AddLocationAltIcon/>} route="/maps" label="Maps" />
 
           </List>    
         </Box>

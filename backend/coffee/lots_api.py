@@ -1,6 +1,10 @@
 from rest_framework import serializers, viewsets
 from .models import LotSplit
 from django.utils import timezone
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from django.core.exceptions import ValidationError
+from .lifecycle import thaw_lot, freeze_lot, open_lot
 
 class LotSplitSerializer(serializers.ModelSerializer):
     bean_name = serializers.SerializerMethodField()
@@ -70,3 +74,24 @@ class LotSplitViewSet(viewsets.ReadOnlyModelViewSet):
         .select_related("bean", "vessel", "vessel__vessel_type", "close_reason")
         .order_by("-id")
     )
+
+    def _run(self, fn):
+        lot = self.get_object()
+        try:
+            fn(lot)
+        except ValidationError as e:
+            return Response({"errors": e.messages}, status=400)
+        lot.refresh_from_db()
+        return Response(LotSplitSerializer(lot).data)
+
+    @action(detail=True, methods=["post"])
+    def thaw(self, request, pk=None):
+        return self._run(thaw_lot)
+
+    @action(detail=True, methods=["post"])
+    def freeze(self, request, pk=None):
+        return self._run(freeze_lot)
+
+    @action(detail=True, methods=["post"])
+    def open(self, request, pk=None):
+        return self._run(open_lot)
