@@ -44,12 +44,14 @@ export function RatingCell({ value }) {
   );
 }
 
-export function ExpanderCell({ ctx }) {
+export function ExpanderCell({ ctx, row }) {
+  const count = row.lots?.length ?? row.children?.length ?? 0;   
+  if (!count) return null; 
   return (
     <IconButton
       size="small"
       onClick={(event) => {
-        event.stopPropagation();   // don't trigger the row's navigate
+        event.stopPropagation();
         ctx.toggle();
       }}
     >

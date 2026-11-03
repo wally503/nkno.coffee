@@ -85,10 +85,13 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
         search = request.query_params.get('search', '') or ''
         ordering = request.query_params.get('ordering', '') or '-date'
         bean = request.query_params.get('bean_short_id')
-
+        detail_full = request.query_params.get("detail") == "full"
+        
         brew_qs = self.filter_queryset(self.get_queryset())
+        bag_qs = BagLifecycleEvent.objects.select_related("bean").prefetch_related("children")
 
-        bag_qs = BagLifecycleEvent.objects.select_related('bean').all()
+        if not detail_full:
+            bag_qs = bag_qs.filter(parent__isnull=True)   # hide group children by default
         if bean:
             bag_qs = bag_qs.filter(bean__short_id=bean)
         if search:
@@ -96,8 +99,8 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
                 bag_qs = bag_qs.filter(
                     Q(bean__name__icontains=term)
                 )
-        combined = [self._brew_log_row(b) for b in brew_qs.prefetch_related('tags')] + \
-            [self._bag_event_row(e) for e in bag_qs]
+        combined = [self._brew_log_row(b) for b in brew_qs.prefetch_related("tags")] + \
+            [self._bag_event_row(e, include_children=not detail_full) for e in bag_qs]
 
 
         def sort_key(row):
@@ -142,7 +145,8 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
             'tags': BrewTagSerializer(brew_log.tags.all(), many=True).data,
         }
 
-    def _bag_event_row(self, event):
+    def _bag_event_row(self, event, include_children=True):
+        children = list(event.children.all()) if include_children else []   # served from the prefetch
         return {
             'short_id': f'bagevent-{event.id}',
             'bean_name': event.bean.name if event.bean else '-',
@@ -150,6 +154,11 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
             'style': 'bag_event',
             'style_display': f'Bag {event.get_event_type_display()}',
             'event_type': event.event_type,
+            'granularity': event.granularity,
+            'summary': event.summary,
+            'parent_id': event.parent_id,
+            'child_count': len(children),
+            'children': [self._bag_child_row(c) for c in children],
             'date': event.date,
             'extraction_rating': None,
             'pull_number': None,
@@ -159,6 +168,15 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
             'grinder_name': None,
             'grind_setting': None,
             'tags': [],
+        }
+
+    def _bag_child_row(self, child):
+        return {
+            'short_id': f'bagevent-{child.id}',
+            'event_type': child.event_type,
+            'event_type_display': child.get_event_type_display(),
+            'summary': child.summary,
+            'date': child.date,
         }
 
 

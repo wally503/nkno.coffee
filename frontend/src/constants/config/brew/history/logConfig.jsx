@@ -1,6 +1,7 @@
 // src/constants/config/brew/history/logConfig.js
 import { ratingCustomIcons } from '../../../../components/RatingGridItem';
 import TagCluster from '../../../../components/TagCluster'
+import { EVENT_ACCENT } from "../../../tableStyles"; 
 
 // Maps BrewLog.style values to their route segment. cold_brew -> cold-brew
 // (kebab in the URL, underscore in the model) is the one mismatch to remember.
@@ -14,6 +15,23 @@ export const STYLE_ROUTE_SEGMENT = {
 };
 
 const TAG_SIZE = 0.87 // 1 = full size, 0.75 is about compact, 0.65 is about dense
+
+const formatLogDate = (value) => value
+  ? new Date(value).toLocaleString("en-CA", {
+      year: "numeric", month: "2-digit", day: "2-digit",
+      hour: "2-digit", minute: "2-digit", hour12: false,
+    }).replace(",", "")
+  : "-";
+
+export const logChildCells = {
+  date: (child) => formatLogDate(child.date),
+  bean_name: (child) => child.summary,
+  style_display: (child) => (
+    <span style={{ color: EVENT_ACCENT[child.event_type] }}>
+      ● {child.event_type_display}
+    </span>
+  ),
+};
 
 export const logTableSettings = { 
       width: "93%", 
@@ -112,4 +130,8 @@ export const logColumns = [
   },
 ];
 
-export const logConfig = { tableSettings: logTableSettings, tableColumns: logColumns }
+export const logConfig = {
+  tableSettings: logTableSettings,
+  tableColumns: logColumns,
+  childCells: logChildCells,
+};

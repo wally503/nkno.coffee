@@ -55,9 +55,9 @@ export async function brewKettles(pageSize = 500) {
 
 // --- BrewLog (parent record — created first, then the style Detail row points at it) ---
 
-export async function defaultBrewLogsTableList(page = 0, pageSize = 10, search = null, order = null) {
+export async function defaultBrewLogsTableList(page = 0, pageSize = 10, search = null, order = null, detail = null) {
     try {
-        const { data } = await axiosInstance.get(`brew/brewlogs/?page=${page + 1}&page_size=${pageSize}&search=${search ?? ''}&ordering=${order ?? ''}`)
+        const { data } = await axiosInstance.get(`brew/brewlogs/?page=${page + 1}&page_size=${pageSize}&search=${search ?? ''}&ordering=${order ?? ''}&detail=${detail ?? ''}`)
         return data
     } catch (error) {
         console.error(error.response?.status)
