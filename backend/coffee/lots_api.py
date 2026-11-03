@@ -1,13 +1,31 @@
 from rest_framework import serializers, viewsets
-from .models import LotSplit, Vessel
+from .models import LotSplit, Vessel, CloseReason
 from django.utils import timezone
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.core.exceptions import ValidationError
-from .lifecycle import transfer_lot, merge_lots, LotTarget
+from .lifecycle import transfer_lot, merge_lots, LotTarget, thaw_lot, freeze_lot, open_lot, close_lot
 from decimal import Decimal, InvalidOperation
 from django.core.exceptions import ValidationError
 from .enums import LotState
+from django.utils.dateparse import parse_datetime
+
+def _when_from_request(request):
+    """Returns (datetime_or_None, error_or_None). None means 'use now'."""
+    raw = request.data.get("date")
+    if not raw:
+        return None, None
+    try:
+        parsed = parse_datetime(str(raw))
+    except ValueError:
+        parsed = None
+    if parsed is None:
+        return None, "Enter a valid date and time."
+    if timezone.is_naive(parsed):
+        parsed = timezone.make_aware(parsed)
+    if parsed > timezone.now():
+        return None, "Date can't be in the future."
+    return parsed, None
 
 class LotSplitSerializer(serializers.ModelSerializer):
     bean_name = serializers.SerializerMethodField()
@@ -17,14 +35,15 @@ class LotSplitSerializer(serializers.ModelSerializer):
     age_days = serializers.SerializerMethodField()
     open_days = serializers.SerializerMethodField()
     bean_short_id = serializers.SerializerMethodField()
-
+    earliest = serializers.SerializerMethodField()
+    
     class Meta:
         model = LotSplit
         fields = [
             "id", "bean", "bean_name", "bean_short_id", "vessel", "vessel_label", "state",
             "stored_weight", "remaining_weight", "leftover_weight",
             "frozen_at", "thawed_at", "opened_at", "closed_at",
-            "age_days", "open_days", "close_reason_name", 
+            "age_days", "open_days", "close_reason_name", "earliest",
         ]
 
     def get_age_days(self, lot):
@@ -72,6 +91,12 @@ class LotSplitSerializer(serializers.ModelSerializer):
             return "frozen"
         return "sealed"
 
+    def get_earliest(self, obj):
+        result = {}
+        for kind in ("freeze", "thaw", "open", "close"):
+            at, reason = obj.earliest_for(kind)
+            result[kind] = None if at is None else {"at": at, "reason": reason}
+        return result
 
 class LotSplitViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = LotSplitSerializer
@@ -82,10 +107,10 @@ class LotSplitViewSet(viewsets.ReadOnlyModelViewSet):
         .order_by("-id")
     )
 
-    def _run(self, fn):
+    def _run(self, fn, **kwargs):
         lot = self.get_object()
         try:
-            fn(lot)
+            fn(lot, **kwargs)
         except ValidationError as e:
             return Response({"errors": e.messages}, status=400)
         lot.refresh_from_db()
@@ -141,12 +166,38 @@ class LotSplitViewSet(viewsets.ReadOnlyModelViewSet):
 
     @action(detail=True, methods=["post"])
     def thaw(self, request, pk=None):
-        return self._run(thaw_lot)
+        when, error = _when_from_request(request)
+        if error:
+            return Response({"errors": [error]}, status=400)
+        return self._run(thaw_lot, thawed_at=when)
 
     @action(detail=True, methods=["post"])
     def freeze(self, request, pk=None):
-        return self._run(freeze_lot)
+        when, error = _when_from_request(request)
+        if error:
+            return Response({"errors": [error]}, status=400)
+        return self._run(freeze_lot, frozen_at=when)
 
     @action(detail=True, methods=["post"])
     def open(self, request, pk=None):
-        return self._run(open_lot)
+        when, error = _when_from_request(request)
+        if error:
+            return Response({"errors": [error]}, status=400)
+        return self._run(open_lot, opened_at=when)
+
+    @action(detail=False, methods=["get"], url_path="close-reasons")
+    def close_reasons(self, request):
+        reasons = CloseReason.objects.filter(is_active=True, carries_weight=False).order_by("name")
+        return Response([{"id": r.id, "name": r.name} for r in reasons])
+
+    @action(detail=True, methods=["post"])
+    def close(self, request, pk=None):
+        when, error = _when_from_request(request)
+        if error:
+            return Response({"errors": [error]}, status=400)
+        reason = CloseReason.objects.filter(
+            pk=request.data.get("reason"), is_active=True, carries_weight=False
+        ).first()
+        if reason is None:
+            return Response({"errors": ["Pick a close reason."]}, status=400)
+        return self._run(close_lot, reason=reason, closed_at=when)

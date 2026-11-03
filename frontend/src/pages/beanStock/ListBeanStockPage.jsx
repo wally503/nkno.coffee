@@ -15,6 +15,19 @@ export default function ListBeanStockPage() {
   const [rows, setRows] = React.useState([]);
   const [totalCount, setTotalCount] = React.useState(0);
 
+
+  const load = React.useCallback(async () => {
+    const result = await defaultBeanStockTableList(
+      stockTableState.page, stockTableState.pageSize, stockTableState.search, stockTableState.orderingParam
+    );
+    setRows(result.results);
+    setTotalCount(result.count);
+  }, [stockTableState.page, stockTableState.pageSize, stockTableState.search, stockTableState.orderingParam]);
+
+  React.useEffect(() => {
+    load().catch(console.error);
+  }, [load]);
+
   React.useEffect(() => {
     const load = async () => {
       const result = await defaultBeanStockTableList(
@@ -42,6 +55,7 @@ export default function ListBeanStockPage() {
         renderDetail={(row) => [...row.lots].reverse()}
         lotCellFor={(column, lot, ctx) => beanStockConfig.lotCells[column.id]?.(lot, ctx) ?? ""}
         rowClickable={false}
+        reload={() => load().catch(console.error)}
       />
     </DefaultBodyLayout>
   );

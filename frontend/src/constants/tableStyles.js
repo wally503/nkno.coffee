@@ -11,3 +11,16 @@ export const BAG_EVENT_ROW_SX_CLOSE = {
   color: 'rgba(255, 252, 238, 0.97) !important',
   fontStyle: 'italic',
 };
+
+
+export const ACTION_BUTTON_SX = {
+  width: 84,
+  minWidth: 84,
+  height: 24,
+  py: 0,
+  px: 1,
+  fontSize: "0.75rem",
+  lineHeight: 1,
+  textTransform: "none",
+  "& .MuiButton-endIcon": { ml: 0 },
+};

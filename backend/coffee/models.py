@@ -6,6 +6,7 @@ from decimal import Decimal
 from django.db.models import Sum, Q, F
 from django.core.exceptions import ValidationError
 from .enums import LifecycleKind
+from datetime import datetime, time
 
 class VesselType(models.Model):
     name = models.CharField(max_length=200, unique=True)
@@ -370,6 +371,14 @@ class LotSplit(models.Model):
         elif self.close_reason:
             errors["closed_at"] = "Add a close date."
 
+        # Roast floor
+        roast_floor = self._roast_floor()
+        if roast_floor is not None:
+            if self.frozen_at and self.frozen_at < roast_floor:
+                errors["frozen_at"] = "Can't be before the roast date."
+            if self.opened_at and self.opened_at < roast_floor:
+                errors["opened_at"] = "Can't be before the roast date."
+
         # Weights
         if self.stored_weight is not None and self.stored_weight <= 0:
             errors["stored_weight"] = "Must be above 0."
@@ -399,3 +408,34 @@ class LotSplit(models.Model):
     def __str__(self):
         where = self.vessel or "Original bag"
         return f"{self.bean.name}: {where}"
+
+    def _roast_floor(self):
+        roast = self.bean.roast_date           
+        if roast is None:
+            return None
+        return timezone.make_aware(datetime.combine(roast, time.min))
+
+    def earliest_for(self, kind):
+        """(timestamp, reason) this step must not precede, or (None, None)."""
+        if kind == "freeze":
+            return self._roast_floor(), "Roast date"
+        if kind == "thaw":
+            return self.frozen_at, "Frozen"
+        if kind == "open":
+            if self.thawed_at:
+                return self.thawed_at, "Thawed"
+            return self._roast_floor(), "Roast date"
+        if kind == "close":
+            set_dates = [
+                (stamp, label)
+                for stamp, label in (
+                    (self.frozen_at, "Frozen"),
+                    (self.thawed_at, "Thawed"),
+                    (self.opened_at, "Opened"),
+                )
+                if stamp is not None
+            ]
+            if set_dates:
+                return max(set_dates, key=lambda pair: pair[0])
+            return self._roast_floor(), "Roast date"
+        return None, None

@@ -13,15 +13,13 @@ export const beanStockTableSettings = {
 
 export const beanStockColumns = [
   { id: "_expand", label: "", minWidth: 48, orderingField: null, type: "expander" },
-  { id: "_actions", label: "", minWidth: 140, orderingField: null, type: "actions" },
+
   {
     id: "name", label: "Bean", minWidth: 340,
     render: (value, row) => (
       <div>
-        <div style={{ fontSize: "1rem", fontWeight: 500, marginBottom: 8 }}>{value}</div>
-        <div style={{ maxWidth: 300 }}>
-          <StateBarCell value={row.lots} finished={row.finished_lots} />
-        </div>
+        <div style={{ fontSize: "1rem", fontWeight: 500, marginBottom: 8, marginLeft: -20 }}>{value}</div>
+        <StateBarCell value={row.lots} finished={row.finished_lots} />
       </div>
     ),
   },
@@ -52,6 +50,7 @@ export const beanStockColumns = [
     minWidth: 100, 
     orderingField: null 
   },
+  { id: "_actions", label: "", minWidth: 110, orderingField: null, type: "actions" },
 ];
 
 export const beanStockConfig = {
