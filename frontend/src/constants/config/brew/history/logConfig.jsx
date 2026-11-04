@@ -61,25 +61,34 @@ export const logColumns = [
     label: "Bean",
     px: 0.3,
     minWidth: 140,
-    orderingField: null, // BrewLogViewSet.ordering_fields doesn't include bean__name yet
+    orderingField: null, 
   },
   {
     id: "style_display",
     label: "Style",
-    minWidth: 85,
-    orderingField: null, // ordering_fields doesn't include style yet
+    minWidth: 130,
+    orderingField: null, 
+    // Single-lot events also say which lot they were about, under the label.
+    render: (value, row) => (row.style === "bag_event" && row.lot_label
+      ? (
+        <>
+          <div>{value}</div>
+          <div style={{ fontSize: "0.8em", opacity: 0.8 }}>{row.lot_label}</div>
+        </>
+      )
+      : value),
   },
   {
     id: "grinder_name",
     label: "Grinder",
     minWidth: 100,
-    orderingField: null, // ordering_fields doesn't include style yet
+    orderingField: null,
   },
   {
     id: "grind_setting",
     label: "Setting",
     minWidth: 70,
-    orderingField: null, // ordering_fields doesn't include style yet
+    orderingField: null,
   },
   {
     id: "extraction_rating",

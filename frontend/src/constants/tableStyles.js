@@ -8,7 +8,7 @@ const EVENT_TINTS = {
   frozen:      "56, 82, 111",    // matches the frozen blue on the stock bar
   thawed:      "57, 106, 117",   // matches the thawed teal
   adjusted:    "150, 132, 56",   // muted gold: a lot's weight was corrected
-  transferred: "166, 124, 82",   // the app's brown
+  transferred: "130, 84, 160",    // the app's brown
   merged:      "110, 84, 140",   // muted purple
 };
 
@@ -24,7 +24,7 @@ export const eventRowSx = (kind, granularity, level) => {
     color: "rgba(255, 252, 238, 0.97) !important",
     fontStyle: "italic",
     // Group (bulk) rows get a left accent bar so they read as the parent.
-    ...(granularity === "bulk" ? { boxShadow: `inset 4px 0 0 rgba(${tint}, 0.9)` } : {}),
+    ...(granularity === "bulk" ? { boxShadow: `inset 8px 0 0 rgba(${tint}, 0.65)` } : {}),
   };
 };
 
@@ -41,7 +41,7 @@ export const EVENT_ACCENT = {
   frozen: "#6f93bd",
   thawed: "#6fb5c4",
   adjusted: "#c9b458",
-  transferred: "#9f77be",
+  transferred: "#b182d5",
   merged: "#a58bc7",
 };
 

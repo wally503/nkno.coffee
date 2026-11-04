@@ -6,7 +6,7 @@ export default function PageHeaderTitle({ title, hasBackButton, backRoute, margi
   
   return (
     <>
-      <Box sx={{ width: "100%", maxWidth: 1400, my: "15px" }}>
+      <Box sx={{ width: "100%", maxWidth: 1800, my: "15px" }}>
         <Grid container spacing={3} columns={12} sx={{alignItems:"center"}}>
           <Grid size={{ xs: 4 }}>   
             {hasBackButton && (

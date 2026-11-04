@@ -26,10 +26,6 @@ import LoginPage from './Login';
 import Layout from './Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 
-
-// --- TEMP: Lots Dump ---
-import LotsDump from "./pages/LotsDump";
-
 // --- Bean Stock ---
 import ListBeanStockPage from "./pages/beanStock/ListBeanStockPage";
 import RearrangePage from "./pages/beanStock/RearrangePage";
@@ -68,9 +64,6 @@ function App() {
               <Route key={path} path={path} element={element} />
             ))}
           </Route>
-
-          {/* TEMP: Lots Dump Table */}
-          <Route path="/lots-dump" element={<LotsDump />} />
 
           {/* TEMP: List Beans Stock */}
           <Route path="/bean-stock" element={<ListBeanStockPage />} />

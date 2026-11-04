@@ -101,7 +101,7 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
         detail_full = request.query_params.get("detail") == "full"
         
         brew_qs = self.filter_queryset(self.get_queryset())
-        bag_qs = BagLifecycleEvent.objects.select_related("bean").prefetch_related("children")
+        bag_qs = BagLifecycleEvent.objects.select_related("bean", "lot", "lot__vessel").prefetch_related("children")
 
         if not detail_full:
             bag_qs = bag_qs.filter(parent__isnull=True)   # hide group children by default
@@ -169,6 +169,7 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
             'event_type': event.event_type,
             'granularity': event.granularity,
             'level': 'lot' if self._is_lot_event(event) else 'bag',
+            'lot_label': self._lot_label(event),
             'summary': event.summary,
             'parent_id': event.parent_id,
             'child_count': len(children),
@@ -187,6 +188,12 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
     def _is_lot_event(self, event):
         """True for an event about one lot; False for group (bulk) events and old pre-lot bag events."""
         return event.granularity == Granularity.GRANULAR.value and event.lot_id is not None
+
+    def _lot_label(self, event):
+        """Which lot a single-lot event is about ('Original bag', 'Ball Jar (S) – く'); None otherwise."""
+        if not self._is_lot_event(event):
+            return None
+        return "Original bag" if event.lot.vessel is None else str(event.lot.vessel)
 
     def _kind_label(self, event):
         kind = event.get_event_type_display()
