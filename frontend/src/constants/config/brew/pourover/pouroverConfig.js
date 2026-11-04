@@ -17,6 +17,7 @@ export const POUROVER_STATIC_OPTIONS = {
     { label: 'Pulse, Center Focused', value: 'pl_center' },
     { label: 'Pulse, Full Spiral', value: 'pl_full_spiral'},
     { label: 'Pulse, Small Spirals', value: 'pl_sm_spiral' },
+    { label: 'Pulse, Striped Lines', value: 'pl_stripe'},
     { label: 'Other, Check Notes', value: 'other' },
   ],
   water_type: [

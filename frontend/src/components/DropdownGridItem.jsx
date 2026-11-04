@@ -64,8 +64,29 @@ function addEditMode(dropdown, onChange, value, mode, options, error, helperText
               getOptionLabel={(option) => (dropdown.groupBy && option.group ? `${option.group} – ${option.label}` : option.label)}
               renderOption={dropdown.groupBy ? (props, option) => {
                 const { key, ...rest } = props;
-                return <li key={key} {...rest}>{option.label}</li>;
+                return (
+                  <li key={key} {...rest} style={{ ...rest.style, paddingLeft: 36 }}>
+                    <span style={{ color: "rgba(180, 140, 100, 0.9)", marginRight: 8 }}></span>
+                    {option.label}
+                  </li>
+                );
               } : undefined}
+              slotProps={{
+                paper: {
+                  sx: {
+                    border: "1px solid rgba(180, 140, 100, 0.5)",
+                    boxShadow: "0 8px 24px rgba(0, 0, 0, 0.6)",
+                  },
+                },
+                listbox: {
+                  sx: {
+                    "& .MuiAutocomplete-groupLabel": {
+                      color: "rgba(180, 140, 100, 0.9)",
+                      fontWeight: 600,
+                    },
+                  },
+                },
+              }}
               renderInput={(params) => (
                 <TextField
                   {...params}

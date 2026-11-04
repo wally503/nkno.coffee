@@ -299,7 +299,7 @@ def transfer_lot(lot: LotSplit, targets: list[LotTarget], transferred_at=None) -
             new_lot = create_lot(bean=lot.bean, vessel=t.vessel, weight=t.weight,
                                 state=t.state, frozen_at=d[0], thawed_at=d[1], opened_at=d[2])
             log_lot_change(new_lot, LifecycleKind.TRANSFERRED, transferred_at,
-                        parent_event, detail=f"({t.weight}g)")
+                        parent_event, detail=f"({t.weight}g)", verb="Created")
             result_lot.append(new_lot)
 
         mark_bean_finished_if_done(lot.bean)

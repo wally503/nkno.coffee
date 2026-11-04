@@ -168,7 +168,7 @@ export const beansConfig = {
       type: "text_numeric",
       name: "bag_weight",
       label: "Bag Weight (g)",
-      required: false,
+      required: true,
       disableNudge: true,
       size: { xs: 12, sm: 2, md: 2 },
       placeholder: "12",

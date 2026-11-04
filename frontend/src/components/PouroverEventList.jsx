@@ -219,7 +219,7 @@ function viewMode(events, totalPoured) {
   const valid = events.filter(e => e.pour_time && e.pour_amount);
 
   return (
-    <Grid key="pourover-view" size={{ xs: 12, sm: 12, md: 12 }} sx={{ maxWidth: 800 }}>
+    <Grid key="pourover-view" size={{ xs: 12, sm: 12, md: 12 }} sx={{ maxWidth: 950 }}>
       <Typography variant="caption" sx={{ color: "text.secondary" }}>
         Pour Events (total: {totalPoured}g)
       </Typography>

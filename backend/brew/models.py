@@ -65,6 +65,7 @@ class EspressoMakerChoice(models.TextChoices):
 class PuckScreenChoice(models.TextChoices):
     NONE = 'none', 'None'
     NORMCORE_316_SS = 'normcore_316_ss', 'Normcore Puck Screen - 316 Stainless Steel'
+    NORMCORE_316_UL_SS = 'normcore_316_ul_ss', 'Normcore Ultra-Slim Puck Screen - 316 Stainless Steel'
 
 class BasketChoice(models.TextChoices):
     NC_HIGH_EXT = 'nc_high_ext', 'Normcore High Extraction Basket'
@@ -96,7 +97,12 @@ class ColdBrewFilterStyle(models.TextChoices):
 
 class PourStyle(models.TextChoices):
     CENTER = 'center', 'Center Focused'
-    SPIRAL = 'spiral', 'Spiral'
+    SPIRAL = 'spiral', 'Full-Size Spiral'
+    PULSE_CENTER = 'pl_center', 'Pulse, Center Focused'
+    PULSE_FULL_SPIRAL = 'pl_full_spiral', 'Pulse, Full Spiral'
+    PULSE_SMALL_SPIRAL = 'pl_sm_spiral', 'Pulse, Small Spirals'
+    PULSE_STRIPE = 'pl_stripe', 'Pulse, Striped Lines'
+    OTHER = 'other', 'Other, Check Notes'
 
 class PouroverFilterType(models.TextChoices):
     CLASSIC = 'classic', 'Classic'

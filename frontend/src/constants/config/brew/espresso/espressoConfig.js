@@ -7,7 +7,8 @@ export const ESPRESSO_STATIC_OPTIONS = {
   ],
   puck_screen: [
     { label: 'None', value: 'none' },
-    { label: 'Normcore Puck Screen - 316 Stainless', value: 'normcore_316_ss' },
+    { label: 'Normcore Puck Screen', value: 'normcore_316_ss' },
+    { label: 'Normcore Ultra-Slim Puck Screen', value: 'normcore_316_ul_ss' },
   ],
   basket: [
     { label: 'Normcore High Extraction Basket', value: 'nc_high_ext' },
@@ -239,7 +240,7 @@ export const espressoConfig = {
       required: true,
       size: { xs: 12, sm: 4, md: 4 },
       options: ESPRESSO_STATIC_OPTIONS.water_type,
-      defaultValue: 'tww_light',
+      defaultValue: 'tww_espresso',
     },
     {
       type: "spacer",

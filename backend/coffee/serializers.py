@@ -3,7 +3,9 @@ from rest_framework import serializers
 from datetime import date
 from decimal import Decimal
 from brew.models import AeropressDetail, PouroverDetail, EspressoDetail, BagLifecycleEvent, LifecycleKind
-from .enums import LifecycleKind 
+from .enums import LifecycleKind, LotState
+from django.db import transaction
+from .lifecycle import create_lot
 
 class RoasterSerializer(serializers.ModelSerializer):
     country = serializers.PrimaryKeyRelatedField(

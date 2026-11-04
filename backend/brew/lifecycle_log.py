@@ -26,7 +26,7 @@ def log_lifecycle_event(bean: Bean, kind: LifecycleKind, at, granularity: Granul
         event.save()
     return event
 
-def log_lot_change(lot, kind, at, parent=None, detail=""):
+def log_lot_change(lot, kind, at, parent=None, detail="", verb=None):
     where = lot.vessel or "Original bag"
     words = {
         LifecycleKind.OPENED: "Opened",
@@ -41,7 +41,7 @@ def log_lot_change(lot, kind, at, parent=None, detail=""):
         bean=lot.bean, kind=kind, at=at,
         granularity=Granularity.GRANULAR,
         lot=lot, parent=parent,
-        summary=f"{words[kind]} {where} {detail}".strip(),
+        summary=f"{verb or words[kind]} {where} {detail}".strip(),
     )
 
 def log_group(bean, kind, at, summary):
