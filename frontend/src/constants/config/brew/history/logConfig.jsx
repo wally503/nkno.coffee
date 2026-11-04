@@ -1,7 +1,7 @@
 // src/constants/config/brew/history/logConfig.js
 import { ratingCustomIcons } from '../../../../components/RatingGridItem';
 import TagCluster from '../../../../components/TagCluster'
-import { EVENT_ACCENT } from "../../../tableStyles"; 
+import { EVENT_ACCENT, eventTintKey } from "../../../tableStyles"; 
 
 // Maps BrewLog.style values to their route segment. cold_brew -> cold-brew
 // (kebab in the URL, underscore in the model) is the one mismatch to remember.
@@ -27,7 +27,7 @@ export const logChildCells = {
   date: (child) => formatLogDate(child.date),
   bean_name: (child) => child.summary,
   style_display: (child) => (
-    <span style={{ color: EVENT_ACCENT[child.event_type] }}>
+    <span style={{ color: EVENT_ACCENT[eventTintKey(child.event_type, "lot")] }}>
       ● {child.event_type_display}
     </span>
   ),

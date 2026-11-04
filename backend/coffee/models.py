@@ -5,7 +5,6 @@ import nanoid
 from decimal import Decimal
 from django.db.models import Sum, Q, F
 from django.core.exceptions import ValidationError
-from .enums import LifecycleKind
 from datetime import datetime, time
 
 class VesselType(models.Model):
@@ -167,21 +166,8 @@ class Bean(models.Model):
         if not self.short_id:
             self.short_id = nanoid.generate(size=8)
 
-        if self.pk:
-            was_finished = Bean.objects.filter(pk=self.pk).values_list('finished', flat=True).first()
-            just_finished = self.finished and not was_finished
-        else:
-            just_finished = False
-
+        # Finishing is logged per lot (close_lot writes the FINISHED event); the bean just follows.
         super().save(*args, **kwargs)
-
-        if just_finished:
-            from brew.models import BagLifecycleEvent
-            BagLifecycleEvent.objects.create(
-                bean=self,
-                event_type=LifecycleKind.FINISHED,
-                date=getattr(self, '_finished_date', None) or timezone.now(),
-            )
 
     def recalculate_used_weight(self):
         from brew.models import EspressoDetail, AeropressDetail, PouroverDetail, ColdBrewDetail, CuppingDetail
@@ -199,9 +185,6 @@ class Bean(models.Model):
     def remaining_weight(self):
         return (self.bag_weight or Decimal('0')) - (self.used_weight or Decimal('0'))
 
-    @property
-    def needs_bag_close_prompt(self):
-        return self.remaining_weight <= 10 and not self.finished
     class Meta:
         ordering = ['-date_added']
 

@@ -10,6 +10,8 @@ import HoffmannEventList from "../../../components/HoffmannEventList";
 import PouroverEventList from "../../../components/PouroverEventList";
 import PageTitle from "../../../components/PageTitle";
 import TagsGridItem from "../../../components/TagsGridItem";
+import LotCorrectionGridItem from "../../../components/LotCorrectionGridItem";
+import { lotDrawHelper } from "../../../utils/brewLots";
 
 // Same shape as CoffeeLogFormShell: title / back button / field switch / save-or-edit button.
 // Kept as its own shell (not an extension of CoffeeLogFormShell) because brew forms need
@@ -46,6 +48,7 @@ export default function BrewLogFormShell({
               case "spacer":       return buildSpacer(field, index);
               case "event_list":   return buildEventListField(field, formData, onFieldChange, mode, errors);
               case "tags": return buildTagsField(field, formData, onFieldChange, mode, errors);
+              case "lot_correction": return buildLotCorrectionField(field, formData, onFieldChange, mode);
             }
           })}
         </Grid>
@@ -199,6 +202,7 @@ function buildDropdownField(field, formData, onFieldChange, mode, errors) {
             mode={mode}
             dependsOn={field.dependsOn}
             dependsOnFieldValue={formData[field.dependsOn] ?? null}
+            helperText={lotDrawHelper(field, formData, mode)}
           />;
 }
 
@@ -227,5 +231,17 @@ function buildTagsField(field, formData, onFieldChange, mode, errors) {
             onChange={onFieldChange}
             error={errors[field.name]}
             mode={mode}
+          />;
+}
+
+// Optional correction under the lot picker; hides itself outside add mode / before a lot is picked.
+function buildLotCorrectionField(field, formData, onFieldChange, mode) {
+  return <LotCorrectionGridItem
+            key={field.name}
+            item={field}
+            value={formData[field.name] ?? ""}
+            onChange={onFieldChange}
+            mode={mode}
+            hasLot={typeof formData.lot === "number"}
           />;
 }

@@ -1,5 +1,6 @@
 from rest_framework import serializers, viewsets
 from .models import LotSplit, Vessel, CloseReason
+from django.db.models import F, Q
 from django.utils import timezone
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -98,6 +99,24 @@ class LotSplitSerializer(serializers.ModelSerializer):
             result[kind] = None if at is None else {"at": at, "reason": reason}
         return result
 
+class DrawableLotSerializer(serializers.ModelSerializer):
+    """Lean shape for the brew form's lot picker."""
+    bean_name = serializers.CharField(source="bean.name", read_only=True)
+    bean_short_id = serializers.CharField(source="bean.short_id", read_only=True)
+    vessel_label = serializers.SerializerMethodField()
+    state = serializers.SerializerMethodField()
+
+    class Meta:
+        model = LotSplit
+        fields = ["id", "bean_name", "bean_short_id", "vessel_label", "state", "remaining_weight"]
+
+    def get_vessel_label(self, lot):
+        return "Original bag" if lot.vessel is None else str(lot.vessel)
+
+    def get_state(self, lot):
+        return "open" if lot.opened_at else "thawed"
+
+
 class LotSplitViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = LotSplitSerializer
     pagination_class = None
@@ -115,6 +134,20 @@ class LotSplitViewSet(viewsets.ReadOnlyModelViewSet):
             return Response({"errors": e.messages}, status=400)
         lot.refresh_from_db()
         return Response(LotSplitSerializer(lot).data)
+
+    @action(detail=False, methods=["get"])
+    def drawable(self, request):
+        """
+        Lots a brew can draw from: open, or thawed (a thawed lot is opened when the brew
+        is saved). Grouped by bean name, longest-open first within a bean.
+        """
+        lots = (
+            self.get_queryset()
+            .filter(closed_at__isnull=True)
+            .filter(Q(opened_at__isnull=False) | Q(thawed_at__isnull=False))
+            .order_by("bean__name", F("opened_at").asc(nulls_last=True), "id")
+        )
+        return Response(DrawableLotSerializer(lots, many=True).data)
 
     @action(detail=False, methods=["post"])
     def rearrange(self, request):

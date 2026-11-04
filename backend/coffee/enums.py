@@ -13,6 +13,7 @@ class LifecycleKind(Enum):
     THAWED = "thawed"
     TRANSFERRED = "transferred"
     MERGED = "merged"
+    ADJUSTED = "adjusted"
 
 class Granularity(Enum):
     BAG = "bag"

@@ -8,6 +8,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 const HEADER_BROWN = "#2a211b";
@@ -21,11 +22,16 @@ export default function LotDateDialog({
   minDateTime,
   minReason,
   reasons,
+  message,
+  confirmLabel = "Confirm",
+  cancelLabel = "Cancel",
+  initialReason,
+  initialWhen,
   onConfirm,
   onClose,
 }) {
-  const [when, setWhen] = useState(dayjs());
-  const [reason, setReason] = useState("");
+  const [when, setWhen] = useState(initialWhen ? dayjs(initialWhen) : dayjs());
+  const [reason, setReason] = useState(initialReason ?? "");
   const [busy, setBusy] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
 
@@ -45,7 +51,6 @@ export default function LotDateDialog({
   const helperText = minDateTime
     ? `Can't be before it was ${String(minReason).toLowerCase()} on ${dayjs(minDateTime).format("MMM D, YYYY HH:mm")}`
     : undefined;
-  console.log("reasons prop:", reasons)
   return (
     <Dialog
       open={open}
@@ -73,6 +78,7 @@ export default function LotDateDialog({
       </DialogTitle>
 
       <DialogContent sx={{ pt: 3 }}>
+        {message && <Typography variant="body2">{message}</Typography>}
         {needsReason && (
           <TextField
             select
@@ -124,14 +130,14 @@ export default function LotDateDialog({
 
       <DialogActions sx={{ px: 3, pb: 2 }}>
         <Button onClick={onClose} disabled={busy}>
-          Cancel
+          {cancelLabel}
         </Button>
         <Button
           onClick={handleConfirm}
           disabled={busy || !valid || (needsReason && !reason)}
           variant="contained"
         >
-          Confirm
+          {confirmLabel}
         </Button>
       </DialogActions>
     </Dialog>

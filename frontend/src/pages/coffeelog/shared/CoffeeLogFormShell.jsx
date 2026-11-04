@@ -19,8 +19,7 @@ export default function CoffeeLogFormShell({
   onSubmit,
   onEdit,
   errors,
-  mode,
-  onBeanClose = null
+  mode
 }) {
 
   const navigate = useNavigate();
@@ -53,9 +52,6 @@ export default function CoffeeLogFormShell({
               ? <Button variant="contained" onClick={onEdit}>Edit</Button>
               : <Button variant="contained" onClick={onSubmit}>Save</Button>
             }
-          </Grid>
-          <Grid size={{xs: 6 }} sx={{ textAlign: 'right' }}>
-            {onBeanClose && <Button variant="contained" onClick={onBeanClose}>Close Bean</Button>}
           </Grid>
         </Grid>
       </Box>

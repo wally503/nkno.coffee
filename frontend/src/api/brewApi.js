@@ -13,6 +13,23 @@ export async function brewBeans(pageSize = 500) {
     }
 }
 
+// Lots a new brew can draw from (open, or thawed and opened on save), grouped by bean.
+export async function brewLots() {
+    try {
+        const { data } = await axiosInstance.get('coffee/lots/drawable/')
+        return data.map(l => ({
+            label: l.state === 'thawed' ? `${l.vessel_label} · Thawed` : l.vessel_label,
+            value: l.id,
+            group: l.bean_name,
+            bean: l.bean_short_id,
+            remaining: Number(l.remaining_weight),
+        }))
+    } catch (error) {
+        console.error(error.response?.status)
+        console.error(error.response?.data)
+    }
+}
+
 export async function brewBeansViewEdit(shortId) {
     try {
         const { data } = await axiosInstance.get(`coffee/beans/${shortId}`)

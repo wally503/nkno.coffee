@@ -3,10 +3,12 @@ import * as React from "react";
 import BrewLogFormShell from "../shared/BrewLogFormShell";
 import { COLDBREW_STATIC_OPTIONS, coldbrewConfig } from "../../../constants/config/brew/coldbrew/coldbrewConfig";
 import {
-  brewBeans, brewGrinders, brewScales, brewKettles,
-  submitColdbrew, getColdbrewById, updateColdbrew, brewBeansViewEdit
+  brewLots, brewGrinders, brewScales, brewKettles,
+  submitColdbrew, getColdbrewById, updateColdbrew
 } from "../../../api/brewApi";
-import { markBeanFinished } from "../../../api/beansApi";
+import CloseLotPrompt from "../../../components/CloseLotPrompt";
+import LotShortfallDialog from "../../../components/LotShortfallDialog";
+import { LEGACY_LOT, lotOptionFromBrew, brewLogLotFields, splitCandidates } from "../../../utils/brewLots";
 import DialogueBox from "../../../components/DialogueBox";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import DefaultBodyLayout from "../../../components/DefaultBodyLayout";
@@ -18,9 +20,8 @@ export default function ColdbrewFormPage() {
   const [options, setOptions] = React.useState(null);
   const [errors, setErrors] = React.useState({});
   const [saveDialogue, setSaveDialogue] = React.useState(false);
-  const [bagCloseDialogue, setBagCloseDialogue] = React.useState(false);
-  const [pendingBeanShortId, setPendingBeanShortId] = React.useState(null);
-  const [pendingBrewDate, setPendingBrewDate] = React.useState(null);
+  const [closePrompt, setClosePrompt] = React.useState(null);
+  const [shortfall, setShortfall] = React.useState(null);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -50,11 +51,11 @@ export default function ColdbrewFormPage() {
 
       const data = coldbrewRes?.data;
 
-      const beans = shortid && data?.brew_log?.bean
-        ? [{ label: data.brew_log.bean.name, value: data.brew_log.bean.short_id }]
-        : await brewBeans();
+      const lots = shortid && data?.brew_log
+        ? [lotOptionFromBrew(data.brew_log)]
+        : await brewLots();
 
-      setOptions({ ...COLDBREW_STATIC_OPTIONS, beans, grinders, scales, kettles });
+      setOptions({ ...COLDBREW_STATIC_OPTIONS, lots, grinders, scales, kettles });
 
       if (!shortid) { // only for add mode
         const defaults = {};
@@ -80,6 +81,7 @@ export default function ColdbrewFormPage() {
   const normalizeColdbrewData = (data) => ({
     ...data,
     bean: data.brew_log?.bean?.short_id ?? data.brew_log?.bean,
+    lot: data.brew_log?.lot?.id ?? LEGACY_LOT,
     date: data.brew_log?.date,
     extraction_rating: data.brew_log?.extraction_rating,
     grinder: data.grinder?.short_id ?? data.grinder,
@@ -90,31 +92,32 @@ export default function ColdbrewFormPage() {
     notes: data.brew_log?.notes,
   });
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (splitLotId) => {
     try {
-      const { bean, date, extraction_rating, notes, hoffmann_events, tags = [], ...detailFields } = formData;
+      const { bean, lot, correct_remaining, date, extraction_rating, notes, hoffmann_events, tags = [], ...detailFields } = formData;
       const normalizedDate = date ? dayjs(date).toISOString() : null;
+      const lotFields = brewLogLotFields({ bean, lot, correct_remaining, split_lot: splitLotId }, options);
       const payload = {
             ...detailFields,
             hoffmann_events,
-            brew_log: { bean, date: normalizedDate, extraction_rating, notes, tags, style: 'cold_brew' },
+            brew_log: { ...lotFields, date: normalizedDate, extraction_rating, notes, tags, style: 'cold_brew' },
           };
 
       const res = shortid
         ? await updateColdbrew(shortid, payload)
         : await submitColdbrew(payload);
 
-      setSaveDialogue(true);
-
-      if (res?.needs_bag_close_prompt) {
-        setPendingBeanShortId(bean);
-        setPendingBrewDate(res.brew_log?.date);
-        setBagCloseDialogue(true);
+      if (res?.close_prompt) {
+        // the saved dialog follows once the prompt is answered
+        setClosePrompt({ ...res.close_prompt, date: res.brew_log?.date });
+      } else {
+        setSaveDialogue(true);
       }
 
       console.log("Coldbrew save result:", res);
     } catch (err) {
       console.log(err);
+      if (err?.brew_log?.lot_shortfall) setShortfall(err.brew_log.lot_shortfall);
       const { brew_log: brewLogErrors, ...detailErrors } = err;
       setErrors({ ...detailErrors, ...brewLogErrors });
     }
@@ -138,7 +141,7 @@ export default function ColdbrewFormPage() {
               fields={resolvedFields}
               formData={formData}
               onFieldChange={handleFieldChange}
-              onSubmit={handleSubmit}
+              onSubmit={() => handleSubmit()}
               onEdit={() => navigate(`/brew/coldbrew/edit/${shortid}`)}
               errors={errors}
               mode={mode}
@@ -149,14 +152,15 @@ export default function ColdbrewFormPage() {
               open={saveDialogue}
               onCloseParent={() => { setSaveDialogue(false); navigate('/history/log'); }}
             />
-            <DialogueBox
-              title={"Bag Almost Empty"}
-              message={"This bag is nearly out — want to mark it as finished?"}
-              open={bagCloseDialogue}
-              onCloseParent={() => setBagCloseDialogue(false)}
-              onConfirm={() => markBeanFinished(pendingBeanShortId, pendingBrewDate)} 
-              confirmLabel="Yes, Close Bag"
-              cancelLabel="No, Not yet"
+            <CloseLotPrompt
+              prompt={closePrompt}
+              onDone={() => { setClosePrompt(null); setSaveDialogue(true); }}
+            />
+            <LotShortfallDialog
+              shortfall={shortfall}
+              candidates={splitCandidates(options, formData.lot)}
+              onClose={() => setShortfall(null)}
+              onConfirm={(lotId) => { setShortfall(null); handleSubmit(lotId); }}
             />
           </DefaultBodyLayout>
         </div>

@@ -32,11 +32,13 @@ export const cuppingConfig = {
     // brew log fields
     {
       type: "dropdown",
-      name: "bean",
-      label: "Bean",
+      name: "lot",
+      label: "Bean / Lot",
       required: true,
       size: { xs: 12, sm: 8, md: 8 },
-      optionSource: "beans",
+      optionSource: "lots",
+      groupBy: true,       // options carry a `group` (the bean name)
+      drawHelper: true,    // "100 g -> 87.5 g after this brew" helper text (add mode)
       editDisable: true,
     },
     {
@@ -47,6 +49,7 @@ export const cuppingConfig = {
       size: { xs: 12, sm: 4, md: 4 },
       defaultNow: true,
     },
+    { type: "lot_correction", name: "correct_remaining", size: { xs: 12 } },
 
     { type: "divider" },
 

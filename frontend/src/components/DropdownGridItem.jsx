@@ -4,7 +4,7 @@ import TextFieldGridItem from './TextFieldGridItem';
 import { getRegionsForCountry } from '../api/roasterApi';
 import { requiredNudgeStyling } from "../constants/gridStyles";
 
-export default function DropdownGridItem({ dropdown, onChange, value, mode, dependsOn, dependsOnFieldValue, error }) {
+export default function DropdownGridItem({ dropdown, onChange, value, mode, dependsOn, dependsOnFieldValue, error, helperText }) {
   const [options, setOptions] = useState(dropdown.options?.length ? dropdown.options : []);
 
   useEffect(() => {
@@ -38,12 +38,12 @@ export default function DropdownGridItem({ dropdown, onChange, value, mode, depe
     <>
       { mode === "view" 
         ? viewMode(dropdown, onChange, value, mode, options, error)
-        : addEditMode(dropdown, onChange, value, mode, options, error) } 
+        : addEditMode(dropdown, onChange, value, mode, options, error, helperText) } 
     </>
   );
 }
 
-function addEditMode(dropdown, onChange, value, mode, options, error){
+function addEditMode(dropdown, onChange, value, mode, options, error, helperText){
   return (
     <Grid size={dropdown.size || { xs: 12 }}>
       <FormControl
@@ -58,7 +58,14 @@ function addEditMode(dropdown, onChange, value, mode, options, error){
               autoSelect
               disabled={dropdown.editDisable && mode === "edit"}
               options={options}
-              getOptionLabel={(option) => option.label}
+              groupBy={dropdown.groupBy ? (option) => option.group : undefined}
+              // grouped options read "Bean – Vessel" once selected (and when typing to filter),
+              // but the list rows stay vessel-only since the group heading already names the bean
+              getOptionLabel={(option) => (dropdown.groupBy && option.group ? `${option.group} – ${option.label}` : option.label)}
+              renderOption={dropdown.groupBy ? (props, option) => {
+                const { key, ...rest } = props;
+                return <li key={key} {...rest}>{option.label}</li>;
+              } : undefined}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -66,7 +73,7 @@ function addEditMode(dropdown, onChange, value, mode, options, error){
                   label={dropdown.label}
                   required={dropdown.required}
                   error={!!error}
-                  helperText={error?.[0]}
+                  helperText={error?.[0] ?? helperText}
                 />
               )}
               sx={mode !== "view" && !dropdown.disableNudge ? requiredNudgeStyling(dropdown, mode, value, error) : {}}
@@ -77,16 +84,19 @@ function addEditMode(dropdown, onChange, value, mode, options, error){
               value={options?.find(o => o.value === value) ?? null}
             />
         </Box>
-        {dropdown.required && (error ? null : <FormHelperText>Required</FormHelperText>)}
+        {dropdown.required && !error && !helperText && <FormHelperText>Required</FormHelperText>}
       </FormControl>
     </Grid>
   )
 }
 
 function viewMode(dropdown, onChange, value, mode, options, error){
+  const selected = options?.find(o => o.value === value);
+  // grouped options (the lot picker) read "Bean – Vessel" when shown as plain text
+  const shown = selected ? (dropdown.groupBy && selected.group ? `${selected.group} – ${selected.label}` : selected.label) : "-";
   return <TextFieldGridItem 
             item={dropdown} 
-            value={options?.find(o => o.value === value)?.label ?? "-"} 
+            value={shown} 
             onChange={onChange} 
             mode={mode} 
             error={error} />

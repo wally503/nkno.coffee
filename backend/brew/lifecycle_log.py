@@ -35,6 +35,7 @@ def log_lot_change(lot, kind, at, parent=None, detail=""):
         LifecycleKind.FINISHED: "Closed",
         LifecycleKind.TRANSFERRED: "Closed",
         LifecycleKind.MERGED: "Merged into",
+        LifecycleKind.ADJUSTED: "Adjusted",
     }
     return log_lifecycle_event(
         bean=lot.bean, kind=kind, at=at,

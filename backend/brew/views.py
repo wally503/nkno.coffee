@@ -1,7 +1,11 @@
 # brew/views.py
 
-from rest_framework import viewsets
+from rest_framework import serializers as drf_serializers, viewsets
+from django.core.exceptions import ValidationError as DjangoValidationError
+from django.db import transaction
 from django.db.models import Q
+from coffee.draws import restore_draw
+from coffee.enums import Granularity, LifecycleKind
 from .pagination import DynamicPageSizePagination
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
@@ -18,8 +22,10 @@ class CatalogViewSet(ListModelMixin, RetrieveModelMixin, viewsets.GenericViewSet
 # Tiebreaker for open/close events
 # ---------------------------------------------------------------------------
 
+# Same-timestamp order in the log: opened, then adjusted, then the brew, then finished.
 TIEBREAK_OFFSET = {
-    'opened': timedelta(microseconds=-1),
+    'opened': timedelta(microseconds=-2),
+    'adjusted': timedelta(microseconds=-1),
     'finished': timedelta(microseconds=+1),
 }
 
@@ -60,7 +66,7 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
         'aeropress_detail__grinder',
         'coldbrew_detail__grinder',
         'cupping_detail__grinder'
-    ).all()
+    ).prefetch_related('lotbrewbridge_set__lot').all()
     lookup_field = 'short_id'
     filter_backends = [OrderingFilter, SearchFilter]
     search_fields = [
@@ -79,7 +85,14 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
             return BrewLogListSerializer
         return BrewLogSerializer
 
-
+    def perform_destroy(self, instance):
+        # Give the lot its grams back; refused if the lot is closed (its weight is final).
+        try:
+            with transaction.atomic():
+                restore_draw(instance)
+                instance.delete()
+        except DjangoValidationError as e:
+            raise drf_serializers.ValidationError({'errors': e.messages})
 
     def list(self, request, *args, **kwargs):
         search = request.query_params.get('search', '') or ''
@@ -152,9 +165,10 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
             'bean_name': event.bean.name if event.bean else '-',
             'bean_short_id': event.bean.short_id if event.bean else '-',
             'style': 'bag_event',
-            'style_display': f'Bag {event.get_event_type_display()}',
+            'style_display': self._event_label(event),
             'event_type': event.event_type,
             'granularity': event.granularity,
+            'level': 'lot' if self._is_lot_event(event) else 'bag',
             'summary': event.summary,
             'parent_id': event.parent_id,
             'child_count': len(children),
@@ -170,11 +184,25 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
             'tags': [],
         }
 
+    def _is_lot_event(self, event):
+        """True for an event about one lot; False for group (bulk) events and old pre-lot bag events."""
+        return event.granularity == Granularity.GRANULAR.value and event.lot_id is not None
+
+    def _kind_label(self, event):
+        kind = event.get_event_type_display()
+        if self._is_lot_event(event) and event.event_type == LifecycleKind.FINISHED.value:
+            return "Closed"   # "Finished" is wrong for a lot that was discarded or given away
+        return kind
+
+    def _event_label(self, event):
+        """'Lot Closed' for an event about one lot; 'Bag Transferred' for a group event or an old bag event."""
+        return f"{'Lot' if self._is_lot_event(event) else 'Bag'} {self._kind_label(event)}"
+
     def _bag_child_row(self, child):
         return {
             'short_id': f'bagevent-{child.id}',
             'event_type': child.event_type,
-            'event_type_display': child.get_event_type_display(),
+            'event_type_display': self._kind_label(child),
             'summary': child.summary,
             'date': child.date,
         }

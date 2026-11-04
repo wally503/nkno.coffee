@@ -5,7 +5,6 @@ import { useTableState } from "../../../hooks/useTableState";
 import CoffeeTable from "../../../components/CoffeeTable";
 import { defaultBrewLogsTableList } from "../../../api/brewApi";
 import { logConfig, STYLE_ROUTE_SEGMENT } from "../../../constants/config/brew/history/logConfig";
-import { BAG_EVENT_ROW_SX_OPEN, BAG_EVENT_ROW_SX_CLOSE } from "../../../constants/tableStyles";
 import DefaultBodyLayout from "../../../components/DefaultBodyLayout";
 import Box from "@mui/material/Box";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -43,7 +42,7 @@ export default function ListBrewLogsPage() {
 
   const decoratedRows = rows.map((row) =>
     row.style === "bag_event"
-      ? { ...row, rowSx: eventRowSx(row.event_type, row.granularity) }
+      ? { ...row, rowSx: eventRowSx(row.event_type, row.granularity, row.level) }
       : row
   );
 

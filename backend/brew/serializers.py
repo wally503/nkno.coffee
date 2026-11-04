@@ -1,9 +1,11 @@
 # brew/serializers.py
 
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
 from rest_framework import serializers
 from .models import *
-from coffee.models import Bean
+from coffee.draws import LotShortfall, adjust_draw, close_prompt_for, default_lot_for, draw_from_lot
+from coffee.models import Bean, LotSplit
 from .fields import MMSSDurationField
 
 # ---------------------------------------------------------------------------
@@ -76,11 +78,37 @@ class BrewLogSerializer(serializers.ModelSerializer):
         many=True, slug_field='slug',
         queryset=BrewTag.objects.all(), required=False,
     )
+    # Inputs for the lot draw. Neither is a BrewLog column: the detail serializers'
+    # create()/update() pop them and hand them to coffee.draws.
+    lot = serializers.PrimaryKeyRelatedField(
+        queryset=LotSplit.objects.all(), write_only=True, required=False, allow_null=True,
+    )
+    correct_remaining = serializers.DecimalField(
+        max_digits=7, decimal_places=2, write_only=True, required=False, allow_null=True,
+    )
+    # Second lot for a split brew (only used when the dose is more than `lot` holds).
+    split_lot = serializers.PrimaryKeyRelatedField(
+        queryset=LotSplit.objects.all(), write_only=True, required=False, allow_null=True,
+    )
 
     class Meta:
         model = BrewLog
         fields = '__all__'
         read_only_fields = ['short_id', 'pull_number']
+
+    # Direct use of this serializer (the brewlogs endpoint) doesn't draw from a lot,
+    # so drop the draw-only inputs rather than pass them to the model.
+    def create(self, validated_data):
+        validated_data.pop('lot', None)
+        validated_data.pop('correct_remaining', None)
+        validated_data.pop('split_lot', None)
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        validated_data.pop('lot', None)
+        validated_data.pop('correct_remaining', None)
+        validated_data.pop('split_lot', None)
+        return super().update(instance, validated_data)
 
 
 class BrewLogListSerializer(serializers.ModelSerializer):
@@ -107,10 +135,22 @@ class BrewLogReadSerializer(serializers.ModelSerializer):
     days_since_roast = serializers.ReadOnlyField()
     days_since_opened = serializers.ReadOnlyField()
     tags = BrewTagSerializer(many=True, read_only=True)
+    lot = serializers.SerializerMethodField()
 
     class Meta:
         model = BrewLog
         fields = '__all__'
+
+    def get_lot(self, obj):
+        """The lot this brew drew from, or None for brews made before lots existed."""
+        bridge = next(iter(obj.lotbrewbridge_set.all()), None)
+        if bridge is None:
+            return None
+        lot = bridge.lot
+        return {
+            'id': lot.pk,
+            'vessel_label': 'Original bag' if lot.vessel is None else str(lot.vessel),
+        }
 
 # ---------------------------------------------------------------------------
 # Shared mixin — atomic BrewLog + Detail creation
@@ -139,42 +179,79 @@ class AtomicDetailCreateMixin:
     def create(self, validated_data):
         brew_log_data = validated_data.pop('brew_log')
         tags = brew_log_data.pop('tags', None)
+        lot = brew_log_data.pop('lot', None)
+        correction = brew_log_data.pop('correct_remaining', None)
+        split_lot = brew_log_data.pop('split_lot', None)
         nested_data = self.pop_nested(validated_data)
 
-        with transaction.atomic():
-            brew_log = BrewLog.objects.create(**brew_log_data)
-            if tags is not None:
-                brew_log.tags.set(tags)
-            detail = self.detail_model.objects.create(brew_log=brew_log, **validated_data)
-            self.create_nested(detail, nested_data)
+        if lot is None:
+            lot = default_lot_for(brew_log_data['bean'])   # the bean's only drawable lot, if there is exactly one
+        if lot is None:
+            raise serializers.ValidationError({'brew_log': {'lot': ['Pick a lot to draw from.']}})
+        if lot.bean_id != brew_log_data['bean'].pk:
+            raise serializers.ValidationError({'brew_log': {'lot': ['That lot belongs to a different bean.']}})
 
+        try:
+            with transaction.atomic():
+                brew_log = BrewLog.objects.create(**brew_log_data)
+                if tags is not None:
+                    brew_log.tags.set(tags)
+                detail = self.detail_model.objects.create(brew_log=brew_log, **validated_data)
+                self.create_nested(detail, nested_data)
+                # Last step, still inside the transaction: any refusal rolls the whole brew back.
+                bridges = draw_from_lot(brew_log, lot, detail.weight, correction, split_lot)
+        except LotShortfall as e:
+            # Machine-readable numbers so the form can offer to split the brew across two lots.
+            raise serializers.ValidationError({'brew_log': {
+                'lot': e.messages,
+                'lot_shortfall': {'remaining': str(e.remaining), 'needed': str(e.needed)},
+            }})
+        except DjangoValidationError as e:
+            raise serializers.ValidationError({'brew_log': {'lot': e.messages}})
+
+        # Shown once, right after a brew is created: the lot it ended on, if nearly empty.
+        detail._close_prompt = close_prompt_for(bridges[-1].lot)
         return detail
 
 
     def update(self, instance, validated_data):
         brew_log_data = validated_data.pop('brew_log', None)
         tags = brew_log_data.pop('tags', None) if brew_log_data else None
+        lot = brew_log_data.pop('lot', None) if brew_log_data else None
+        correction = brew_log_data.pop('correct_remaining', None) if brew_log_data else None
         nested_data = self.pop_nested(validated_data, for_update=True)
 
-        with transaction.atomic():
-            if brew_log_data:
-                brew_log_data.pop('bean', None)
-                brew_log_data.pop('style', None)
-                brew_log = instance.brew_log
-                for attr, value in brew_log_data.items():
-                    setattr(brew_log, attr, value)
-                brew_log.save()
+        if lot is not None and lot.bean_id != instance.brew_log.bean_id:
+            raise serializers.ValidationError({'brew_log': {'lot': ['That lot belongs to a different bean.']}})
 
-            if tags is not None:
-                instance.brew_log.tags.set(tags)
+        try:
+            with transaction.atomic():
+                if brew_log_data:
+                    brew_log_data.pop('bean', None)
+                    brew_log_data.pop('style', None)
+                    brew_log = instance.brew_log
+                    for attr, value in brew_log_data.items():
+                        setattr(brew_log, attr, value)
+                    brew_log.save()
 
-            for attr, value in validated_data.items():
-                setattr(instance, attr, value)
-            instance.save()
+                if tags is not None:
+                    instance.brew_log.tags.set(tags)
 
-            self.update_nested(instance, nested_data)
+                for attr, value in validated_data.items():
+                    setattr(instance, attr, value)
+                instance.save()
+
+                self.update_nested(instance, nested_data)
+                adjust_draw(instance.brew_log, lot, instance.weight, correction)
+        except DjangoValidationError as e:
+            raise serializers.ValidationError({'brew_log': {'lot': e.messages}})
 
         return instance
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['close_prompt'] = getattr(instance, '_close_prompt', None)
+        return data
 
     # Hooks for the one nested many-field each style has, if any.
     def pop_nested(self, validated_data, for_update=False):
@@ -205,7 +282,6 @@ class AeropressDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSerial
     scale = serializers.SlugRelatedField(slug_field='short_id', queryset=Scale.objects.all())
     kettle = serializers.SlugRelatedField(slug_field='short_id', queryset=Kettle.objects.all())
     brew_log = BrewLogSerializer()
-    needs_bag_close_prompt = serializers.SerializerMethodField()
 
     detail_model = AeropressDetail
 
@@ -229,13 +305,9 @@ class AeropressDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSerial
             'grinder',
             'scale',
             'kettle',
-            'needs_bag_close_prompt',
             'press_time',
             'press_duration'
         ]
-
-    def get_needs_bag_close_prompt(self, obj):
-        return getattr(obj, '_bag_close_prompt', False)
 
     def pop_nested(self, validated_data, for_update=False):
         return validated_data.pop('hoffmann_events', [] if not for_update else None)
@@ -321,7 +393,6 @@ class PouroverDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSeriali
     scale = serializers.SlugRelatedField(slug_field='short_id', queryset=Scale.objects.all())
     kettle = serializers.SlugRelatedField(slug_field='short_id', queryset=Kettle.objects.all())
     brew_log = BrewLogSerializer()
-    needs_bag_close_prompt = serializers.SerializerMethodField()
     stop_time = MMSSDurationField(required=True)
     dripper = serializers.ChoiceField(choices=DripperChoice.choices, required=True)
 
@@ -347,12 +418,8 @@ class PouroverDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSeriali
             'temp',
             'grinder',
             'scale',
-            'needs_bag_close_prompt',
             'stop_time'
         ]
-
-    def get_needs_bag_close_prompt(self, obj):
-        return getattr(obj, '_bag_close_prompt', False)
 
     def pop_nested(self, validated_data, for_update=False):
         return validated_data.pop('pour_events', [] if not for_update else None)
@@ -427,16 +494,12 @@ class ColdBrewDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSeriali
     brew_log = BrewLogSerializer()
     grinder = serializers.SlugRelatedField(slug_field='short_id', queryset=Grinder.objects.all())
     scale = serializers.SlugRelatedField(slug_field='short_id', queryset=Scale.objects.all())
-    needs_bag_close_prompt = serializers.SerializerMethodField()
 
     detail_model = ColdBrewDetail
 
     class Meta:
         model = ColdBrewDetail
         fields = '__all__'
-
-    def get_needs_bag_close_prompt(self, obj):
-        return getattr(obj, '_bag_close_prompt', False)
 
 class ColdBrewDetailReadSerializer(serializers.ModelSerializer):
     brew_log = BrewLogReadSerializer(read_only=True)
@@ -460,7 +523,6 @@ class CuppingDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSerializ
     brew_log = BrewLogSerializer()
     grinder = serializers.SlugRelatedField(slug_field='short_id', queryset=Grinder.objects.all())
     scale = serializers.SlugRelatedField(slug_field='short_id', queryset=Scale.objects.all())
-    needs_bag_close_prompt = serializers.SerializerMethodField()
     kettle = serializers.SlugRelatedField(slug_field='short_id', queryset=Kettle.objects.all())
     
     detail_model = CuppingDetail
@@ -468,9 +530,6 @@ class CuppingDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSerializ
     class Meta:
         model = CuppingDetail
         fields = '__all__'
-
-    def get_needs_bag_close_prompt(self, obj):
-        return getattr(obj, '_bag_close_prompt', False)
 
 
 class CuppingDetailReadSerializer(serializers.ModelSerializer):
@@ -496,7 +555,6 @@ class EspressoDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSeriali
     grinder = serializers.SlugRelatedField(slug_field='short_id', queryset=Grinder.objects.all())
     scale = serializers.SlugRelatedField(slug_field='short_id', queryset=Scale.objects.all())
     brew_log = BrewLogSerializer()
-    needs_bag_close_prompt = serializers.SerializerMethodField()
     pull_time = MMSSDurationField()
     machine = serializers.ChoiceField(choices=EspressoMakerChoice.choices, required=True)
     basket = serializers.ChoiceField(choices=BasketChoice.choices, required=True)
@@ -531,11 +589,7 @@ class EspressoDetailSerializer(AtomicDetailCreateMixin, serializers.ModelSeriali
             'paper_filter_count',
             'pull_time',
             'pull_weight',
-            'needs_bag_close_prompt',
         ]
-
-    def get_needs_bag_close_prompt(self, obj):
-        return getattr(obj, '_bag_close_prompt', False)
 
 
 class EspressoDetailReadSerializer(serializers.ModelSerializer):

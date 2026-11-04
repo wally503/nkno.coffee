@@ -162,16 +162,6 @@ class BrewBaseMixin(models.Model):
     class Meta:
         abstract = True
 
-    def save(self, *args, **kwargs):
-        is_new = self._state.adding
-        super().save(*args, **kwargs)
-
-        bean = self.brew_log.bean
-        bean.recalculate_used_weight()
-
-        # only relevant on create — edits are corrections, not new consumption
-        self._bag_close_prompt = is_new and bean.needs_bag_close_prompt
-
 # ---------------------------------------------------------------------------
 # BrewLog — the spine
 # ---------------------------------------------------------------------------
@@ -201,17 +191,6 @@ class BrewLog(models.Model):
 
         super().save(*args, **kwargs)
 
-        if is_new and self.bean.opened_date is None:
-            self.bean.opened_date = self.date
-            self.bean.save(update_fields=['opened_date'])
-            
-            # open_lot()
-            BagLifecycleEvent.objects.create(
-                bean=self.bean,
-                event_type=LifecycleKind.OPENED,
-                date=self.date,
-            )
-
     @property
     def days_since_roast(self):
         if not self.bean.roast_date:
@@ -220,9 +199,12 @@ class BrewLog(models.Model):
 
     @property
     def days_since_opened(self):
-        if not self.bean.opened_date:
+        # .all() so a prefetch of lotbrewbridge_set__lot is used when the view provides one
+        bridge = next(iter(self.lotbrewbridge_set.all()), None)
+        opened = bridge.lot.opened_at if bridge else self.bean.opened_date
+        if not opened:
             return None
-        return (self.date - self.bean.opened_date).days
+        return (self.date - opened).days
 
     class Meta:
         ordering = ['-date']
