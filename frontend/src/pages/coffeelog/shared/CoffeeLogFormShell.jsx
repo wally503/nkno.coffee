@@ -1,5 +1,5 @@
 // src/pages/coffeelog/shared/CoffeeLogFormShell.jsx
-import { Box, Grid, Divider,Button } from "@mui/material";
+import { Alert, Box, Grid, Divider,Button } from "@mui/material";
 import DropdownGridItem from "../../../components/DropdownGridItem";
 import TextFieldGridItem from "../../../components/TextFieldGridItem";
 import DynamicDropdownList from "../../../components/DynamicDropdown";
@@ -23,10 +23,16 @@ export default function CoffeeLogFormShell({
 }) {
 
   const navigate = useNavigate();
+  const generalErrors = mode === "view" ? [] : collectGeneralErrors(errors, fields);
 
   return (
     <>
       <PageTitle title={title} hasBackButton={hasBackButton} backRoute={backRoute} />
+      {generalErrors.length > 0 && (
+        <Alert severity="error" sx={{ width: "80%", maxWidth: 1400, mb: 3 }}>
+          {generalErrors.map((message, i) => <div key={i}>{message}</div>)}
+        </Alert>
+      )}
       <Box sx={{ width: "80%", maxWidth: 1400 }}>
         <Grid container spacing={3} columns={12}>
           {fields.map((field, index) => {
@@ -57,6 +63,25 @@ export default function CoffeeLogFormShell({
       </Box>
    </>
   );
+}
+
+
+function collectGeneralErrors(errors, fields) {
+  if (!errors) return [];
+  if (errors instanceof Error) return ["Something went wrong on the server, so nothing was saved."];
+
+  const fieldNames = new Set(fields.map((field) => field.name));
+  const messages = [];
+  Object.entries(errors).forEach(([key, value]) => {
+    if (!value || (Array.isArray(value) && value.length === 0)) return;
+    const isGeneral = key === "non_field_errors" || key === "detail";
+    if (!isGeneral && fieldNames.has(key)) return;   // that field shows its own error
+    [].concat(value).forEach((message) => {
+      const text = typeof message === "string" ? message : JSON.stringify(message);
+      messages.push(isGeneral ? text : `${key}: ${text}`);
+    });
+  });
+  return messages;
 }
 
 function buildTextField(field, formData, onFieldChange, mode, errors){

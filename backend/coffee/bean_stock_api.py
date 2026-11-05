@@ -1,11 +1,12 @@
 from decimal import Decimal
-from django.db.models import Exists, OuterRef, Prefetch
+from django.db.models import Case, Exists, IntegerField, OuterRef, Prefetch, When
 from django.utils import timezone
 from rest_framework import serializers, viewsets
 from rest_framework.filters import OrderingFilter, SearchFilter
 from .models import Bean, LotSplit
 from .lots_api import LotSplitSerializer
 from .lifecycle import state_of
+
 
 STATE_ORDER = ["open", "thawed", "frozen", "sealed"]
 RANK = {"open": 2, "thawed": 1, "frozen": 0, "sealed": 3}
@@ -80,7 +81,7 @@ class BeanStockViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [OrderingFilter, SearchFilter]
     search_fields = ["name", "roaster__name"]
     ordering_fields = ["name", "roast_date"]
-    ordering = ["name"]
+    ordering = ["stock_priority", "name"]
 
     def get_queryset(self):
         has_unclosed = LotSplit.objects.filter(bean=OuterRef("pk"), closed_at__isnull=True)
@@ -96,9 +97,20 @@ class BeanStockViewSet(viewsets.ReadOnlyModelViewSet):
             .select_related("bean", "vessel", "vessel__vessel_type", "close_reason")
             .order_by("closed_at")
         )
+        has_open = has_unclosed.filter(opened_at__isnull=False)
+        has_thawed = has_unclosed.filter(opened_at__isnull=True, thawed_at__isnull=False)
+        has_frozen = has_unclosed.filter(
+            opened_at__isnull=True, thawed_at__isnull=True, frozen_at__isnull=False)
+        stock_priority = Case(
+            When(Exists(has_open), then=0),
+            When(Exists(has_thawed), then=1),
+            When(Exists(has_frozen), then=2),
+            default=3,   # only sealed lots
+            output_field=IntegerField(),
+        )
         return (
             Bean.objects
-            .annotate(has_unclosed_lot=Exists(has_unclosed))
+            .annotate(has_unclosed_lot=Exists(has_unclosed), stock_priority=stock_priority)
             .filter(has_unclosed_lot=True)
             .prefetch_related(
                 Prefetch("lotsplit_set", queryset=unclosed_lots, to_attr="stock_lots"),

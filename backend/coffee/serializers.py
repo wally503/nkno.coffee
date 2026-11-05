@@ -6,6 +6,7 @@ from brew.models import AeropressDetail, PouroverDetail, EspressoDetail, BagLife
 from .enums import LifecycleKind, LotState
 from django.db import transaction
 from .lifecycle import create_lot
+from django.core.exceptions import ValidationError as DjangoValidationError
 
 class RoasterSerializer(serializers.ModelSerializer):
     country = serializers.PrimaryKeyRelatedField(
@@ -59,10 +60,18 @@ class BeanSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data) -> Bean:
-        with transaction.atomic():
-            bean: Bean = super().create(validated_data)
-            create_lot(bean=bean, vessel=None, weight=bean.bag_weight, state=LotState.SEALED)
-            return bean
+        if validated_data.get("bag_weight") is None:
+            raise serializers.ValidationError(
+                {"bag_weight": ["Required: it sets the weight of the bean's first lot."]}
+            )
+        try:
+            with transaction.atomic():
+                bean: Bean = super().create(validated_data)
+                create_lot(bean=bean, vessel=None, weight=bean.bag_weight, state=LotState.SEALED)
+                return bean
+        except DjangoValidationError as exc:
+            messages = list(dict.fromkeys(exc.messages))   # same message twice -> once
+            raise serializers.ValidationError({"non_field_errors": messages})
 
 class BeanListSerializer(serializers.ModelSerializer):
     flavor_notes = serializers.SerializerMethodField()

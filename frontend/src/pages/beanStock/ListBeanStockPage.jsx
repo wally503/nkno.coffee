@@ -11,7 +11,7 @@ import { beanStockConfig } from "../../constants/config/coffeelog/beans/beansSto
 import { beansConfig } from "../../constants/config/coffeelog/beans/beansConfig";
 
 export default function ListBeanStockPage() {
-  const stockTableState = useTableState("name");
+  const stockTableState = useTableState("");
   const [rows, setRows] = React.useState([]);
   const [totalCount, setTotalCount] = React.useState(0);
 
