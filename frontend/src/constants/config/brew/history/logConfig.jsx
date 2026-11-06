@@ -62,6 +62,15 @@ export const logColumns = [
     px: 0.3,
     minWidth: 140,
     orderingField: null, 
+    render: (value, row) => (row.roaster_name && row.roaster_name !== '-'
+      ? (
+        <>
+          <div>{value}</div>
+          <div style={{ fontSize: "0.8em", opacity: 0.8 }}>{row.roaster_name}</div>
+        </>
+      ): value
+    ),
+
   },
   {
     id: "style_display",

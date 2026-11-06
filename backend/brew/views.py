@@ -156,6 +156,10 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
             'grinder_name': detail.grinder.name if detail and detail.grinder else '-',
             'grind_setting': grind_setting,
             'tags': BrewTagSerializer(brew_log.tags.all(), many=True).data,
+            'roaster_name': (
+                brew_log.bean.roaster.name
+                if brew_log.bean and brew_log.bean.roaster else '-'
+            ),
         }
 
     def _bag_event_row(self, event, include_children=True):
@@ -183,6 +187,10 @@ class BrewLogViewSet(SuperUserDestroyMixin, viewsets.ModelViewSet):
             'grinder_name': None,
             'grind_setting': None,
             'tags': [],
+            'roaster_name': (
+                event.bean.roaster.name
+                if event.bean and event.bean.roaster else '-'
+            ),
         }
 
     def _is_lot_event(self, event):
