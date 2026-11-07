@@ -58,9 +58,9 @@ export const logColumns = [
   },
   {
     id: "bean_name",
-    label: "Bean",
+    label: "Bean & Roaster",
     px: 0.3,
-    minWidth: 140,
+    minWidth: 180,
     orderingField: null, 
     render: (value, row) => (row.roaster_name && row.roaster_name !== '-'
       ? (
@@ -74,8 +74,8 @@ export const logColumns = [
   },
   {
     id: "style_display",
-    label: "Style",
-    minWidth: 130,
+    label: "Brew Style / Bag Event",
+    minWidth: 90,
     orderingField: null, 
     // Single-lot events also say which lot they were about, under the label.
     render: (value, row) => (row.style === "bag_event" && row.lot_label
@@ -87,17 +87,28 @@ export const logColumns = [
       )
       : value),
   },
-  {
-    id: "grinder_name",
-    label: "Grinder",
-    minWidth: 100,
-    orderingField: null,
-  },
+  // {
+  //   id: "grinder_name",
+  //   label: "Grinder",
+  //   minWidth: 100,
+  //   orderingField: null,
+  // },
   {
     id: "grind_setting",
-    label: "Setting",
+    label: "Setting & Grinder",
     minWidth: 70,
     orderingField: null,
+    render: (value, row) => {
+      if (row.style === "bag_event") {
+        return <span style={{ opacity: 0.6 }}>{'-'}</span>;
+      }
+      return (
+         <>
+          <div>{value}</div>
+          <div style={{ fontSize: "0.8em", opacity: 0.8 }}>{row.grinder_name}</div>
+        </>
+      );
+    },
   },
   {
     id: "extraction_rating",
@@ -118,7 +129,7 @@ export const logColumns = [
   },
   {
     id: "tags",
-    label: "Tags",
+    label: "Note Tags",
     minWidth: 200,
     render: (value, row) => {
       const tags = row.tags ?? [];

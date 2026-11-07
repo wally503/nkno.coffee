@@ -155,6 +155,16 @@ class CountriesSerializer(serializers.ModelSerializer):
         model = Countries
         fields = '__all__'
 
+class CultivarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cultivar
+        fields = '__all__'
+
+class SpeciesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Species
+        fields = '__all__'
+
 class FlavorNotesSerializer(serializers.ModelSerializer):
     class Meta:
         model = FlavorNotes

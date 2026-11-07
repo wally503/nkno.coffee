@@ -8,6 +8,7 @@ import MultilineTextFieldGridItem from "../../../components/MultilineTextFieldGr
 import RatingGridItem from "../../../components/RatingGridItem";
 import PageTitle from "../../../components/PageTitle";
 import { useNavigate } from "react-router-dom";
+import FixedMultiSelectInput from "../../../components/FixedMultiSelect";
 
 export default function CoffeeLogFormShell({
   title,
@@ -46,6 +47,7 @@ export default function CoffeeLogFormShell({
               case "divider":           return buildDivider(index)
               case "spacer":            return buildSpacer(field, index);
               case "dynamic_dropdown":  return buildDynamicMultiselectField(field, formData, onFieldChange, mode, errors)
+              case "fixed_multi":       return buildFixedMultiselectField(field, formData, onFieldChange, mode, errors)
             }
           })}
         </Grid>
@@ -192,4 +194,17 @@ function buildSpacer(field, key) {
       />
     </Grid>
   );
+}
+
+function buildFixedMultiselectField(field, formData, onFieldChange, mode, errors){
+  return <Grid key={field.name} size={{ xs: 12, sm: 10, md: 10 }} offset={{ sm: 1, md: 1 }}>
+          <FixedMultiSelectInput
+            item={field}
+            onChange={(val) => onFieldChange(field.name, val)}
+            initialValues={formData[field.name]}
+            error={errors[field.name]}
+            mode={mode}
+            dependsOn={field.dependsOn}
+          />
+        </Grid>
 }

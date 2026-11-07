@@ -116,6 +116,18 @@ class Roaster(models.Model):
     def __str__(self):
         return self.name
 
+class Cultivar(models.Model):
+    name = models.CharField(max_length=200, unique=True)
+
+    def __str__(self):
+        return self.name
+
+class Species(models.Model):
+    name = models.CharField(max_length=200, unique=True)
+
+    def __str__(self):
+        return self.name
+
 class FlavorNotes(models.Model):
     name = models.CharField(max_length=200, unique=True)
 
@@ -157,6 +169,8 @@ class Bean(models.Model):
     purchased = models.BooleanField(default=True)
     bag_weight = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
     used_weight = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
+    species = models.ManyToManyField(Species, null=True, blank=True, related_name="beans")
+    cultivars = models.ManyToManyField(Cultivar, null=True, blank=True, related_name="beans")
 
     @property
     def had_as_drink(self):

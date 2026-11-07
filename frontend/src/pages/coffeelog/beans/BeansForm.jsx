@@ -2,7 +2,7 @@
 import * as React from "react";
 import CoffeeLogFormShell from "../shared/CoffeeLogFormShell";
 import { BEANS_STATIC_OPTIONS, beansConfig   } from "../../../constants/config/coffeelog/beans/beansConfig";
-import { beansCountries, beansNotes, beansRoasters, submitBeans, getBeanById, updateBean, beansProcesses } from "../../../api/beansApi";
+import { beansCountries, beansNotes, beansRoasters, submitBeans, getBeanById, updateBean, beansProcesses, beansSpecies, beansCultivars } from "../../../api/beansApi";
 import { brewsByBean } from "../../../api/brewApi";
 import { eventRowSx } from "../../../constants/tableStyles";
 import DialogueBox from "../../../components/DialogueBox";
@@ -51,13 +51,15 @@ export default function BeansFormPage() {
 
   React.useEffect(() => {
     const load = async () => {
-      const [roasters, countries, notes, processes] = await Promise.all([
+      const [roasters, countries, notes, processes, species, cultivars] = await Promise.all([
           beansRoasters(),
           beansCountries(),
           beansNotes(),
-          beansProcesses()
+          beansProcesses(),
+          beansSpecies(),
+          beansCultivars()
         ]);
-      setOptions({...BEANS_STATIC_OPTIONS, roasters, countries, notes, processes});
+      setOptions({...BEANS_STATIC_OPTIONS, roasters, countries, notes, processes, species, cultivars});
       if (shortid){
         const { data } = await getBeanById(shortid);
         console.log('testin data', data);

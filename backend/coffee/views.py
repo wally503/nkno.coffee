@@ -213,6 +213,16 @@ class FlavorNotesViewSet(ListModelMixin, RetrieveModelMixin, viewsets.GenericVie
     serializer_class = FlavorNotesSerializer
     pagination_class = LargeDynamicPageSizePagination
 
+class CultivarsViewSet(ListModelMixin, RetrieveModelMixin, viewsets.GenericViewSet):
+    queryset = Cultivar.objects.all()
+    serializer_class = CultivarSerializer
+    pagination_class = LargeDynamicPageSizePagination
+
+class SpeciesViewSet(ListModelMixin, RetrieveModelMixin, viewsets.GenericViewSet):
+    queryset = Species.objects.all()
+    serializer_class = SpeciesSerializer
+    pagination_class = LargeDynamicPageSizePagination
+
 class RegionsViewSet(ListModelMixin, RetrieveModelMixin, viewsets.GenericViewSet):
     queryset = Region.objects.all()
     serializer_class = RegionsSerializer

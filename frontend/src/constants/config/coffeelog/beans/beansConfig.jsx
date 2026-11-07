@@ -231,6 +231,32 @@ export const beansConfig = {
       type: "divider",
     },
     {
+      type: "fixed_multi",
+      name: "species",
+      label: "Species",
+      required: false,
+      disableNudge: true,
+      optionSource: "species",
+      size: { xs: 12, sm: 4, md: 4 },
+      grid_offset: 1
+      // placeholder: "",
+    },  
+    {
+      type: "fixed_multi",
+      name: "cultivars",
+      label: "Cultivars",
+      required: false,
+      disableNudge: true,
+      optionSource: "cultivars",
+      size: { xs: 12, sm: 4, md: 4 },
+      grid_offset: 2,
+      // placeholder: "",
+    },  
+
+    {
+      type: "divider",
+    },
+    {
       type: "dynamic_dropdown",
       name: "flavor_notes",
       label: "Flavor / Body Notes",
@@ -240,6 +266,7 @@ export const beansConfig = {
       // size: { xs: 12, sm: 4, md: 4 },
       // placeholder: "",
     },  
+
   ],
   brewsTableColumns: [
     {

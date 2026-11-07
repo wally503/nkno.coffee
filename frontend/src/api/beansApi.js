@@ -61,6 +61,26 @@ export async function beansNotes(pageSize = 5000){
     }
 }
 
+export async function beansCultivars(pageSize = 100){
+    try{
+        const { data } = await axiosInstance.get(`coffee/cultivars/?page_size=${pageSize}`)
+        return data.results.map(r => ({ label: r.name, value: r.id }))
+    } catch (error) {
+        console.error(error.response.status);
+        console.error(error.response.data);
+    }
+}
+
+export async function beansSpecies(pageSize = 20){
+    try{
+        const { data } = await axiosInstance.get(`coffee/species/?page_size=${pageSize}`)
+        return data.results.map(r => ({ label: r.name, value: r.id }))
+    } catch (error) {
+        console.error(error.response.status);
+        console.error(error.response.data);
+    }
+}
+
 export async function submitBeans(formData) {
     try {
         return await axiosInstance.post('coffee/beans/', formData);
