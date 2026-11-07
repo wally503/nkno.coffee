@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Bean, Roaster, Drink, Countries, FlavorNotes, Region, MapZone, Process, Vessel, VesselType, CloseReason, LotSplit
+from .models import *
 
 @admin.register(Bean)
 class BeanAdmin(admin.ModelAdmin):
@@ -18,7 +18,8 @@ admin.site.register(Process)
 admin.site.register(Vessel) 
 admin.site.register(VesselType)
 admin.site.register(CloseReason) 
-
+admin.site.register(Cultivar)
+admin.site.register(Species)
 
 
 @admin.register(LotSplit)

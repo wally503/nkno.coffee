@@ -46,14 +46,15 @@ export default function FixedMultiSelectInput({ item, onChange, initialValues, m
   };
 
   return (
-    <Grid container>
-      <Grid size={{ xs: 12, sm: 10, md: 10 }} offset={{ sm: item.grid_offset ?? 1, md: item.grid_offset ?? 1 }}>
-        <Grid container spacing={2} columns={12}>
-          {mode === "view"
-            ? viewMode(item, values)
-            : values.map((val, index) =>
-                addEditMode(item, val, index, handleChange, handleAdd, handleRemove, getAvailableOptions, values))}
-        </Grid>
+    <Grid
+      size={{ xs: item.size?.xs ?? 12, sm: item.size?.sm ?? 10, md: item.size?.md ?? 10 }}
+      offset={{ sm: item.grid_offset ?? 1, md: item.grid_offset ?? 1 }}
+    >
+      <Grid container spacing={2} columns={12}>
+        {mode === "view"
+          ? viewMode(item, values)
+          : values.map((val, index) =>
+              addEditMode(item, val, index, handleChange, handleAdd, handleRemove, getAvailableOptions, values))}
       </Grid>
     </Grid>
   );
@@ -63,7 +64,7 @@ function addEditMode(item, val, index, handleChange, handleAdd, handleRemove, ge
   const selectedOption = item.options.find((o) => sameId(o.value, val)) ?? null;
 
   return (
-    <Grid key={index} size={{ xs: 12, sm: item.size ?? 6, md: item.size ?? 6 }}>
+    <Grid key={index} size={{ xs: item.ddl_size?.sm ?? 12, sm: item.ddl_size?.sm ?? 6, md: item.ddl_size?.md ?? 6 }}>
       <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
         <Autocomplete
           fullWidth

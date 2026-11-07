@@ -237,8 +237,9 @@ export const beansConfig = {
       required: false,
       disableNudge: true,
       optionSource: "species",
-      size: { xs: 12, sm: 4, md: 4 },
-      grid_offset: 1
+      size: { xs: 12, sm: 5, md: 5 },
+      ddl_size: { xs: 12, sm: 12, md: 12 },
+      grid_offset: 1,
       // placeholder: "",
     },  
     {
@@ -248,8 +249,9 @@ export const beansConfig = {
       required: false,
       disableNudge: true,
       optionSource: "cultivars",
-      size: { xs: 12, sm: 4, md: 4 },
-      grid_offset: 2,
+      size: { xs: 12, sm: 5, md: 5 },
+      ddl_size: { xs: 12, sm: 12, md: 12 },
+      grid_offset: 0,
       // placeholder: "",
     },  
 
