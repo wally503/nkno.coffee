@@ -1,4 +1,4 @@
-import { Grid, Box, Card, Typography, CardContent } from "@mui/material";
+import { Grid, Box, Card, Typography, CardContent, Tabs, Tab, Pagination } from "@mui/material";
 import CardPageBodyLayout from "../components/CardPageBodyLayout";
 import { getDailyBean, getLatestBean, getCurrentOpenBeans } from "../api/beansApi";
 import BagProgressCard from "../components/BagProgressCard";
@@ -11,6 +11,23 @@ export default function HomePage() {
     const [latestBean, setLatestBean] = React.useState({});
     const [openBeans, setOpenBeans] = React.useState([]);
 
+    const PAGE_SIZES = { open: 3, sealed: 5 };
+
+    const [tab, setTab] = React.useState("open");
+    const [page, setPage] = React.useState(1);
+
+    const visible = openBeans.filter(
+        (b) => (b.opened_on ? "open" : "sealed") === tab
+    );
+    const pageSize = PAGE_SIZES[tab];
+    const pageCount = Math.ceil(visible.length / pageSize);
+    const pageItems = visible.slice((page - 1) * pageSize, page * pageSize);
+
+    const handleTabChange = (_, newTab) => {
+        setTab(newTab);
+        setPage(1);
+    };
+
     React.useEffect(() => {
         const load = async () => {
             const [daily, latest, currentOpen] = await Promise.all([
@@ -21,12 +38,13 @@ export default function HomePage() {
             // console.log(daily.data);
             // console.log(latest.data);
             console.log('open bean results:', currentOpen.results);  // <-- here, after the data actually exists
-
+            console.log('open bean response:', currentOpen);
             setDailyBean(daily.data);
             setLatestBean(latest.data);
             setOpenBeans(currentOpen.results);            
         };
         load().catch(console.error);
+
     },[]);
 
     return (
@@ -76,22 +94,37 @@ export default function HomePage() {
                         flex: '1 1 70%',
                         minWidth: 0,
                         display: 'flex',
-                        flexDirection: 'column',
+                        flexDirection: 'column',      // easy to delete by accident
                         gap: 3,
                         p: 2,
                         border: '2px solid rgba(255, 255, 255, 0.3)',
                         borderRadius: 8,
-                        maxHeight: 'calc(100vh - 170px)',
-                        overflowY: 'auto',
-                        scrollbarWidth: 'none',        // Firefox
-                        msOverflowStyle: 'none',       // old Edge/IE
-                        '&::-webkit-scrollbar': {      // Chrome, Safari, new Edge
-                            display: 'none',
-                        },
+                        height: 'calc(100vh - 170px)',
                     }}>
-                        {openBeans.map((row) => (
-                            <BagProgressCard key={row.short_id} beanData={row} />
-                        ))}
+                        <Tabs sx={{ flexShrink: 0, minHeight: 36, '& .MuiTab-root': { minHeight: 36, py: 0 } }}value={tab} onChange={handleTabChange}>
+                            <Tab value="open" label="Open" />
+                            <Tab value="sealed" label="Sealed" />
+                        </Tabs>
+
+                        <Box sx={{
+                            flex: 1,
+                            minHeight: 0,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'flex-start', 
+                            gap: 1.6, 
+                            overflow: 'hidden',
+                        }}>
+                            {pageItems.map((row) => (
+                                <BagProgressCard key={row.short_id} beanData={row} />
+                            ))}
+                        </Box>
+                        <Pagination
+                            sx={{ mt: 'auto', alignSelf: 'center' }}
+                            count={pageCount}
+                            page={page}
+                            onChange={(_, p) => setPage(p)}
+                        />
                     </Box>
                 </Box>
             </CardPageBodyLayout>
