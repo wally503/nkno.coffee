@@ -5,13 +5,11 @@ import BagProgressBar from "./BagProgressBar";
 import { useState } from "react";
 
 export default function BagProgressCard({beanData, allBeansData}){
-    console.log("HOME PARENT RENDERED");
     const PAGE_SIZE = 3;
     const [tab, setTab] = useState("open");
     const [page, setPage] = useState(1);
 
     const list = allBeansData ?? [];
-    console.log('list from prog card' - list[0]);
     const visible = list.filter((b) => (b.opened_on ? "open" : "sealed") === tab);
     const pageCount = Math.ceil(visible.length / PAGE_SIZE);
     const pageItems = visible.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
