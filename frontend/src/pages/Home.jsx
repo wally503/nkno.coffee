@@ -17,11 +17,12 @@ export default function HomePage() {
     const [page, setPage] = React.useState(1);
 
     const visible = openBeans.filter(
-        (b) => (b.opened_on ? "open" : "sealed") === tab
+        (b) => (b.pool_state ?? (b.opened_on ? "open" : "sealed")) === tab
     );
     const pageSize = PAGE_SIZES[tab];
     const pageCount = Math.ceil(visible.length / pageSize);
     const pageItems = visible.slice((page - 1) * pageSize, page * pageSize);
+
 
     const handleTabChange = (_, newTab) => {
         setTab(newTab);

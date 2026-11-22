@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.db.models import Count
 from django.db.models.functions import Coalesce, Greatest
-from django.db.models import F
+from django.db.models import F, Prefetch
 from rest_framework import viewsets, generics
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -256,8 +256,25 @@ class OpenBagListView(generics.ListAPIView):
     serializer_class = OpenBagSerializer
 
     def get_queryset(self):
+        # Same two lot pools the Bean Stock page uses, so the home bar matches it.
+        unclosed_lots = (
+            LotSplit.objects
+            .filter(closed_at__isnull=True)
+            .select_related("bean", "vessel", "vessel__vessel_type", "close_reason")
+            .order_by("id")
+        )
+        finished_lots = (
+            LotSplit.objects
+            .filter(closed_at__isnull=False, close_reason__name="Finished")
+            .select_related("bean", "vessel", "vessel__vessel_type", "close_reason")
+            .order_by("closed_at")
+        )
         return (
             Bean.objects.filter(finished=False)
             .select_related('roaster')
+            .prefetch_related(
+                Prefetch("lotsplit_set", queryset=unclosed_lots, to_attr="stock_lots"),
+                Prefetch("lotsplit_set", queryset=finished_lots, to_attr="finished_lots"),
+            )
             .order_by(F('opened_date').desc(nulls_last=True))
         )

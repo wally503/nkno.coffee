@@ -5,7 +5,8 @@ from decimal import Decimal
 from brew.models import AeropressDetail, PouroverDetail, EspressoDetail, BagLifecycleEvent, LifecycleKind
 from .enums import LifecycleKind, LotState
 from django.db import transaction
-from .lifecycle import create_lot
+from .lifecycle import create_lot, state_of
+from .lots_api import LotSplitSerializer
 from django.core.exceptions import ValidationError as DjangoValidationError
 
 class RoasterSerializer(serializers.ModelSerializer):
@@ -226,6 +227,11 @@ class OpenBagSerializer(serializers.ModelSerializer):
     roast_level_display = serializers.SerializerMethodField()
     is_decaf = serializers.SerializerMethodField()
     origin_country_name = serializers.CharField(source='origin_country.name', allow_null=True, read_only=True)
+    lots = serializers.SerializerMethodField()
+    finished_lots = serializers.SerializerMethodField()
+    lots_total_stored = serializers.SerializerMethodField()
+    lots_total_remaining = serializers.SerializerMethodField()
+    pool_state = serializers.SerializerMethodField()
 
     class Meta:
         model = Bean
@@ -234,7 +240,8 @@ class OpenBagSerializer(serializers.ModelSerializer):
             'roasted_on', 'roasted_days_ago', 'opened_on', 'opened_days_ago',
             'espresso_grind', 'pourover_grind', 'aeropress_grind',
             'remaining_weight', 'total_weight', 'percent_remaining',
-            'flavor_notes', 'origin_country_name'
+            'flavor_notes', 'origin_country_name',  'lots', 'finished_lots', 'lots_total_stored', 
+            'lots_total_remaining', 'pool_state',
         ]
 
     def get_roast_level_display(self, obj):
@@ -249,8 +256,7 @@ class OpenBagSerializer(serializers.ModelSerializer):
             return obj.opened_date.date() if hasattr(obj.opened_date, 'date') else obj.opened_date
 
         lifecycle = obj.lifecycle_events.filter(
-            event_type=LifecycleKind.OPENED
-        ).order_by('date').first()
+            event_type=LifecycleKind.OPENED).order_by('date').first()
         if lifecycle:
             return lifecycle.date.date()
 
@@ -286,3 +292,38 @@ class OpenBagSerializer(serializers.ModelSerializer):
 
     def get_flavor_notes(self, obj):
         return [note.name for note in obj.flavor_notes.all()]
+
+    def get_lots(self, obj):
+        stock_lots = getattr(obj, 'stock_lots', [])
+        return LotSplitSerializer(stock_lots, many=True).data
+
+    def get_finished_lots(self, obj):
+        finished_lots = getattr(obj, 'finished_lots', [])
+        return LotSplitSerializer(finished_lots, many=True).data
+
+    def get_lots_total_stored(self, obj):
+        total: Decimal = Decimal('0')
+        for lot in getattr(obj, 'stock_lots', []):
+            total += lot.stored_weight
+        for lot in getattr(obj, 'finished_lots', []):
+            total += lot.stored_weight
+        return f"{total:.2f}"
+
+    def get_lots_total_remaining(self, obj):
+        total: Decimal = Decimal('0')
+        for lot in getattr(obj, 'stock_lots', []):
+            total += lot.remaining_weight
+        return f"{total:.2f}"
+
+    def get_pool_state(self, obj):
+        # Only sealed/frozen lots left in the active pool -> "sealed" tab, otherwise "open".
+        stock_lots = getattr(obj, 'stock_lots', [])
+        if len(stock_lots) == 0:
+            # Bean isn't on lots yet (old bag path) -- fall back to the old opened check.
+            return "open" if self._resolve_opened_date(obj) else "sealed"
+
+        closed_states: set = {LotState.SEALED, LotState.FROZEN}
+        for lot in stock_lots:
+            if state_of(lot) not in closed_states:
+                return "open"
+        return "sealed"

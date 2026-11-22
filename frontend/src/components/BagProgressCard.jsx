@@ -1,8 +1,8 @@
 // src/components/BagProgressCard.jsx
-
 import { Box, Typography, Divider } from "@mui/material";
 import BagProgressBar from "./BagProgressBar";
 import { useState } from "react";
+import { StateBarCell } from "./table/tableCells";
 
 export default function BagProgressCard({beanData, allBeansData}){
     const PAGE_SIZE = 3;
@@ -14,7 +14,14 @@ export default function BagProgressCard({beanData, allBeansData}){
     const pageCount = Math.ceil(visible.length / PAGE_SIZE);
     const pageItems = visible.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-    const state = beanData.opened_on ? "open" : "sealed";
+    const state = beanData.pool_state ?? (beanData.opened_on ? "open" : "sealed");
+    const isOpen = state === "open";
+
+    // Beans on the lot system get the Bean Stock state bar; old-path beans keep the gradient bar.
+    const hasLots = (beanData.lots?.length ?? 0) > 0;
+    const lotsStored = Number(beanData.lots_total_stored ?? 0);
+    const lotsRemaining = Number(beanData.lots_total_remaining ?? 0);
+    const lotsPercent = lotsStored > 0 ? (lotsRemaining / lotsStored) * 100 : 0;
 
     return (
         <>
@@ -81,7 +88,7 @@ export default function BagProgressCard({beanData, allBeansData}){
 
                 {/* If we dont have open data, we're gonna trim the rest until it is */}
 
-                { beanData.opened_on && (
+                { isOpen && (
                     <>
                         {/* Grind row */}
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', ml: 1, mr: 1, my: 0 }}>
@@ -111,23 +118,34 @@ export default function BagProgressCard({beanData, allBeansData}){
                             </Box>
                         </Box>
 
-                        <Divider sx={{ width: '98%', mx: 'auto', opacity: 0.3, my: 0 }} />
-
                         {/* Progress bar row */}
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, ml: 1, mb: 0}}>
-                            <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-                                <BagProgressBar progValue={ beanData.percent_remaining } />
-                            </Box>
-                            <Box sx={{ flexShrink: 0, whiteSpace: 'nowrap' }}>
-                                <Typography variant="base1" sx={{ color: 'text.disabled', fontStyle: 'italic'}}>
-                                    { beanData.remaining_weight } / { beanData.total_weight }g remaining
-                                </Typography>
-                                <br/>
-                                <Typography variant="base1" sx={{ color: 'text.disabled', fontStyle: 'italic' }}>
-                                    { (beanData.percent_remaining).toFixed(1)  }% remaining
-                                </Typography>
-                            </Box>
-                        </Box>
+                        { (hasLots || isOpen) && (
+                            <>
+                                <Divider sx={{ width: '98%', mx: 'auto', opacity: 0.3, my: 0 }} />
+
+                                {/* Progress bar row */}
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, ml: 1, mb: 0}}>
+                                    <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+                                        { hasLots
+                                            ? <StateBarCell value={ beanData.lots } finished={ beanData.finished_lots } />
+                                            : <BagProgressBar progValue={ beanData.percent_remaining } />
+                                        }
+                                    </Box>
+                                    <Box sx={{ flexShrink: 0, whiteSpace: 'nowrap' }}>
+                                        <Typography variant="base1" sx={{ color: 'text.disabled', fontStyle: 'italic'}}>
+                                            { hasLots
+                                                ? `${ beanData.lots_total_remaining } / ${ beanData.lots_total_stored }g`
+                                                : `${ beanData.remaining_weight } / ${ beanData.total_weight }g`
+                                            }
+                                        </Typography>
+                                        <br/>
+                                        <Typography variant="base1" sx={{ color: 'text.disabled', fontStyle: 'italic' }}>
+                                            { (hasLots ? lotsPercent : Number(beanData.percent_remaining ?? 0)).toFixed(1) }% remaining
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                            </>
+                        )}
                     </>
                 )}
             </Box>
