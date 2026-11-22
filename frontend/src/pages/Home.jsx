@@ -3,7 +3,7 @@ import CardPageBodyLayout from "../components/CardPageBodyLayout";
 import { getDailyBean, getLatestBean, getCurrentOpenBeans } from "../api/beansApi";
 import BagProgressCard from "../components/BagProgressCard";
 import * as React from "react";
-
+import { buildPages } from "../utils/cardPages";
 import PageTitle from "../components/PageTitle";
 
 export default function HomePage() {
@@ -11,7 +11,12 @@ export default function HomePage() {
     const [latestBean, setLatestBean] = React.useState({});
     const [openBeans, setOpenBeans] = React.useState([]);
 
-    const PAGE_SIZES = { open: 3, sealed: 5 };
+    const listRef = React.useRef(null);
+    const [listBox, setListBox] = React.useState({ height: 0, gap: 0 });
+    const [cardHeight, setCardHeight] = React.useState({ open: 0, sealed: 0 });
+
+    const PAGE_SIZES = { open: 3, sealed: 4 };
+    const PAGE_BUDGET = { open: 6, sealed: 5 };
 
     const [tab, setTab] = React.useState("open");
     const [page, setPage] = React.useState(1);
@@ -19,9 +24,9 @@ export default function HomePage() {
     const visible = openBeans.filter(
         (b) => (b.pool_state ?? (b.opened_on ? "open" : "sealed")) === tab
     );
-    const pageSize = PAGE_SIZES[tab];
-    const pageCount = Math.ceil(visible.length / pageSize);
-    const pageItems = visible.slice((page - 1) * pageSize, page * pageSize);
+    const pages = buildPages(visible, PAGE_BUDGET[tab]);
+    const pageCount = pages.length;
+    const pageItems = pages[page - 1] ?? [];
 
 
     const handleTabChange = (_, newTab) => {
@@ -47,6 +52,17 @@ export default function HomePage() {
         load().catch(console.error);
 
     },[]);
+
+    React.useEffect(() => {
+        const box = listRef.current;
+        if (!box) return;
+        const observer = new ResizeObserver(() => {
+            const gap = parseFloat(getComputedStyle(box).rowGap) || 0;
+            setListBox({ height: box.clientHeight, gap: gap });
+        });
+        observer.observe(box);
+        return () => observer.disconnect();
+    }, []);
 
     return (
         <>
@@ -107,7 +123,7 @@ export default function HomePage() {
                             <Tab value="sealed" label="Sealed" />
                         </Tabs>
 
-                        <Box sx={{
+                        <Box ref={listRef} sx={{
                             flex: 1,
                             minHeight: 0,
                             display: 'flex',

@@ -88,7 +88,7 @@ export default function BagProgressCard({beanData, allBeansData}){
 
                 {/* If we dont have open data, we're gonna trim the rest until it is */}
 
-                { isOpen && (
+                { beanData.opened_on && (
                     <>
                         {/* Grind row */}
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', ml: 1, mr: 1, my: 0 }}>
